@@ -44,7 +44,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4">
           <h1 className="text-2xl font-bold text-indigo-600">BALEMUYA</h1>
           <nav className="space-x-4">
-            <a href="#features" className="text-gray-600 font-bold hover:text-indigo-600">
+            <a
+              href="#features"
+              className="text-gray-600 font-bold hover:text-indigo-600"
+            >
               Features
             </a>
             <a
@@ -53,10 +56,16 @@ export default function Landing() {
             >
               Categories
             </a>
-            <a href="#contact" className="text-gray-600 font-bold hover:text-indigo-600">
+            <a
+              href="#contact"
+              className="text-gray-600 font-bold hover:text-indigo-600"
+            >
               Contact
             </a>
-            <a href="#login" className="text-gray-600 font-bold hover:text-indigo-600">
+            <a
+              href="#login"
+              className="text-gray-600 font-bold hover:text-indigo-600"
+            >
               Login
             </a>
             <button className="px-4 py-2 text-gray-600 font-bold rounded hover:text-indigo-600">
@@ -67,18 +76,36 @@ export default function Landing() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-[url('/images/ele.png')] bg-cover bg-center py-32">
-        <div className="max-w-xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Simplified Networking for Professionals
-          </h2>
-          <p className="text-white mb-6 max-w-3xl mx-auto">
-            Browse through a wide range of skilled professionals or post your
-            work requests to get started.
+      <section className="relative bg-[url('/images/ele.png')] bg-cover bg-center py-32">
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+        {/* Content */}
+        <div className="relative max-w-2xl mx-auto text-center text-white px-4">
+          <h1 className="text-4xl font-extrabold mb-6 leading-tight">
+            Connect Professionals with Customers
+          </h1>
+          <p className="text-lg mb-8">
+            Whether you&apos;re a skilled professional seeking clients or a
+            customer looking for reliable expertise nearby, we make it simple
+            for both.
           </p>
-          <button className="px-6 py-3 bg-indigo-600 text-white rounded hover:bg-indigo-500">
-            Get Started
-          </button>
+
+          {/* Call-to-Action Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <button className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-500 transition">
+              Find Professionals
+            </button>
+            <button className="px-6 py-3 border text-white rounded-md hover:bg-indigo-500 transition">
+              Offer Your Services
+            </button>
+          </div>
+
+          {/* Additional Tagline */}
+          <p className="mt-6 text-sm text-gray-300">
+            Simplifying connections for professionals and customers in your
+            local area.
+          </p>
         </div>
       </section>
 
