@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
+import React, { useState } from "react";
 import {
   FaUsers,
   FaMoneyCheck,
@@ -10,12 +10,16 @@ import {
 } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
 import Link from "next/link";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { HiUserGroup, HiUser } from "react-icons/hi"; 
 
 interface SidebarProps {
   isOpen: boolean;
 }
 
 export default function Sidebar({ isOpen }: SidebarProps) {
+  const [isManageUsersOpen, setIsManageUsersOpen] = useState(false);
+
   return (
     <div
     className={`bg-gray-200 transition-transform duration-300 transform ${
@@ -25,19 +29,42 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       {isOpen && (
         <div className="flex flex-col h-full p-5 space-y-6">
           <h2 className="text-xl text-gray-800 font-bold">Dashboard</h2>
-          <ul className="space-y-4">
+          <ul className="space-y-2">
             <Link href="/dashboard">
               <li className="flex items-center font-medium text-gray-600 hover:text-black hover:bg-gray-300 rounded p-2">
                 <AiFillDashboard className="mr-3" />
                 Dashboard
               </li>
             </Link>
-            <Link href="/dashboard/users">
-              <li className="flex items-center font-medium text-gray-600 hover:text-black hover:bg-gray-300 rounded p-2 ">
-                <FaUsers className="mr-3" />
-                Manage Users
-              </li>
-            </Link>
+            {/* Manage Users Section */}
+            <li >
+              <div
+                className="flex items-center justify-between font-medium text-gray-600 hover:text-black hover:bg-gray-300 rounded p-2 mt-1 cursor-pointer"
+                onClick={() => setIsManageUsersOpen(!isManageUsersOpen)}
+              >
+                <div className="flex items-center">
+                  <FaUsers className="mr-3" />
+                  Manage Users
+                </div>
+                {isManageUsersOpen ? <MdExpandLess /> : <MdExpandMore />}
+              </div>
+              {isManageUsersOpen && (
+                <ul className="pl-8 space-y-2">
+                  <Link href="/dashboard/users/customers">
+                    <li className="flex items-center font-medium text-gray-600 hover:text-black hover:bg-gray-300 rounded p-2">
+                      <HiUserGroup className="mr-3" />
+                      Customers
+                    </li>
+                  </Link>
+                  <Link href="/dashboard/users/professionals">
+                    <li className="flex items-center font-medium text-gray-600 hover:text-black hover:bg-gray-300 rounded p-2">
+                      <HiUser className="mr-3" />
+                      Professionals
+                    </li>
+                  </Link>
+                </ul>
+              )}
+            </li>
             <Link href="/dashboard/fianance">
               <li className="flex items-center font-medium text-gray-600 hover:text-black hover:bg-gray-300 rounded p-2 ">
                 <FaMoneyCheck className="mr-3" />
