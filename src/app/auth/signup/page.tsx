@@ -1,248 +1,273 @@
 "use client";
-import React from "react";
-import { MdOutlineFileUpload } from "react-icons/md";
+import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UserSchema } from "@/store/usetSchema";
+import { useRegisterUserMutation } from "@/store/api/apiSlice";
+import { User } from "@/store/types";
 
 export default function Register() {
-  return (
-    <div className="flex items-center justify-center bg-gray-100">
-      <div className="relative w-full max-w-3xl bg-white rounded-lg shadow-md p-8 my-16">
-        <div className="absolute -top-10 left-1/2 transform -translate-x-1/2">
-          <div className="w-20 h-20 bg-white rounded-full border-4 border-gray-100 shadow-md"></div>
-        </div>
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [registerUser, { isLoading, isError, error }] =
+    useRegisterUserMutation();
 
-        <h2 className="text-2xl font-bold text-gray-800 text-center mt-8">
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<User>({
+    resolver: zodResolver(UserSchema),
+  });
+
+  const password = watch("password");
+  const confirmPassword = watch("confirmPassword");
+
+  const isPasswordMatch = password === confirmPassword;
+
+  const onSubmit = async (data: User) => {
+    try {
+      const result = await registerUser(data).unwrap();
+      console.log("Registration success:", result);
+    } catch (err) {
+      console.error("Registration failed:", JSON.stringify(err, null, 2));
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8 my-8">
+        <div className="relative -top-14 mx-auto w-16 h-16 bg-white rounded-full border-4 shadow-md"></div>
+        <h2 className="text-2xl text-gray-800 font-bold mb-6 text-center">
           Register
         </h2>
-
-        <form className="mt-8 space-y-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-          {/* First Name */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <label
-              htmlFor="firstName"
+              htmlFor="first_name"
               className="block text-sm font-medium text-gray-700"
             >
-              First name
+              First Name
             </label>
             <input
               type="text"
-              id="firstName"
-              className="text-gray-700 mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="First name"
+              id="first_name"
+              {...register("first_name")}
+              className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
+              placeholder="Enter your first name"
             />
+            {errors.first_name && (
+              <p className="text-red-500 text-xs">
+                {errors.first_name.message}
+              </p>
+            )}
           </div>
-
-          {/* City */}
           <div>
             <label
-              htmlFor="city"
+              htmlFor="middle_name"
               className="block text-sm font-medium text-gray-700"
             >
-              City
+              Middle Name
             </label>
             <input
               type="text"
-              id="city"
-              className="text-gray-700 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="City"
+              id="middle_name"
+              {...register("middle_name")}
+              className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
+              placeholder="Enter your middle name"
             />
+            {errors.middle_name && (
+              <p className="text-red-500 text-xs">
+                {errors.middle_name.message}
+              </p>
+            )}
           </div>
-
-          {/* Middle Name */}
           <div>
             <label
-              htmlFor="middleName"
+              htmlFor="last_name"
               className="block text-sm font-medium text-gray-700"
             >
-              Middle name
+              Last Name
             </label>
             <input
               type="text"
-              id="middleName"
-              className="text-gray-700 mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Middle name"
+              id="last_name"
+              {...register("last_name")}
+              className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
+              placeholder="Enter your last name"
             />
+            {errors.last_name && (
+              <p className="text-red-500 text-xs">{errors.last_name.message}</p>
+            )}
           </div>
-
-          {/* Woreda */}
           <div>
             <label
-              htmlFor="woreda"
+              htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Woreda
+              Email
             </label>
             <input
-              type="text"
-              id="woreda"
-              className="text-gray-700 mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Woreda"
+              type="email"
+              id="email"
+              {...register("email")}
+              className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
+              placeholder="Enter your email"
             />
+            {errors.email && (
+              <p className="text-red-500 text-xs">{errors.email.message}</p>
+            )}
           </div>
-
-          {/* Last Name */}
           <div>
             <label
-              htmlFor="lastName"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Last name
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              className="text-gray-700 mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Last name"
-            />
-          </div>
-
-          {/* Field of Expertise */}
-          <div>
-            <label
-              htmlFor="expertise"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Field of expertise
-            </label>
-            <input
-              type="text"
-              id="expertise"
-              className="text-gray-700 mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Field of expertise"
-            />
-          </div>
-
-          {/* Gender */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Gender
-            </label>
-            <div className="text-gray-700 mt-2 flex items-center space-x-6">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="gender"
-                  className="text-blue-600 focus:ring-blue-500 focus:border-blue-500"
-                />
-                <span className="ml-2 text-sm text-gray-700">Male</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="gender"
-                  className="text-blue-600 focus:ring-blue-500 focus:border-blue-500"
-                />
-                <span className="ml-2 text-sm text-gray-700">Female</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Government-issued ID */}
-          <div className="relative w-full">
-            <label
-              htmlFor="idUpload"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Government-issued ID
-            </label>
-            <div className="relative">
-              <input
-                type="file"
-                id="idUpload"
-                name="idUpload"
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
-              <label
-                htmlFor="idUpload"
-                className="flex items-center justify-start w-full px-4 py-2 gap-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-400 hover:bg-gray-100 cursor-pointer z-0"
-              >
-                <MdOutlineFileUpload className="text-xl text-gray-700" />
-                Upload ID
-              </label>
-            </div>
-          </div>
-
-          {/* Date of Birth */}
-          <div>
-            <label
-              htmlFor="birthDate"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Date of birth
-            </label>
-            <input
-              type="date"
-              id="birthDate"
-              className="text-gray-700 mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          {/* Certifications */}
-          <div className="relative w-full">
-            <label
-              htmlFor="certifications"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Certifications
-            </label>
-            <div className="relative">
-              <input
-                type="file"
-                id="certifications"
-                name="certifications"
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
-              <label
-                htmlFor="certifications"
-                className="flex items-center justify-start w-full px-4 py-2 gap-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-400 hover:bg-gray-100 cursor-pointer z-0"
-              >
-                <MdOutlineFileUpload className="text-xl text-gray-700" />
-                Upload Certifications
-              </label>
-            </div>
-          </div>
-
-          {/* Phone Number */}
-          <div>
-            <label
-              htmlFor="phone"
+              htmlFor="phone_number"
               className="block text-sm font-medium text-gray-700"
             >
               Phone Number
             </label>
             <input
-              type="text"
-              id="phone"
-              className="text-gray-700 mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Phone number"
+              type="tel"
+              id="phone_number"
+              {...register("phone_number")}
+              className="mt-1 block w-full px-4 py-2 border border-gray-500 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
+              placeholder="Enter your phone number"
             />
+            {errors.phone_number && (
+              <p className="text-red-500 text-xs">
+                {errors.phone_number.message}
+              </p>
+            )}
           </div>
-
-          {/* Region */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Gender
+            </label>
+            <div className="flex items-center space-x-6">
+              <div>
+                <input
+                  type="radio"
+                  id="genderMale"
+                  {...register("gender")}
+                  value="male"
+                  className="mr-2"
+                />
+                <label htmlFor="genderMale" className="text-sm text-gray-700">
+                  Male
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="genderFemale"
+                  {...register("gender")}
+                  value="female"
+                  className="mr-2"
+                />
+                <label htmlFor="genderFemale" className="text-sm text-gray-700">
+                  Female
+                </label>
+              </div>
+            </div>
+            {errors.gender && (
+              <p className="text-red-500 text-xs">{errors.gender.message}</p>
+            )}
+          </div>
           <div>
             <label
-              htmlFor="region"
+              htmlFor="user_type"
               className="block text-sm font-medium text-gray-700"
             >
-              Region
+              Role
             </label>
-            <input
-              type="text"
-              id="region"
-              className="text-gray-700 mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Region"
-            />
+            <select
+              id="user_type"
+              {...register("user_type")}
+              className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
+            >
+              <option value="student">Customer</option>
+              <option value="professional">Professional</option>
+            </select>
+            {errors.user_type && (
+              <p className="text-red-500 text-xs">{errors.user_type.message}</p>
+            )}
           </div>
-        </form>
-
-        {/* Submit Button */}
-        <div className="mt-6">
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                {...register("password")}
+                className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 px-3 text-gray-500 focus:outline-none"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-red-500 text-xs">{errors.password.message}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                {...register("confirmPassword")}
+                className={`mt-1 block w-full px-4 py-2 border ${
+                  isPasswordMatch ? "border-gray-400" : "border-red-500"
+                } text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600`}
+                placeholder="Confirm your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-0 px-3 text-gray-500 focus:outline-none"
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+            {!isPasswordMatch && (
+              <p className="text-red-500 text-xs mt-1">
+                Passwords do not match
+              </p>
+            )}
+          </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-500 text-lg"
+            className="w-full bg-purple-700 text-white py-2 px-4 rounded-md hover:bg-purple-800 focus:outline-none focus:ring focus:ring-purple-500"
+            disabled={!isPasswordMatch || isLoading}
           >
-            Signup
+            {isLoading ? "Registering..." : "Register"}
           </button>
-        </div>
+        </form>
+        {isError && (
+          <div className="text-red-500 mt-4 text-center">
+            <p>
+              {error && typeof error === "object" && "data" in error
+                ? JSON.stringify(error.data)
+                : "error" in error ? error.error : "An unknown error occurred"}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
