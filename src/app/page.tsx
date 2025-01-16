@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import Footer from "./(features)/_components/footer";
+import Link from "next/link";
 
 
 export default function Landing() {
@@ -43,35 +44,35 @@ export default function Landing() {
       {/* Header */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4">
-          <h1 className="text-2xl font-bold text-indigo-600">BALEMUYA</h1>
+          <h1 className="text-2xl font-bold text-purple-700">BALEMUYA</h1>
           <nav className="space-x-4">
             <a
               href="#features"
-              className="text-gray-600 font-bold hover:text-indigo-600"
+              className="text-gray-600 font-bold hover:text-purple-700"
             >
               Features
             </a>
             <a
               href="#categories"
-              className="text-gray-600 font-bold hover:text-indigo-600"
+              className="text-gray-600 font-bold hover:text-purple-700"
             >
               Categories
             </a>
             <a
               href="#contact"
-              className="text-gray-600 font-bold hover:text-indigo-600"
+              className="text-gray-600 font-bold hover:text-purple-700"
             >
               Contact
             </a>
-            <a
-              href="#login"
-              className="text-gray-600 font-bold hover:text-indigo-600"
+            <Link
+              href="/auth/login"
+              className="text-gray-600 font-bold hover:text-purple-700"
             >
               Login
-            </a>
-            <button className="px-4 py-2 text-gray-600 font-bold rounded hover:text-indigo-600">
+            </Link>
+             <Link href="/auth/signup" className="px-4 py-2 text-gray-600 font-bold rounded hover:text-indigo-600">
               Signup
-            </button>
+            </Link>
           </nav>
         </div>
       </header>
@@ -94,10 +95,10 @@ export default function Landing() {
 
           {/* Call-to-Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-500 transition">
+            <button className="px-6 py-3 bg-purple-700 text-white rounded-md hover:bg-purple-800 transition">
               Find Professionals
             </button>
-            <button className="px-6 py-3 border text-white rounded-md hover:bg-indigo-500 transition">
+            <button className="px-6 py-3 border text-white rounded-md hover:bg-purple-800 transition">
               Offer Your Services
             </button>
           </div>
@@ -150,7 +151,7 @@ export default function Landing() {
           <p className="text-gray-800 p-4">
             Find the right expert for your project or job and get started today.
           </p>
-          <button className="px-6 py-3 bg-indigo-600 text-white rounded hover:bg-indigo-500">
+          <button className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800">
             Browse Professionals
           </button>
         </div>
