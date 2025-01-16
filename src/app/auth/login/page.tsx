@@ -1,9 +1,60 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @next/next/no-img-element */
 "use client";
-import React from "react";
+import { useAuth } from "@/contexts/authContext";
+import {
+  useGoogleLoginMutation,
+  useLoginUserMutation,
+} from "@/store/api/apiSlice";
+import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function Login() {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useAuth();
+  const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [googleLogin, { isLoading: isGoogleLoading }] =
+    useGoogleLoginMutation();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await loginUser({ email, password }).unwrap();
+      login(response);
+      console.log("Login successful:", response);
+      toast.success("Login successful");
+      if (response.user.user_type == "admin") {
+        router.push("/admin/dashboard");
+      } else if (response.user.user_type == "customer") {
+        router.push("/customer");
+      } else if (response.user.user_type == "professional") {
+        router.push("/professional");
+      } else {
+        router.push("/");
+      }
+    } catch (err) {
+      console.error("Login failed:", err);
+      toast.error("Login failed");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const state = encodeURIComponent(
+      JSON.stringify({ user_type: "professional" })
+    );
+
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=http://localhost:3000/auth/google-callback/&response_type=code&scope=email%20profile&state=${state}&access_type=offline&prompt=consent`;
+
+    window.location.href = url;
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 relative">
@@ -15,7 +66,7 @@ export default function Login() {
           <h2 className="text-2xl text-gray-800 font-bold mb-4 text-center ">
             Login
           </h2>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -26,6 +77,8 @@ export default function Login() {
               <input
                 type="email"
                 id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter your email"
               />
@@ -41,6 +94,8 @@ export default function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter your password"
                 />
@@ -53,24 +108,38 @@ export default function Login() {
                 </button>
               </div>
             </div>
-            <div className="text-right">
-              <a href="#" className="text-sm text-blue-600 hover:underline">
-                Forgot password?
-              </a>
-            </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-full bg-purple-700 text-white py-2 px-4 rounded-md cursor-pointer hover:bg-purple-800 focus:outline-none focus:ring focus:ring-gray-500"
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? (
+                <ClipLoader color="#ffffff" loading={isLoading} size={25} />
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
+          <button
+            onClick={handleGoogleSignIn}
+            className="w-full mt-4 flex items-center justify-center gap-3 bg-white text-gray-700 border border-gray-300 py-2 px-4 rounded-md cursor-pointer hover:bg-gray-100 focus:outline-none"
+          >
+            <img
+              src="https://as1.ftcdn.net/v2/jpg/03/88/07/84/1000_F_388078454_mKtbdXYF9cyQovCCTsjqI0gbfu7gCcSp.jpg"
+              alt="Google Logo"
+              className="w-5 h-5"
+            />
+            <span>Sign in with Google</span>
+          </button>
           <div className="text-center mt-4">
             <p className="text-sm text-gray-500">
               Not Registered?{" "}
-              <a href="#" className="text-blue-600 hover:underline">
+              <Link
+                href="/auth/signup"
+                className="text-purple-600 hover:underline"
+              >
                 Signup
-              </a>
+              </Link>
             </p>
           </div>
         </div>
@@ -89,6 +158,7 @@ export default function Login() {
           </p>
         </div>
       </div>
+      <ToastContainer position="top-center" />
     </div>
   );
 }
