@@ -6,18 +6,30 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSchema } from "@/store/usetSchema";
 import { useRegisterUserMutation } from "@/store/api/apiSlice";
 import { User } from "@/store/types";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ClipLoader from "react-spinners/ClipLoader";
+
+
+
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [registerUser, { isLoading, isError, error }] =
+  const [registerUser, { isLoading,}] =
     useRegisterUserMutation();
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<User>({
     resolver: zodResolver(UserSchema),
   });
@@ -31,8 +43,11 @@ export default function Register() {
     try {
       const result = await registerUser(data).unwrap();
       console.log("Registration success:", result);
+      toast.success("Registration successful please verify your email");
+      router.push("/auth/login");
     } catch (err) {
-      console.error("Registration failed:", JSON.stringify(err, null, 2));
+      console.error("Registration failed:", err);
+      toast.error("Registration failed");
     }
   };
 
@@ -127,12 +142,12 @@ export default function Register() {
             >
               Phone Number
             </label>
-            <input
-              type="tel"
-              id="phone_number"
-              {...register("phone_number")}
-              className="mt-1 block w-full px-4 py-2 border border-gray-500 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
-              placeholder="Enter your phone number"
+            <PhoneInput
+              international
+              defaultCountry="ET"
+              value={watch("phone_number")}
+              onChange={(value) => setValue("phone_number", value ?? "")}
+              className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
             />
             {errors.phone_number && (
               <p className="text-red-500 text-xs">
@@ -186,7 +201,7 @@ export default function Register() {
               {...register("user_type")}
               className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600"
             >
-              <option value="student">Customer</option>
+              <option value="customer">Customer</option>
               <option value="professional">Professional</option>
             </select>
             {errors.user_type && (
@@ -253,22 +268,29 @@ export default function Register() {
           </div>
           <button
             type="submit"
-            className="w-full bg-purple-700 text-white py-2 px-4 rounded-md hover:bg-purple-800 focus:outline-none focus:ring focus:ring-purple-500"
+            className="w-full bg-purple-700 text-white py-2 px-4 rounded-md cursor-pointer hover:bg-purple-800 focus:outline-none focus:ring focus:ring-purple-500"
             disabled={!isPasswordMatch || isLoading}
           >
-            {isLoading ? "Registering..." : "Register"}
+            {isLoading ? (
+                <ClipLoader color="#ffffff" loading={isLoading} size={25} />
+              ) : (
+                "Login"
+              )}
           </button>
         </form>
-        {isError && (
-          <div className="text-red-500 mt-4 text-center">
-            <p>
-              {error && typeof error === "object" && "data" in error
-                ? JSON.stringify(error.data)
-                : "error" in error ? error.error : "An unknown error occurred"}
+           <div className="text-center mt-4">
+            <p className="text-sm text-gray-500">
+              Are already Registered?{" "}
+              <Link
+                href="/auth/login"
+                className="text-purple-600 hover:underline"
+              >
+                Login
+              </Link>
             </p>
           </div>
-        )}
       </div>
+      <ToastContainer position="top-center"/>
     </div>
   );
 }
