@@ -1,82 +1,198 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-export default function LearnMore() {
-  const workDetails = {
-    title: 'Electrician',
-    details:
-      'Electricians handle electrical wiring, repairs, and installations for residential and commercial buildings. Highly skilled professionals ensure safety and compliance with local regulations.',
-    image: '/images/ele.png',
-    availability: 'Available Monday to Saturday, 9:00 AM - 6:00 PM',
-    rate: '$50/hour',
+import { useUserProfileQuery } from "@/store/api/userProfile.api";
+import { FaLinkedinIn, FaTwitter, FaGithub } from "react-icons/fa";
+
+export default function Profile() {
+  const { data, isLoading, error } = useUserProfileQuery({});
+
+  if (isLoading) {
+    return <p className="text-center text-gray-600">Loading...</p>;
+  }
+
+  if (error) {
+    return (
+      <p className="text-center text-red-600">
+        An error occurred while fetching the profile.
+      </p>
+    );
+  }
+
+  const user = data?.user?.user || {};
+  const userDetails = {
+    title: data?.user?.user_type || "Professional",
+    bio: data?.user?.bio || "No bio available.",
+    image: data?.user?.business_logo || "/images/P.JPG",
+    isAvailable: data?.user?.is_available ? "Yes" : "No",
+    rating: data?.user?.rating || "Not Rated",
+    experience: `${data?.user?.years_of_experience || 0} years`,
     contact: {
-      phone: '+1 123 456 7890',
-      email: 'electrician@example.com',
+      phone: user.phone_number || "N/A",
+      email: user.email || "N/A",
     },
-    location: 'Los Angeles, CA',
+    fullName: `${user.first_name || ""} ${user.middle_name || ""}`.trim(),
+    address: user.addresses|| "Not provided",
+    gender: user.gender || "N/A",
+    skills: data?.user?.skills || [],
+    educations: data?.user?.educations || [],
+    portfolios: data?.user?.portfolios || [],
+    certificates: data?.user?.certificates || [],
+    governmentID: data?.user?.government_id || {
+      front_image: "/images/fds.jpg",
+      back_image: "/images/fds.jpg",
+    },
+    socialLinks: {
+      linkedin: user.linkedin_url || "http://linkedin.com",
+      twitter: user.twitter_url || "http://twitter.com",
+      facebook: user.facebook_url || "http://myportfolio.com",
+      instagram: user.instagram_url || "http://instagram.com",
+      github: user.github_url || "http://github.com",
+    },
   };
 
   return (
     <div className="container mx-auto py-12 px-4 bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl mx-auto">
-        {/* Image Section */}
-        <div className="relative h-64 md:h-80 w-full mb-8">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto md:flex md:items-start md:space-x-8">
+        {/* Profile Image */}
+        <div className="flex justify-center mb-6 md:mb-0 w-full md:w-1/3">
           <img
-            src={workDetails.image}
-            alt={workDetails.title}
-            className="rounded-lg object-cover h-full w-full shadow-sm"
+            src={userDetails.image}
+            alt={`${userDetails.fullName}'s Profile Picture`}
+            className="rounded-full object-cover h-40 w-40 shadow-lg"
           />
         </div>
-        {/* Title */}
-        <h1 className="text-4xl font-bold text-gray-800 mb-6 text-center">
-          {workDetails.title}
-        </h1>
-        {/* Description */}
-        <p className="text-gray-700 text-lg leading-relaxed mb-6">
-          {workDetails.details}
-        </p>
-        {/* Additional Info */}
-        <div className="space-y-4 mb-8">
-          <p className="text-gray-600 text-lg">
-            <strong className="text-gray-800">Availability:</strong>{' '}
-            {workDetails.availability}
-          </p>
-          <p className="text-gray-600 text-lg">
-            <strong className="text-gray-800">Rate:</strong> {workDetails.rate}
-          </p>
-          <p className="text-gray-600 text-lg">
-            <strong className="text-gray-800">Location:</strong>{' '}
-            {workDetails.location}
-          </p>
-          <p className="text-gray-600 text-lg">
-            <strong className="text-gray-800">Contact:</strong>{' '}
-            <a
-              href={`tel:${workDetails.contact.phone}`}
-              className="text-blue-600 hover:underline"
-            >
-              {workDetails.contact.phone}
-            </a>{' '}
-            |{' '}
-            <a
-              href={`mailto:${workDetails.contact.email}`}
-              className="text-blue-600 hover:underline"
-            >
-              {workDetails.contact.email}
-            </a>
-          </p>
-        </div>
-        {/* Buttons */}
-        <div className="flex justify-center gap-4">
-          <button
-            className="px-6 py-3 bg-purple-700 text-white text-lg font-medium rounded-lg hover:bg-purple-800 transition"
-          >
-            Back
-          </button>
-          <button
-            className="px-6 py-3 bg-green-600 text-white text-lg font-medium rounded-lg hover:bg-green-700 transition"
-          >
-            Apply
-          </button>
+
+        {/* Profile Details */}
+        <div className="flex-1 text-center md:text-left">
+          <h1 className="text-2xl font-bold text-gray-800">{userDetails.fullName}</h1>
+          <p className="text-purple-700 font-semibold">{userDetails.title}</p>
+          <p className="text-gray-600 text-sm mt-2">{userDetails.bio}</p>
+
+          <hr className="my-6 border-t border-gray-300" />
+
+          <div className="mt-4 text-sm space-y-2">
+            <h2 className="text-2xl font-bold text-gray-800">Contact</h2>
+            <p>
+            
+              <div>
+              <a href={`tel:${userDetails.contact.phone}`} className="text-blue-600 hover:underline">
+                {userDetails.contact.phone}
+              </a>{' '}
+              </div>
+              
+              {' '}
+              <a href={`mailto:${userDetails.contact.email}`} className="text-blue-600 hover:underline">
+                {userDetails.contact.email}
+              </a>
+            </p>
+          </div>
+
+          <hr className="my-6 border-t border-gray-300" />
+          <div className="mt-6">
+          <h2 className="text-xl font-semibold text-gray-800">Addresses</h2>
+          {userDetails.address?.map((address:any, index:any) => (
+            <div key={index} className="mt-4">
+              <h3 className="text-gray-800 font-medium">{address.location}</h3>
+              <p className="text-gray-600">{address.street_address}</p>
+              <p className="text-gray-600">{address.city}, {address.state} {address.zip_code}</p>
+            </div>
+          ))}
+
+          </div>
+
+
+          {/* Skills */}
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold text-gray-800">Skills</h2>
+            <ul className="list-disc pl-5 mt-2">
+              {userDetails.skills.map((skill:any, index:any) => (
+                <li key={index} className="text-gray-700">{skill.name}</li>
+              ))}
+            </ul>
+          </div>
+
+          <hr className="my-6 border-t border-gray-300" />
+
+          {/* Education */}
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold text-gray-800">Education</h2>
+            {userDetails.educations.map((edu:any, index:any) => (
+              <div key={index} className="mt-4">
+                <h3 className="text-gray-800 font-medium">{edu.school} - {edu.degree}</h3>
+                <p className="text-gray-600">{edu.field_of_study} ({edu.start_date} - {edu.end_date})</p>
+                <p className="text-gray-600">{edu.location}</p>
+              </div>
+            ))}
+          </div>
+
+          <hr className="my-6 border-t border-gray-300" />
+
+          {/* Portfolios */}
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold text-gray-800">Portfolios</h2>
+            {userDetails.portfolios.map((portfolio:any, index:any) => (
+              <div key={index} className="mt-4">
+                <h3 className="text-gray-800 font-medium">{portfolio.title}</h3>
+                <p className="text-gray-600">{portfolio.description}</p>
+              </div>
+            ))}
+          </div>
+
+          <hr className="my-6 border-t border-gray-300" />
+
+          {/* Social Links */}
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold text-gray-800">Social Links</h2>
+            <div className="flex space-x-4 mt-2">
+              <a href={userDetails.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                <FaLinkedinIn />
+              </a>
+              <a href={userDetails.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+                <FaTwitter />
+              </a>
+              <a href={userDetails.socialLinks.github} target="_blank" rel="noopener noreferrer" className="text-gray-900 hover:underline">
+                <FaGithub />
+              </a>
+            </div>
+          </div>
+
+          <hr className="my-6 border-t border-gray-300" />
+
+          {/* Certificates */}
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold text-gray-800">Certificates</h2>
+            {userDetails.certificates.map((cert:any, index:any) => (
+              <div key={index} className="mt-4">
+                <h3 className="text-gray-800 font-medium">{cert.name}</h3>
+                <p className="text-gray-600">Issued by: {cert.issued_by}</p>
+                <p className="text-gray-600">Expiration: {cert.expiration_date}</p>
+                <a href={cert.document_url} className="text-blue-600 hover:underline">View Certificate</a>
+              </div>
+            ))}
+          </div>
+
+          <hr className="my-6 border-t border-gray-300" />
+
+          {/* Government Issued ID */}
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold text-gray-800">Government Issued ID</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <img
+                src={userDetails.governmentID.front_image}
+                alt="Front of Government ID"
+                className="w-full h-32 object-cover rounded mb-2"
+              />
+              <img
+                src={userDetails.governmentID.back_image}
+                alt="Back of Government ID"
+                className="w-full h-32 object-cover rounded"
+              />
+            </div>
+          </div>
+
+          {/* Action Buttons */}
         </div>
       </div>
     </div>
