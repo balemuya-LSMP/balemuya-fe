@@ -27,8 +27,8 @@ export default function Dashboard() {
     datasets: [
       {
         label: "Monthly Sales",
-        data: [30, 40, 50, 60, 70], // Mock sales data
-        backgroundColor: "#4F46E5", // Bar color
+        data: [30, 40, 50, 60, 70], 
+        backgroundColor: "#4F46E5",
         borderColor: "#4338CA",
         borderWidth: 1,
       },
@@ -59,8 +59,8 @@ export default function Dashboard() {
     labels: ["Customers", "Professionals"],
     datasets: [
       {
-        data: [200, 100], // Mock data (200 customers, 100 professionals)
-        backgroundColor: ["#34D399", "#4F46E5"], // Green for Customers, Blue for Professionals
+        data: [200, 100], 
+        backgroundColor: ["#34D399", "#4F46E5"],
         borderColor: ["#10B981", "#4338CA"],
         borderWidth: 1,
       },
