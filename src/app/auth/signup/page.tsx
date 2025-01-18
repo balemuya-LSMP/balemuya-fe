@@ -4,7 +4,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSchema } from "@/store/usetSchema";
-import { useRegisterUserMutation } from "@/store/api/apiSlice";
+import { useRegisterUserMutation } from "@/store/api/auth.api";
 import { User } from "@/store/types";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -14,14 +14,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
 
-
-
-
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [registerUser, { isLoading,}] =
-    useRegisterUserMutation();
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
   const router = useRouter();
 
   const {
@@ -48,6 +44,21 @@ export default function Register() {
     } catch (err) {
       console.error("Registration failed:", err);
       toast.error("Registration failed");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const userType = watch("user_type");
+    if (userType === "customer" || userType === "professional") {
+      const state = encodeURIComponent(JSON.stringify({ user_type: userType }));
+
+      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=http://localhost:3000/auth/google-callback/&response_type=code&scope=email%20profile&state=${state}&access_type=offline&prompt=consent`;
+
+      window.location.href = url;
+    } else {
+      toast.error(
+        "Please select a user type (Customer or Professional) before signing in with Google."
+      );
     }
   };
 
@@ -272,25 +283,36 @@ export default function Register() {
             disabled={!isPasswordMatch || isLoading}
           >
             {isLoading ? (
-                <ClipLoader color="#ffffff" loading={isLoading} size={25} />
-              ) : (
-                "Login"
-              )}
+              <ClipLoader color="#ffffff" loading={isLoading} size={25} />
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
-           <div className="text-center mt-4">
-            <p className="text-sm text-gray-500">
-              Are already Registered?{" "}
-              <Link
-                href="/auth/login"
-                className="text-purple-600 hover:underline"
-              >
-                Login
-              </Link>
-            </p>
-          </div>
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full mt-4 flex items-center justify-center gap-3 bg-white text-gray-700 border border-gray-300 py-2 px-4 rounded-md cursor-pointer hover:bg-gray-100 focus:outline-none"
+        >
+          <img
+            src="https://as1.ftcdn.net/v2/jpg/03/88/07/84/1000_F_388078454_mKtbdXYF9cyQovCCTsjqI0gbfu7gCcSp.jpg"
+            alt="Google Logo"
+            className="w-5 h-5"
+          />
+          <span>Sign in with Google</span>
+        </button>
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-500">
+            Are already Registered?{" "}
+            <Link
+              href="/auth/login"
+              className="text-purple-600 hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
-      <ToastContainer position="top-center"/>
+      <ToastContainer position="top-center" />
     </div>
   );
 }
