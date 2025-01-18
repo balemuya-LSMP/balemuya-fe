@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/authContext";
 import {
   useGoogleLoginMutation,
   useLoginUserMutation,
-} from "@/store/api/apiSlice";
+} from "@/store/api/auth.api";
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
@@ -20,8 +20,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const { login } = useAuth();
   const [loginUser, { isLoading }] = useLoginUserMutation();
-  const [googleLogin, { isLoading: isGoogleLoading }] =
-    useGoogleLoginMutation();
+  const [userType, setUserType] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,13 +46,15 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
-    const state = encodeURIComponent(
-      JSON.stringify({ user_type: "professional" })
-    );
+    if (userType === "customer" || userType === "professional") {
+      const state = encodeURIComponent(JSON.stringify({ user_type: userType }));
 
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=http://localhost:3000/auth/google-callback/&response_type=code&scope=email%20profile&state=${state}&access_type=offline&prompt=consent`;
+      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=http://localhost:3000/auth/google-callback/&response_type=code&scope=email%20profile&state=${state}&access_type=offline&prompt=consent`;
 
-    window.location.href = url;
+      window.location.href = url;
+    }else{
+      toast.error("Please select a user type (Customer or Professional) before signing in with Google.");
+    }
   };
 
   return (
@@ -119,6 +120,30 @@ export default function Login() {
                 "Login"
               )}
             </button>
+            <div className="flex gap-4 mt-4">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="customer"
+                  checked={userType === "customer"}
+                  onChange={() => setUserType("customer")}
+                  className="form-radio text-purple-600"
+                />
+                <span className="ml-2">Customer</span>
+              </label>
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="professional"
+                  checked={userType === "professional"}
+                  onChange={() => setUserType("professional")}
+                  className="form-radio text-purple-600"
+                />
+                <span className="ml-2">Professional</span>
+              </label>
+            </div>
           </form>
           <button
             onClick={handleGoogleSignIn}
