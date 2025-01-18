@@ -3,6 +3,7 @@
 import React, { useState, ReactNode } from "react";
 import Sidebar from "./_components/sidebar";
 import { FaBars, FaBell } from "react-icons/fa";
+import Link from "next/link";
 
 interface LayoutProps {
   children: ReactNode;
@@ -32,11 +33,13 @@ export default function Layout({ children }: LayoutProps) {
           <button className="p-2 rounded bg-gray-200 hover:bg-gray-300">
             <FaBell className="h-6 w-6 text-gray-800" />
           </button>
+          <Link href="/admin/dashboard/profile">
           <img
-            src="images/user.jpg"
+            src="/images/P.JPG"
             alt="User"
             className="w-10 h-10 rounded-full"
           />
+          </Link>
         </div>
       </header>
 
