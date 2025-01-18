@@ -11,7 +11,9 @@ import {
 import { AiFillDashboard } from "react-icons/ai";
 import Link from "next/link";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
-import { HiUserGroup, HiUser } from "react-icons/hi"; 
+import { HiUserGroup, HiUser } from "react-icons/hi";
+import { useAuth } from "@/contexts/authContext";
+import { useRouter } from "next/navigation";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -19,10 +21,18 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen }: SidebarProps) {
   const [isManageUsersOpen, setIsManageUsersOpen] = useState(false);
+  const { logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+
+    router.push("/auth/login");
+  };
 
   return (
     <div
-    className={`bg-gray-200 transition-transform duration-300 transform ${
+      className={`bg-gray-200 transition-transform duration-300 transform ${
         isOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"
       }`}
     >
@@ -37,7 +47,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               </li>
             </Link>
             {/* Manage Users Section */}
-            <li >
+            <li>
               <div
                 className="flex items-center justify-between font-medium text-gray-600 hover:text-black hover:bg-gray-300 rounded p-2 mt-1 cursor-pointer"
                 onClick={() => setIsManageUsersOpen(!isManageUsersOpen)}
@@ -90,7 +100,10 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               </li>
             </Link>
           </ul>
-          <button className="mt-auto bg-purple-500 text-white py-2 rounded flex items-center justify-center">
+          <button
+            onClick={handleLogout}
+            className="mt-auto bg-purple-500 text-white py-2 rounded flex items-center justify-center"
+          >
             <FaSignOutAlt className="mr-2" />
             Logout
           </button>
