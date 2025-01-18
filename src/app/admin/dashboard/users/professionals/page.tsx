@@ -1,6 +1,9 @@
+'use client';
+
 import { FaFilter, FaSearch } from "react-icons/fa";
 
 export default function Users() {
+  
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
