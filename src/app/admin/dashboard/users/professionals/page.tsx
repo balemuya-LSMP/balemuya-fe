@@ -1,8 +1,14 @@
 'use client';
 
+import { useListProfessionalsQuery } from "@/store/api/user.api";
 import { FaFilter, FaSearch } from "react-icons/fa";
 
 export default function Users() {
+
+  const { data: userlist } = useListProfessionalsQuery({ status: "active" });
+
+  console.log(userlist);
+
   
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
