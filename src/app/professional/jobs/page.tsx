@@ -78,13 +78,18 @@ const workSamples = [
 
 export default function JobsPage() {
   const [activeTab, setActiveTab] = useState("New Jobs");
-  const [randomValues, setRandomValues] = useState<{ randomStatus: string[], randomTime: number[] }>({ randomStatus: [], randomTime: [] });
+  const [randomValues, setRandomValues] = useState<{
+    randomStatus: string[];
+    randomTime: number[];
+  }>({ randomStatus: [], randomTime: [] });
 
   const filteredJobs = workSamples.filter((job) => job.status === activeTab);
 
   // Generate random values on the client side
   useEffect(() => {
-    const randomStatus = workSamples.map(() => Math.random() > 0.5 ? "Urgent" : "Normal");
+    const randomStatus = workSamples.map(() =>
+      Math.random() > 0.5 ? "Urgent" : "Normal"
+    );
     const randomTime = workSamples.map(() => Math.floor(Math.random() * 24));
     setRandomValues({ randomStatus, randomTime });
   }, []);
@@ -120,29 +125,39 @@ export default function JobsPage() {
                 className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all p-6 flex flex-col justify-between"
               >
                 <div className="flex-1">
-                  <h4 className="text-xl font-bold text-gray-800 mb-2">{job.title}</h4>
-                  <p className="text-gray-600 mb-4">{job.description}</p>
-
-                  {/* Conditional Rendering Based on Random Values */}
+                  <h4 className="text-xl font-bold text-gray-800 mb-2">
+                    {job.title}
+                  </h4>
                   {randomValues.randomStatus && (
                     <div className="mt-4 space-y-2">
                       <div className="flex items-center text-gray-500">
                         <GrStatusGood className="text-purple-700 text-lg mr-2" />
-                        <span className="text-sm">{randomValues.randomStatus[index]}</span>
+                        <span className="text-sm">
+                          {randomValues.randomStatus[index]}
+                        </span>
                       </div>
-                      <div className="flex items-center text-gray-500">
-                        <FaLocationDot className="text-purple-700 text-lg mr-2" />
-                        <span className="text-sm">Location not specified</span>
-                      </div>
-                      <div className="flex items-center text-gray-500">
-                        <IoIosTime className="text-purple-700 text-lg mr-2" />
-                        <span className="text-sm">{randomValues.randomTime[index]} hours ago</span>
+                      <div className="flex justify-between items-center py-2">
+                        
+                        <div className="flex items-center text-gray-500">
+                          <IoIosTime className="text-purple-700 text-lg mr-2" />
+                          <span className="text-sm">
+                            {randomValues.randomTime[index]} hours ago
+                          </span>
+                        </div>
+                        <div className="flex items-center text-gray-500">
+                          <FaLocationDot className="text-purple-700 text-lg mr-2" />
+                          <span className="text-sm">2km away</span>
+                        </div>
                       </div>
                     </div>
                   )}
+                  <p className="text-gray-600 mb-4">{job.description}</p>
                 </div>
-
-                {/* Footer Section (Poster Image and Name) */}
+                <div className="flex justify-end items-center">
+                <button className="px-4 py-2 w-1/4 bg-transparent font-bold text-purple-700 rounded-lg transition">
+                  Apply
+                </button>
+                </div>
                 <div className="flex items-center mt-4 pt-4 border-t border-gray-200">
                   <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm">
                     <Link href="/professional/profile">
@@ -156,7 +171,9 @@ export default function JobsPage() {
                     </Link>
                   </div>
                   <div className="ml-3">
-                    <h5 className="text-sm font-medium text-gray-800">{job.postr_name}</h5>
+                    <h5 className="text-sm font-medium text-gray-800">
+                      {job.postr_name}
+                    </h5>
                   </div>
                 </div>
               </div>
