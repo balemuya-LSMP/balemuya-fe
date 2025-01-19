@@ -28,7 +28,12 @@ export interface loginState {
 }
 
 export interface loginResponse {
-  access: string;
-  refresh: string;
-  user: UserResponse;
+  message: string;
+  user: {
+    id: string;
+    access: string;
+    refresh: string;
+    email: string;
+    user_type: string
+ }
 }
