@@ -1,12 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { FaUser, FaRegFileAlt, FaMapMarkerAlt} from "react-icons/fa";
+import { FaUser, FaRegFileAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { MdVerifiedUser, MdPersonAdd, MdPayment } from "react-icons/md";
 import { GrStatusGood } from "react-icons/gr";
 import { FiClipboard } from "react-icons/fi";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosTime } from "react-icons/io";
-
 
 import Image from "next/image";
 import Footer from "../(features)/_components/footer";
@@ -88,7 +87,7 @@ const workSamples = [
 export default function Home() {
   return (
     <div className="bg-gray-50 font-sans">
-     <Header/>
+      <Header />
 
       {/* Hero Section */}
       <section
@@ -137,67 +136,65 @@ export default function Home() {
 
       {/* Work Posts Section */}
       <section className="py-12 bg-gray-100">
-  <div className="text-center mb-10">
-    <h3 className="text-4xl font-bold text-gray-800">New Jobs</h3>
-    <p className="text-gray-600 text-lg">Work request by customers.</p>
-  </div>
-  <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
-    {workSamples.map((work) => (
-      <div
-        key={work.id}
-        className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all"
-      >
-        <h4 className="text-lg text-gray-800 mb-2">
-          {work.title}
-        </h4>
-        <p className="text-gray-600 mb-4">{work.description}</p>
-        <div className="mt-4 space-y-2">
-          <div className="flex items-center text-gray-500">
-            <GrStatusGood className="text-purple-700 text-lg mr-2" />
-            <span className="text-sm">
-              {Math.random() > 0.5 ? "Urgent" : "Normal"}
-            </span>
-          </div>
-          <div className="flex items-center text-gray-500">
-            <FaLocationDot className="text-purple-700 text-lg mr-2" />
-            <span className="text-sm">Location not specified</span>
-          </div>
-          <div className="flex items-center text-gray-500">
-            <IoIosTime className="text-purple-700 text-lg mr-2" />
-            <span className="text-sm">
-              {Math.floor(Math.random() * 24)} hours ago
-            </span>
-          </div>
+        <div className="text-center mb-10">
+          <h3 className="text-4xl font-bold text-gray-800">New Jobs</h3>
+          <p className="text-gray-600 text-lg">Work Posted by customers.</p>
         </div>
-        <div className="flex justify-between mt-6">
-          <button className="px-4 py-2 text-green-600 rounded-lg transition">
-            Accept
-          </button>
-          <button className="px-4 py-2 text-red-500 rounded-lg transition">
-            Decline
-          </button>
-        </div>
-        <div className="flex items-center mt-4 pt-4 border-t border-gray-200">
-                  <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm">
-                    <Link href="/professional/profile">
-                      <Image
-                        src={work.poster_image}
-                        alt={work.postr_name}
-                        width={48}
-                        height={48}
-                        className="rounded-full"
-                      />
-                    </Link>
-                  </div>
-                  <div className="ml-3">
-                    <h5 className="text-sm font-medium text-gray-800">{work.postr_name}</h5>
-                  </div>
-                </div>
-      </div>
-    ))}
-  </div>
-</section>
+        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
+          {workSamples.map((work) => (
+            <div
+              key={work.id}
+              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all"
+            >
+              <h4 className="text-lg text-gray-800 mb-2">{work.title}</h4>
 
+              <div className="flex items-center text-gray-500">
+                <IoIosTime className="text-purple-700 text-lg mr-2" />
+                <span className="text-sm">
+                  {Math.floor(Math.random() * 24)} hours ago
+                </span>
+              </div>
+              <div className="flex  justify-between  items-center py-4">
+                <div className="flex items-center text-gray-500">
+                  <GrStatusGood className="text-purple-700 text-lg mr-2" />
+                  <span className="text-sm">
+                    {Math.random() > 0.5 ? "Urgent" : "Normal"}
+                  </span>
+                </div>
+                <div className="flex items-center text-gray-500">
+                  <FaLocationDot className="text-purple-700 text-lg mr-2" />
+                  <span className="text-sm">2km Away</span>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4">{work.description}</p>
+              <div className="flex justify-start mt-6">
+                <button className="px-2 py-2 bg-purple-transparent text-purple-700 rounded-lg transition">
+                  Apply
+                </button>
+              </div>
+              <div className="flex items-center mt-4 pt-4 border-t border-gray-200">
+                <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm">
+                  <Link href="/professional/profile">
+                    <Image
+                      src={work.poster_image}
+                      alt={work.postr_name}
+                      width={48}
+                      height={48}
+                      className="rounded-full"
+                    />
+                  </Link>
+                </div>
+                <div className="ml-3">
+                  <h5 className="text-sm font-medium text-gray-800">
+                    <span className="text-purple-700">Post by: </span>
+                    {work.postr_name}
+                  </h5>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* How It Works Section */}
       <section className="py-12 bg-gray-200">
