@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGoogleLoginMutation } from "@/store/api/apiSlice";
+import { useGoogleLoginMutation } from "@/store/api/auth.api";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/authContext";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -17,13 +17,14 @@ const GoogleCallback = () => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     const state = params.get("state");
-
+     
     if (code && state) {
       const decodedState = JSON.parse(decodeURIComponent(state as string));
-
+  
       googleLogin({ code: code as string, state: decodedState })
         .then((response) => {
           if (response.data) {
+            console.log("Google login successful:", response.data);
             login(response.data);
           }
           toast.success("Google login successful!");
