@@ -285,7 +285,7 @@ export default function Register() {
             {isLoading ? (
               <ClipLoader color="#ffffff" loading={isLoading} size={25} />
             ) : (
-              "Login"
+              "Sign Up"
             )}
           </button>
         </form>
