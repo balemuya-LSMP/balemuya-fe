@@ -3,7 +3,9 @@
 'use client';
 
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
-import { FaLinkedinIn, FaTwitter, FaGithub } from "react-icons/fa";
+import { FaLinkedinIn, FaTwitter, FaGithub} from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
+
 
 export default function Profile() {
   const { data, isLoading, error } = useUserProfileQuery({});
@@ -33,7 +35,17 @@ export default function Profile() {
       email: user.email || "N/A",
     },
     fullName: `${user.first_name || ""} ${user.middle_name || ""}`.trim(),
-    address: user.addresses|| "Not provided",
+    address: user.addresses?.length
+    ? user.addresses
+    : [
+        {
+          location: "Addis Ababa",
+          street_address: "123 AA St",
+          city: "AA",
+          state: "AA",
+          zip_code: "12345",
+        },
+      ],
     gender: user.gender || "N/A",
     skills: data?.user?.skills || [],
     educations: data?.user?.educations || [],
@@ -73,8 +85,14 @@ export default function Profile() {
           <hr className="my-6 border-t border-gray-300" />
 
           <div className="mt-4 text-sm space-y-2">
+            <div className="flex justify-between ">
             <h2 className="text-2xl font-bold text-gray-800">Contact</h2>
-            <p>
+            <button className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200">
+              <MdEdit />
+            </button>
+            </div>
+            
+            <div>
             
               <div>
               <a href={`tel:${userDetails.contact.phone}`} className="text-blue-600 hover:underline">
@@ -86,23 +104,29 @@ export default function Profile() {
               <a href={`mailto:${userDetails.contact.email}`} className="text-blue-600 hover:underline">
                 {userDetails.contact.email}
               </a>
-            </p>
+            </div>
           </div>
 
           <hr className="my-6 border-t border-gray-300" />
           <div className="mt-6">
+          <div className="flex justify-between">
           <h2 className="text-xl font-semibold text-gray-800">Addresses</h2>
+          <button className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200">
+            <MdEdit />
+          </button>
+          </div>
+         
           {userDetails.address?.map((address:any, index:any) => (
             <div key={index} className="mt-4">
-              <h3 className="text-gray-800 font-medium">{address.location}</h3>
-              <p className="text-gray-600">{address.street_address}</p>
-              <p className="text-gray-600">{address.city}, {address.state} {address.zip_code}</p>
+              <h3 className="text-gray-800 font-medium">{address.location ?? "Ethiopia"}</h3>
+              <p className="text-gray-600">{address.street_address ?? "Addis Ababa"}</p>
+              <p className="text-gray-600">{address.city ?? "AA"}, {address.state} {address.zip_code}</p>
             </div>
           ))}
 
           </div>
 
-
+          <hr className="my-6 border-t border-gray-300" />
           {/* Skills */}
           <div className="mt-6">
             <h2 className="text-xl font-semibold text-gray-800">Skills</h2>
@@ -177,7 +201,13 @@ export default function Profile() {
 
           {/* Government Issued ID */}
           <div className="mt-6">
+            <div className="flex justify-between">
             <h2 className="text-xl font-semibold text-gray-800">Government Issued ID</h2>
+            <button className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200">
+              <MdEdit />
+            </button>
+            </div>
+           
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <img
                 src={userDetails.governmentID.front_image}
