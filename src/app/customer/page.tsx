@@ -15,56 +15,64 @@ import Footer from "../(features)/_components/footer";
 const workSamples = [
   {
     id: 1,
+    name: "John Doe",
     category: "Home Services",
+    location: "2 km",
+    addresses: "Addis Ababa",
     title: "Electrician",
     description:
       "Expert in residential and commercial electrical repairs and installations.",
-    image: "/images/ele.png",
+    image: "/images/user.jpg",
   },
   {
     id: 2,
+    name: "John Doe",
     category: "Repair and Maintenance",
     title: "Appliance Repair Technician",
     description:
       "Specialist in repairing household appliances like refrigerators and washing machines.",
-    image: "/images/ele.png",
+    image: "/images/user.jpg",
   },
   {
     id: 3,
+    name: "John Doe",
     category: "Event Services",
     title: "Photographer",
     description:
       "Professional photographer for weddings, parties, and corporate events.",
-    image: "/images/ele.png",
+    image: "/images/user.jpg",
   },
   {
     id: 4,
+    name: "John Doe",
     category: "Technology and IT",
     title: "CCTV Installation Technician",
     description:
       "Secure your home and office with expert CCTV installation services.",
-    image: "/images/ele.png",
+    image: "/images/user.jpg",
   },
   {
     id: 5,
+    name: "John Doe",
     category: "Construction and Renovation",
     title: "Painter",
     description: "Professional painting services for homes and offices.",
-    image: "/images/ele.png",
+    image: "/images/user.jpg",
   },
   {
     id: 6,
+    name: "John Doe",
     category: "Health and Wellness",
     title: "Personal Trainer",
     description:
       "Customized fitness training programs for individuals and groups.",
-    image: "/images/ele.png",
+    image: "/images/user.jpg",
   },
 ];
 
 export default function Home() {
   return (
-    <div className="bg-gray-100 font-sans">
+    <div className="bg-gray-100 font-sans no-scrollbar">
       {/* Navbar */}
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -74,10 +82,10 @@ export default function Home() {
               Home
             </a>
             <a href="#" className="text-gray-700 hover:text-purple-700">
-              Subscription
+              Professionals
             </a>
             <a href="#" className="text-gray-700 hover:text-purple-700">
-              Job
+              Work Post
             </a>
           </nav>
           <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
@@ -88,6 +96,10 @@ export default function Home() {
               height={40}
               className="rounded-full"
             />
+
+            <div className="w-3 h-3 bg-green-500 rounded-full absolute top-0 right-0">
+              Abebe
+            </div>
           </div>
         </div>
       </header>
@@ -138,12 +150,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Work Posts Section */}
+      {/* Professionals Section */}
       <section className="py-12 bg-white px-4">
         <div className="text-center mb-8">
-          <h3 className="text-3xl font-bold text-gray-800">WORK POSTS</h3>
+          <h3 className="text-3xl font-bold text-gray-800">PROFESSIONALS</h3>
           <p className="text-gray-600">
-            Browse available work opportunities posted by professionals.
+            Browse available professionals for various services.
           </p>
         </div>
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -152,19 +164,25 @@ export default function Home() {
               key={work.id}
               className="bg-gray-100 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
-              <Image
-                src={work.image}
-                alt={work.title}
-                width={300}
-                height={200}
-                className="rounded-lg"
-              />
+              <div className="flex justify-between items-center">
+                <div className="flex justify-center gap-8 items-center">
+                  <Image
+                    src={work.image}
+                    alt={work.title}
+                    width={80}
+                    height={80}
+                    className="rounded-full"
+                  />
+                  <p>{work.name}</p>
+                </div>
+              </div>
+
               <h4 className="text-lg font-bold mt-4 text-gray-800">
                 {work.title}
               </h4>
               <p className="text-gray-600 mt-2 text-sm">{work.description}</p>
               <button className="mt-4 px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800">
-                Apply Now
+                Contact Now
               </button>
             </div>
           ))}
