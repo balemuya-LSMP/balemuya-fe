@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useListProfessionalsQuery } from "@/store/api/user.api";
@@ -5,9 +6,13 @@ import { FaFilter, FaSearch } from "react-icons/fa";
 
 export default function Users() {
 
-  const { data: userlist } = useListProfessionalsQuery({ status: "active" });
+  const { data: userlist , isLoading, error} = useListProfessionalsQuery("active" );
 
-  console.log(userlist);
+
+  if (error) {
+    console.error("Error fetching users:", error);
+  }
+  console.log(`The list of users are: ${userlist}`);
 
   
   return (
