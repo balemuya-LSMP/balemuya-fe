@@ -1,175 +1,355 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client";
 
-import { FaArrowLeft } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaPhone,
+  FaEnvelope,
+  FaUser,
+  FaCheckCircle,
+  FaBan,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaStar,
+} from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { FiCheckCircle } from "react-icons/fi";
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useGetUserQuery } from "@/store/api/user.api";
+import { useDeleteUserMutation } from "@/store/api/user.api";
+import Loader from "@/app/(features)/_components/loader";
+import { useRouter } from "next/navigation";
 
 export default function UserDetails() {
-    // Mock data for demonstration
-    const userData = {
-      firstName: "Jane",
-      lastName: "Cooper",
-      age: 34,
-      gender: "Female",
-      phoneNumber: "(225) 555-0118",
-      city: "Addis Ababa",
-      bio: "A highly motivated and skilled professional with over 10 years of experience in the software industry.",
-      email: "jane.cooper@example.com",
-      imageUrl: "/images/user.jpg",
-      profession: "Software Engineer",
-      kebeleIdImage: "/images/fds.jpg", // Image for Kebele ID
-      certificationImages: [
-        "/images/c1.png",
-        "/images/c2.jpg",
-      ], // Images for certifications
-      work: [
-        "Web Application Development",
-        "Mobile App Development",
-        "UI/UX Design",
-        "Project Management",
-      ],
-      subscriptionExpired: false,
-      isVerified: false,
-    };
-  
-    const handleVerifyAccount = () => {
-      console.log("Account verified!");
-      // Add your logic to verify the account, e.g., sending a request to the backend
-    };
-  
-    return (
-      <div className="p-6 bg-gray-100 min-h-screen">
-        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-          {/* Header Section */}
-          <div className="flex justify-between items-center px-6 py-4 border-b">
-            <h1 className="text-xl font-semibold text-gray-800">User Details</h1>
-            <button
-              onClick={() => console.log("Navigate Back")}
-              className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md"
-            >
-              <FaArrowLeft className="mr-2" />
-            </button>
-          </div>
-  
-          {/* User Information */}
-          <div className="p-6 flex flex-col md:flex-row items-start gap-6">
-            <img
-              src={userData.imageUrl}
-              alt="Profile"
-              className="w-36 h-36 rounded-full border-2 border-gray-300"
-            />
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-800">
-                {userData.firstName} {userData.lastName}
+  const router = useRouter();
+  const { id } = useParams();
+  const { data: userData, isLoading, error } = useGetUserQuery(id);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [deleteUser] = useDeleteUserMutation();
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <p>Error loading user details</p>;
+  }
+
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser(id).unwrap();
+      router.push("/admin/dashboard/users/professionals");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  return (
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+        {/* Header Section */}
+        <div className="flex justify-between items-center px-6 py-4 border-b">
+          <h1 className="text-xl font-semibold text-gray-800">User Details</h1>
+          <button
+            onClick={() => router.back()}
+            className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md"
+          >
+            <FaArrowLeft className="mr-2" />
+          </button>
+        </div>
+
+        {/* User Information */}
+        <div className="p-6 flex flex-col md:flex-row items-start gap-6 bg-white rounded-lg border border-gray-200">
+          {/* Profile Image */}
+          <img
+            src={userData?.data?.profile_image_url ?? "/images/user.jpg"}
+            alt="profile image"
+            width={100}
+            height={100}
+            className="rounded-full"
+          />
+
+          {/* User Info */}
+          <div className="flex justify-between">
+            <div className="mr-8">
+              {/* Name */}
+              <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                {userData?.data?.user?.first_name}{" "}
+                {userData?.data?.user?.middle_name}{" "}
+                {userData?.data?.user?.last_name}
               </h2>
-              <p className="text-gray-600 text-sm">{userData.bio}</p>
-  
-              <div className="mt-4">
-                <p className="text-gray-800 font-medium">
-                  <strong>Age:</strong> {userData.age}
-                </p>
-                <p className="text-gray-800 font-medium">
-                  <strong>Gender:</strong> {userData.gender}
-                </p>
-                <p className="text-gray-800 font-medium">
-                  <strong>Phone:</strong> {userData.phoneNumber}
-                </p>
-                <p className="text-gray-800 font-medium">
-                  <strong>Email:</strong> {userData.email}
-                </p>
-                <p className="text-gray-800 font-medium">
-                  <strong>City:</strong> {userData.city}
-                </p>
-                <p className="text-gray-800 font-medium">
-                  <strong>Profession:</strong> {userData.profession}
-                </p>
+
+              {/* Bio */}
+              <p className="text-gray-600 text-sm mb-4">
+                {userData?.data?.bio || "No bio available."}
+              </p>
+            </div>
+            {/* Details */}
+            <div className="col-span-2 grid gap-4">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-gray-800">
+                  <FaPhone className="text-purple-700" />
+                  <span>{userData?.data?.user?.phone_number}</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-800">
+                  <FaEnvelope className="text-purple-700" />
+                  <span>{userData?.data?.user?.email}</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-800">
+                  <FaUser className="text-purple-700" />
+                  <span>{userData?.data?.user?.user_type}</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-800">
+                  {userData?.data?.user?.is_active ? (
+                    <div className="flex items-center gap-2">
+                      <FaCheckCircle className="text-green-500" />
+                      Active
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <FaBan className="text-red-500" />
+                      Blocked
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-gray-800">
+                  <FaCalendarAlt className="text-purple-700" />
+                  <span>
+                    Created At:{" "}
+                    {new Date(
+                      userData?.data?.user?.created_at
+                    ).toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-800">
+                  <FaMapMarkerAlt className="text-purple-700" />
+                  <span>
+                    {userData?.data?.user?.address || "No address available."}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-800">
+                  <FaStar className="text-yellow-500" />
+                  {userData?.data?.user?.rating || "4.5"}
+                </div>
               </div>
             </div>
           </div>
-  
-          {/* Kebele ID */}
-          <div className="p-6 border-t">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Kebele ID</h2>
-            {userData.kebeleIdImage ? (
+        </div>
+
+        {/* Skills, Education, and Other Details */}
+        <div className="p-6 space-y-4 ">
+          <h3 className="text-xl font-semibold">Government Issued ID</h3>
+          <div className="flex justify-start gap-8">
+            {userData?.data?.kebele_id_front_image_url ? (
               <img
-                src={userData.kebeleIdImage}
-                alt="Kebele ID"
-                className="w-1/2 h-auto max-h-72 border border-gray-300 rounded-md  flex items-center justify-center"
+                src={userData?.data?.kebele_id_front_image_url}
+                alt="Id Front"
+                width={150}
+                height={100}
+                className="rounded-md"
               />
             ) : (
-              <p className="text-gray-600">Kebele ID not provided.</p>
+              "No ID Image Provided"
             )}
-          </div>
-  
-          {/* Certification Details */}
-          <div className="p-6 border-t">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Certifications
-            </h2>
-            {userData.certificationImages.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {userData.certificationImages.map((certImage, index) => (
-                  <img
-                    key={index}
-                    src={certImage}
-                    alt={`Certification ${index + 1}`}
-                    className="w-full h-[250px] object-cover border border-gray-300 rounded-md"
-                  />
-                ))}
-              </div>
+            {userData?.data?.kebele_id_back_image_url ? (
+              <img
+                src={userData?.data?.kebele_id_back_image_url}
+                alt="Id Back"
+                width={150}
+                height={100}
+                className="rounded-md"
+              />
             ) : (
-              <p className="text-gray-600">No certifications provided.</p>
+              ""
             )}
           </div>
-  
-          {/* Work Details */}
-          <div className="p-6 border-t">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Work/Services
-            </h2>
-            <ul className="list-disc list-inside space-y-2">
-              {userData.work.map((work, index) => (
-                <li key={index} className="text-gray-600">
-                  {work}
+          <hr className="w-full" />
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">Skills</h3>
+          {userData?.data?.skills && userData.data.skills.length > 0 ? (
+            <ul className="pl-4 space-y-2">
+              {userData.data.skills.map((skill: any, index: any) => (
+                <li
+                  key={index}
+                  className="flex items-center text-gray-700 font-medium hover:text-purple-800 text-lg"
+                >
+                  <FiCheckCircle className="text-purple-700 mr-3" />
+                  {skill.name}
                 </li>
               ))}
             </ul>
-          </div>
-  
-          {/* Admin Actions */}
-          <div className="p-6 border-t bg-gray-50 flex flex-col gap-4">
-            {userData.subscriptionExpired && (
-              <div className="bg-red-50 p-4 rounded-md">
-                <p className="text-red-600 font-medium">
-                  Subscription plan has expired. The user may need assistance.
-                </p>
-                <button
-                  onClick={() => console.log("Block User")}
-                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 mt-2"
+          ) : (
+            <p className="text-gray-500 text-lg">No skills provided.</p>
+          )}
+          <hr className="w-full" />
+          <h3 className="text-xl font-semibold mb-4">Education</h3>
+          {userData?.data?.educations && userData.data.educations.length > 0 ? (
+            <ul className="space-y-4">
+              {userData.data.educations.map((education: any, index: any) => (
+                <li
+                  key={index}
+                  className="flex items-start gap-3 bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200"
                 >
-                  Block User
-                </button>
-              </div>
-            )}
-  
-            {!userData.isVerified &&
-              userData.kebeleIdImage &&
-              userData.certificationImages.length > 0 && (
-                <div className="bg-green-50 p-4 rounded-md">
-                  <p className="text-green-600 font-medium">
-                    All required information is present. You can verify this
-                    account.
-                  </p>
-                  <button
-                    onClick={handleVerifyAccount}
-                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-2"
-                  >
-                    Verify Account
-                  </button>
+                  <FiCheckCircle className="text-purple-700 text-2xl flex-shrink-0" />
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      {education.degree} in {education.field_of_study}
+                    </h4>
+                    <p className="text-sm text-gray-600">{education.school}</p>
+                    {education.graduation_year && (
+                      <p className="text-sm text-gray-500">
+                        Graduated: {education.graduation_year}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No education details provided.</p>
+          )}
+
+          <hr className="w-full" />
+          <h3 className="text-xl font-semibold mb-4">Portfolios</h3>
+          {userData?.data?.portfolios && userData.data.portfolios.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {userData.data.portfolios.map((portfolio: any, index: any) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200"
+                >
+                  <img
+                    src={portfolio.portfolio_image_url ?? "/images/c1.png"}
+                    alt="Portfolio"
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-semibold mb-2 text-gray-800">
+                      {portfolio.title}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {portfolio.description || "No description available."}
+                    </p>
+                  </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <p>No portfolio provided.</p>
+          )}
+
+          <hr className="w-full" />
+          <h3 className="text-xl font-semibold mb-4">Certifications</h3>
+          {userData?.data?.certificates &&
+          userData.data.certificates.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {userData.data.certificates.map(
+                (certification: any, index: any) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200"
+                  >
+                    <img
+                      src={
+                        certification.certificate_image_url ?? "/images/c1.png"
+                      }
+                      alt="Certification"
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-4">
+                      <h4 className="text-lg font-semibold text-gray-800">
+                        {certification.name}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        {certification.issuer ||
+                          "No issuer information available."}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {certification.issue_date || "Issue date not provided."}
+                      </p>
+                    </div>
+                  </div>
+                )
               )}
+            </div>
+          ) : (
+            <p>No certifications provided.</p>
+          )}
+        </div>
+
+        {/* Admin Actions */}
+        <div className="p-6 border-t bg-gray-50 flex flex-col gap-4">
+          {!userData?.data?.is_verified && (
+            <div className="bg-green-50 p-4 rounded-md">
+              <p className="text-green-600 font-medium">
+                Account is not verified. You can verify this account.
+              </p>
+              <button
+                onClick={() => console.log("Verify Account")}
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-2"
+              >
+                Verify Account
+              </button>
+            </div>
+          )}
+         <div className="p-4 bg-gray-100 flex justify-end gap-4">
+                   <div className="relative group">
+                     <button className="bg-blue-100 px-4 py-2 rounded-lg">
+                       <FaBan className="text-lg" />
+                     </button>
+                     {/* Tooltip */}
+                     <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                       Block User
+                     </div>
+                   </div>
+                   <div className="relative group">
+                     <button
+                       onClick={() => setIsModalOpen(true)}
+                       className="bg-red-200 px-4 py-2 rounded-lg"
+                     >
+                       <MdDelete className="text-lg" />
+                     </button>
+                     {/* Tooltip */}
+                     <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                       Delete User
+                     </div>
+                   </div>
           </div>
         </div>
       </div>
-    );
-  }
-  
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-96 p-6">
+            <h3 className="text-lg font-bold text-gray-800">
+              Confirm Deletion
+            </h3>
+            <p className="text-sm text-gray-600 my-4">
+              Are you sure you want to delete this user? This action cannot be
+              undone.
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded-md"
+                onClick={async () => {
+                  await handleDeleteUser();
+                  setIsModalOpen(false);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
