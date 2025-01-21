@@ -34,9 +34,11 @@ export const apiSlice = createApi({
     }),
     logoutUser: builder.mutation<null,  string >({
       query: (token) => ({
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         url: '/auth/logout/',
         method: 'POST',
-        body: token,
       }),
     }),
   }),
