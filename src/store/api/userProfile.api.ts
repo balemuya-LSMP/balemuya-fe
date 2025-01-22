@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { User, UserResponse } from "../types";
+import { UserResponse } from "../types";
 
 export const userProfileApi = createApi({
   reducerPath: "userProfileApi",
@@ -13,20 +14,22 @@ export const userProfileApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["UserProfile"], 
   endpoints: (builder) => ({
     userProfile: builder.query({
       query: () => "/profile/",
+      providesTags: ["UserProfile"], 
     }),
-  updateProfile: builder.mutation<UserResponse, User>({
-    query: (user) => {
-      return {
-        url: "/profile/update/",
-        method: "PATCH",
-        body: user,
-      };
-    }
-  })
+
+    updateProfile: builder.mutation<UserResponse, { updated: Record<string, any> }>({
+      query: ({ updated }) => ({
+        url: `/profile/update/`,
+        method: "PUT",
+        body: updated,
+      }),
+      invalidatesTags: ["UserProfile"],
+    }),
   }),
 });
 
-export const { useUserProfileQuery, useUpdateProfileMutation} = userProfileApi;
+export const { useUserProfileQuery, useUpdateProfileMutation } = userProfileApi;
