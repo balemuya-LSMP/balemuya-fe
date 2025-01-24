@@ -3,7 +3,8 @@
 
 import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useGetUserQuery } from "@/store/api/user.api";
+import { useBlockUserMutation, useGetUserQuery } from "@/store/api/user.api";
+
 import Loader from "@/app/(features)/_components/loader";
 import {
   FaUser,
@@ -21,6 +22,7 @@ export default function CustomerDetails() {
   const router = useRouter();
   const { id } = useParams();
   const { data: customer, isLoading, error } = useGetUserQuery(id);
+  const [blockUser] = useBlockUserMutation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -53,6 +55,14 @@ export default function CustomerDetails() {
       router.push("/admin/dashboard/users/professionals");
     } catch (error) {
       console.error("Error deleting user:", error);
+    }
+  };
+
+  const handleBlockUser = async () => {
+    try {
+      await blockUser(id).unwrap();
+    } catch (error) {
+      console.error("Error blocking user:", error);
     }
   };
 
@@ -152,8 +162,10 @@ export default function CustomerDetails() {
 
         <div className="p-4 bg-gray-100 flex justify-end gap-4">
           <div className="relative group">
-            <button className="bg-blue-100 px-4 py-2 rounded-lg">
-              <FaBan className="text-lg" />
+            <button
+              onClick={handleBlockUser}
+              className="bg-blue-100 px-4 py-2 rounded-lg">
+              {is_active ? <FaBan className="text-lg" /> : <FaUserShield className="text-lg" />}
             </button>
             {/* Tooltip */}
             <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
