@@ -40,6 +40,12 @@ export const userApi = createApi({
         method: "DELETE",
       }),
     }),
+    blockUser: builder.mutation({
+      query: (id) => ({
+        url: `/users/profile/${id}/block/`,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -49,4 +55,5 @@ export const {
   useListAdminsQuery,
   useGetUserQuery,
   useDeleteUserMutation,
+  useBlockUserMutation,
 } = userApi;
