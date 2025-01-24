@@ -18,7 +18,7 @@ import { MdDelete } from "react-icons/md";
 import { FiCheckCircle } from "react-icons/fi";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useGetUserQuery } from "@/store/api/user.api";
+import { useBlockUserMutation, useGetUserQuery } from "@/store/api/user.api";
 import { useDeleteUserMutation } from "@/store/api/user.api";
 import Loader from "@/app/(features)/_components/loader";
 import { useRouter } from "next/navigation";
@@ -27,6 +27,7 @@ export default function UserDetails() {
   const router = useRouter();
   const { id } = useParams();
   const { data: userData, isLoading, error } = useGetUserQuery(id);
+  const [blockUser] = useBlockUserMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [deleteUser] = useDeleteUserMutation();
@@ -47,6 +48,14 @@ export default function UserDetails() {
       console.error("Error deleting user:", error);
     }
   };
+
+  const handleBlockUser = async () => {
+    try {
+      await blockUser(id).unwrap();
+    } catch (error) {
+      console.error("Error blocking user:", error);
+    }
+  }
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -244,7 +253,7 @@ export default function UserDetails() {
           <hr className="w-full" />
           <h3 className="text-xl font-semibold mb-4">Certifications</h3>
           {userData?.data?.certificates &&
-          userData.data.certificates.length > 0 ? (
+            userData.data.certificates.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {userData.data.certificates.map(
                 (certification: any, index: any) => (
@@ -263,13 +272,6 @@ export default function UserDetails() {
                       <h4 className="text-lg font-semibold text-gray-800">
                         {certification.name}
                       </h4>
-                      <p className="text-sm text-gray-600">
-                        {certification.issuer ||
-                          "No issuer information available."}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {certification.issue_date || "Issue date not provided."}
-                      </p>
                     </div>
                   </div>
                 )
@@ -295,28 +297,30 @@ export default function UserDetails() {
               </button>
             </div>
           )}
-         <div className="p-4 bg-gray-100 flex justify-end gap-4">
-                   <div className="relative group">
-                     <button className="bg-blue-100 px-4 py-2 rounded-lg">
-                       <FaBan className="text-lg" />
-                     </button>
-                     {/* Tooltip */}
-                     <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                       Block User
-                     </div>
-                   </div>
-                   <div className="relative group">
-                     <button
-                       onClick={() => setIsModalOpen(true)}
-                       className="bg-red-200 px-4 py-2 rounded-lg"
-                     >
-                       <MdDelete className="text-lg" />
-                     </button>
-                     {/* Tooltip */}
-                     <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                       Delete User
-                     </div>
-                   </div>
+          <div className="p-4 bg-gray-100 flex justify-end gap-4">
+            <div className="relative group">
+              <button
+                onClick={handleBlockUser}
+                className="bg-blue-100 px-4 py-2 rounded-lg">
+                <FaBan className="text-lg" />
+              </button>
+              {/* Tooltip */}
+              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                Block User
+              </div>
+            </div>
+            <div className="relative group">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-red-200 px-4 py-2 rounded-lg"
+              >
+                <MdDelete className="text-lg" />
+              </button>
+              {/* Tooltip */}
+              <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                Delete User
+              </div>
+            </div>
           </div>
         </div>
       </div>
