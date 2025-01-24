@@ -3,6 +3,12 @@
 
 import { useEffect, useState } from "react";
 import {
+  useAddAddressesMutation,
+  useAddCertificatesMutation,
+  useAddEducationsMutation,
+  useAddPortifoliosMutation,
+  useAddSkillsMutation,
+  useUpdateProfessionalProfileMutation,
   useUpdateProfileMutation,
   useUserProfileQuery,
 } from "@/store/api/userProfile.api";
@@ -44,18 +50,20 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedData = {
-      user: {
-        first_name: firstName || user?.first_name,
-        middle_name: middleName || user?.middle_name,
-        last_name: lastName || user?.last_name,
-        phone_number: phoneNumber || user?.phone_number,
-        email: email || user?.email,
-      },
+      first_name: firstName || user?.first_name,
+      middle_name: middleName || user?.middle_name,
+      last_name: lastName || user?.last_name,
+      phone_number: phoneNumber || user?.phone_number,
+      email: email || user?.email,
       profile_image: profilePicture || null,
     };
 
     const formData = new FormData();
-    formData.append("user", JSON.stringify(updatedData.user));
+    formData.append("first_name", updatedData.first_name);
+    formData.append("middle_name", updatedData.middle_name);
+    formData.append("last_name", updatedData.last_name);
+    formData.append("phone_number", updatedData.phone_number);
+    formData.append("email", updatedData.email);
 
     if (updatedData.profile_image) {
       formData.append("profile_image", updatedData.profile_image);
@@ -146,7 +154,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
           <div className="flex justify-end gap-4">
             <button
               type="submit"
-              className="w-1/3 sm:w-1/4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800"
+              className="w-1/3 sm:w-1/4 py-2 bg-blue-600 text-white rounded-md hover:bg-purple-800"
             >
               Save
             </button>
@@ -155,7 +163,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
               onClick={onClose}
               className="w-1/3 sm:w-1/4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
             >
-              Close
+              Cancel
             </button>
           </div>
         </form>
@@ -168,8 +176,7 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
   const [country, setCountry] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
-  const [updateProfile] = useUpdateProfileMutation();
-
+  const [addAddress] = useAddAddressesMutation();
   const { position, getPosition, isLoading, error } = useGeolocation();
 
   useEffect(() => {
@@ -188,14 +195,9 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
       longitude: position?.lng,
       is_current: true,
     };
-    const updatedData = {
-      user: {
-        addresses: [newAddress],
-      },
-    };
 
     try {
-      await updateProfile({ updated: updatedData }).unwrap();
+      await addAddress({ addresses: newAddress }).unwrap();
       onClose();
     } catch (error) {
       console.error("Failed to update address:", error);
@@ -238,7 +240,7 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
             <button
               type="submit"
               onClick={(e) => handeSubmit(e)}
-              className="w-1/4 mt-4 py-2 bg-purple-700 text-white rounded-md"
+              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
             >
               Submit
             </button>
@@ -246,7 +248,7 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
               onClick={onClose}
               className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
             >
-              Close
+              Cancel
             </button>
           </div>
         </form>
@@ -257,17 +259,17 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
 
 export function SkillModal({ isOpen, onClose }: ModalProps) {
   const [skillName, setSkillName] = useState("");
-  const [updateProfile] = useUpdateProfileMutation();
-
+  const [addSkills] = useAddSkillsMutation();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    const updatedData = {
-      skills: [{ name: skillName }],
-    };
+    const updatedSkills = {
+      names: [skillName]
+    }
+
     try {
-      await updateProfile({ updated: updatedData }).unwrap();
+      await addSkills({ skills: updatedSkills }).unwrap();
       onClose();
     } catch (error) {
       console.error("Failed to update skills:", error);
@@ -292,7 +294,7 @@ export function SkillModal({ isOpen, onClose }: ModalProps) {
             <button
               type="submit"
               onClick={(e) => handleSubmit(e)}
-              className="w-1/4 mt-4 py-2 bg-purple-700 text-white rounded-md"
+              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
             >
               Submit
             </button>
@@ -300,7 +302,7 @@ export function SkillModal({ isOpen, onClose }: ModalProps) {
               onClick={onClose}
               className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
             >
-              Close
+              Cancel
             </button>
           </div>
         </form>
@@ -309,86 +311,378 @@ export function SkillModal({ isOpen, onClose }: ModalProps) {
   );
 }
 
-export function EducationModal() {
+export function EducationModal({ isOpen, onClose }: ModalProps) {
+  const [school, setSchool] = useState("");
+  const [degree, setDegree] = useState("");
+  const [fieldOfStudy, setFieldOfStudy] = useState("");
+  const [addEducations] = useAddEducationsMutation();
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    const updatedEducations = {
+      school: school,
+      degree: degree,
+      field_of_study: fieldOfStudy,
+    }
+
+    try {
+      await addEducations({ educations: updatedEducations }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to update educations:", error);
+    }
+  }
+
   return (
-    <div>
-      <h1>Education Modal</h1>
-      <form>
-        <label>
-          School:
-          <input type="text" placeholder="Enter school name" />
-        </label>
-        <label>
-          Degree:
-          <input type="text" placeholder="Enter degree" />
-        </label>
-        <label>
-          Education Certificate:
-          <input type="file" accept="image/*" />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <h1 className="text-2xl font-semibold mb-4">Educations</h1>
+        <form>
+          <label className="block mb-2">
+            School:
+            <input
+              type="text"
+              value={school}
+              onChange={(e) => setSchool(e.target.value)}
+              placeholder="Enter school"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <label className="block mb-2">
+            Degree:
+            <input
+              type="text"
+              value={degree}
+              onChange={(e) => setDegree(e.target.value)}
+              placeholder="Enter degree"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <label className="block mb-2">
+            Field of Study:
+            <input
+              type="text"
+              value={fieldOfStudy}
+              onChange={(e) => setFieldOfStudy(e.target.value)}
+              placeholder="Enter field of study"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <div className="flex justify-end gap-4">
+            <button
+              type="submit"
+              onClick={(e) => handleSubmit(e)}
+              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Submit
+            </button>
+            <button
+              onClick={onClose}
+              className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
 
-export function CertificateModal() {
+export function CertificateModal({ isOpen, onClose }: ModalProps) {
+  const [certificateName, setCertificateName] = useState("");
+  const [certificateImage, setCertificateImage] = useState<File | null>(null);
+  const [addCertificates] = useAddCertificatesMutation();
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", certificateName);
+    if (certificateImage) {
+      formData.append("image", certificateImage);
+    }
+
+    try {
+      await addCertificates({ certificates: formData }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to update certificates:", error);
+    }
+  }
+
   return (
-    <div>
-      <h1>Certificate Modal</h1>
-      <form>
-        <label>
-          Certificate Name:
-          <input type="text" placeholder="Enter certificate name" />
-        </label>
-        <label>
-          Certificate Image:
-          <input type="file" accept="image/*" />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <h1 className="text-2xl font-semibold mb-4">Certificates</h1>
+        <form>
+          <label className="block mb-2">
+            Certificate Name:
+            <input
+              type="text"
+              value={certificateName}
+              onChange={(e) => setCertificateName(e.target.value)}
+              placeholder="Enter Certificate Name"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <label className="block mb-4">
+            Certificate Image:
+            <div className="mt-1 flex items-center justify-center p-2 border border-gray-300 rounded-md bg-gray-50 cursor-pointer hover:bg-gray-100">
+              <FaUpload className="text-gray-600 mr-2" />
+              <span className="text-gray-700">
+                {certificateImage
+                  ? certificateImage.name
+                  : "Upload Certificate Image"}
+              </span>
+              <input
+                type="file"
+                onChange={(e) => setCertificateImage(e.target.files?.[0] || null)}
+                className="hidden"
+              />
+            </div>
+          </label>
+          <div className="flex justify-end gap-4">
+            <button
+              type="submit"
+              onClick={(e) => handleSubmit(e)}
+              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Submit
+            </button>
+            <button
+              onClick={onClose}
+              className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
 
-export function GovernmentIdModal() {
+export function GovernmentIdModal({ isOpen, onClose }: ModalProps) {
+
+  const [idFront, setIdFront] = useState<File | null>(null);
+  const [idBack, setIdBack] = useState<File | null>(null);
+
+  const [updateID] = useUpdateProfessionalProfileMutation()
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    if (idFront) {
+      formData.append("kebele_id_front_image", idFront);
+    }
+    if (idBack) {
+      formData.append("kebele_id_back_image", idBack);
+    }
+
+    try {
+      await updateID({ updated: formData }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to update ID:", error);
+    }
+  }
   return (
-    <div>
-      <h1>Government ID Modal</h1>
-      <form>
-        <label>
-          ID Front Image:
-          <input type="file" accept="image/*" />
-        </label>
-        <label>
-          ID Back Image:
-          <input type="file" accept="image/*" />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <h1 className="text-2xl font-semibold mb-4">Certificates</h1>
+        <form>
+          <label className="block mb-4">
+            ID front image:
+            <div className="mt-1 flex items-center justify-center p-2 border border-gray-300 rounded-md bg-gray-50 cursor-pointer hover:bg-gray-100">
+              <FaUpload className="text-gray-600 mr-2" />
+              <span className="text-gray-700">
+                {idFront
+                  ? idFront.name
+                  : "Upload ID Front Image"}
+              </span>
+              <input
+                type="file"
+                onChange={(e) => setIdFront(e.target.files?.[0] || null)}
+                className="hidden"
+              />
+            </div>
+          </label>
+          <label className="block mb-4">
+            ID back Image:
+            <div className="mt-1 flex items-center justify-center p-2 border border-gray-300 rounded-md bg-gray-50 cursor-pointer hover:bg-gray-100">
+              <FaUpload className="text-gray-600 mr-2" />
+              <span className="text-gray-700">
+                {idBack
+                  ? idBack.name
+                  : "Upload ID Back Image"}
+              </span>
+              <input
+                type="file"
+                onChange={(e) => setIdBack(e.target.files?.[0] || null)}
+                className="hidden"
+              />
+            </div>
+          </label>
+          <div className="flex justify-end gap-4">
+            <button
+              type="submit"
+              onClick={(e) => handleSubmit(e)}
+              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Submit
+            </button>
+            <button
+              onClick={onClose}
+              className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
 
-export function PortfolioModal() {
+export function PortfolioModal({ isOpen, onClose }: ModalProps) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [addPortfolios] = useAddPortifoliosMutation();
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    if (image) {
+      formData.append("image", image);
+    }
+
+    try {
+      await addPortfolios({ portifolios: formData }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to update portifolios:", error);
+    }
+  }
+
   return (
-    <div>
-      <h1>Portfolio Modal</h1>
-      <form>
-        <label>
-          Portfolio Title:
-          <input type="text" placeholder="Enter portfolio title" />
-        </label>
-        <label>
-          Portfolio Description:
-          <textarea placeholder="Enter portfolio description" />
-        </label>
-        <label>
-          Portfolio Image:
-          <input type="file" accept="image/*" />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <h1 className="text-2xl font-semibold mb-4">Portifolios</h1>
+        <form>
+          <label className="block mb-2">
+            Title:
+            <input
+              type="text"
+              placeholder="Enter title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <label className="block mb-2">
+            Description:
+            <input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter description"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <label className="block mb-4">
+            Portifolio Image:
+            <div className="mt-1 flex items-center justify-center p-2 border border-gray-300 rounded-md bg-gray-50 cursor-pointer hover:bg-gray-100">
+              <FaUpload className="text-gray-600 mr-2" />
+              <span className="text-gray-700">
+                {image
+                  ? image.name
+                  : "Upload Portifolio Image"}
+              </span>
+              <input
+                type="file"
+                onChange={(e) => setImage(e.target.files?.[0] || null)}
+                className="hidden"
+              />
+            </div>
+          </label>
+          <div className="flex justify-end gap-4">
+            <button
+              type="submit"
+              onClick={(e) => handleSubmit(e)}
+              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Submit
+            </button>
+            <button
+              onClick={onClose}
+              className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export function BioModal({ isOpen, onClose }: ModalProps) {
+  const [bio, setBio] = useState("");
+  const [updateProfile] = useUpdateProfessionalProfileMutation();
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    const updatedData = {
+      bio: bio
+    };
+
+    try {
+      await updateProfile({ updated: updatedData }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to update bio:", error);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <h1 className="text-2xl font-semibold mb-4">Bio</h1>
+        <form>
+          <label className="block mb-2">
+            Bio:
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Enter bio"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <div className="flex justify-end gap-4">
+            <button
+              type="submit"
+              onClick={(e) => handleSubmit(e)}
+              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Submit
+            </button>
+            <button
+              onClick={onClose}
+              className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
