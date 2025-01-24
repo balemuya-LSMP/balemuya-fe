@@ -75,19 +75,16 @@ export const userProfileApi = createApi({
     }),
     updateCertificates: builder.mutation<
       UserResponse,
-      {id:string, certificates: Record<string, any> }
+      { id: string; certificates: Record<string, any> }
     >({
-      query: ({id, certificates }) => ({
+      query: ({ id, certificates }) => ({
         url: `/professional/profile/certificates/${id}/update/`,
         method: "PUT",
         body: certificates,
       }),
       invalidatesTags: ["UserProfile"],
     }),
-    deleteCertificates: builder.mutation<
-      UserResponse,
-      { id:string }
-    >({
+    deleteCertificates: builder.mutation<UserResponse, { id: string }>({
       query: ({ id }) => ({
         url: `/professional/profile/certificates/${id}/delete/`,
         method: "DELETE",
@@ -107,19 +104,16 @@ export const userProfileApi = createApi({
     }),
     updateEducations: builder.mutation<
       UserResponse,
-      {id:string, educations: Record<string, any> }
+      { id: string; educations: Record<string, any> }
     >({
-      query: ({id, educations }) => ({
+      query: ({ id, educations }) => ({
         url: `/professional/profile/educations/${id}/update/`,
         method: "PUT",
         body: educations,
       }),
       invalidatesTags: ["UserProfile"],
     }),
-    deleteEducations: builder.mutation<
-      UserResponse,
-      { id: string }
-    >({
+    deleteEducations: builder.mutation<UserResponse, { id: string }>({
       query: ({ id }) => ({
         url: `/professional/profile/educations/${id}/delete/`,
         method: "DELETE",
@@ -139,19 +133,16 @@ export const userProfileApi = createApi({
     }),
     updatePortifolios: builder.mutation<
       UserResponse,
-      {id:string, portifolios: Record<string, any> }
+      { id: string; portifolios: Record<string, any> }
     >({
-      query: ({id, portifolios }) => ({
+      query: ({ id, portifolios }) => ({
         url: `/professional/profile/portfolios/${id}/update/`,
         method: "PUT",
         body: portifolios,
       }),
       invalidatesTags: ["UserProfile"],
     }),
-    deletePortifolios: builder.mutation<
-      UserResponse,
-      { id: string }
-    >({
+    deletePortifolios: builder.mutation<UserResponse, { id: string }>({
       query: ({ id }) => ({
         url: `/professional/profile/portfolios/${id}/delete/`,
         method: "DELETE",
@@ -198,16 +189,23 @@ export const userProfileApi = createApi({
       invalidatesTags: ["UserProfile"],
     }),
     updateProfessionalProfile: builder.mutation<
-    UserResponse,
-    { updated: Record<string, any> }
-  >({
-    query: ({ updated }) => ({
-      url: `/professional/profile/update/`,
-      method: "PUT",
-      body: updated,
+      UserResponse,
+      { updated: Record<string, any> }
+    >({
+      query: ({ updated }) => ({
+        url: `/professional/profile/update/`,
+        method: "PUT",
+        body: updated,
+      }),
+      invalidatesTags: ["UserProfile"],
     }),
-    invalidatesTags: ["UserProfile"],
-  }),
+    requestVerfication: builder.mutation<UserResponse, void>({
+      query: () => ({
+        url: `/professional/verification-requests/`,
+        method: "POST",
+      }),
+      invalidatesTags: ["UserProfile"],
+    }),
   }),
 });
 
@@ -232,4 +230,5 @@ export const {
   useUpdateProfessionalProfileMutation,
   useAddCategoriesMutation,
   useDeleteCategoriesMutation,
+  useRequestVerficationMutation,
 } = userProfileApi;
