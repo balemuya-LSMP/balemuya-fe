@@ -8,18 +8,24 @@ import {
   useAddEducationsMutation,
   useAddPortifoliosMutation,
   useAddSkillsMutation,
+  useUpdateAddressesMutation,
+  useUpdateCertificatesMutation,
+  useUpdateEducationsMutation,
+  useUpdatePortifoliosMutation,
   useUpdateProfessionalProfileMutation,
   useUpdateProfileMutation,
   useUserProfileQuery,
 } from "@/store/api/userProfile.api";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { Address } from "@/store/types";
+import { Address} from "@/store/types";
 import { FaUpload } from "react-icons/fa";
 import Loader from "@/app/(features)/_components/loader";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  mode: "add" | "edit";
+  data?: any;
 }
 
 export function UserModal({ isOpen, onClose }: ModalProps) {
@@ -172,11 +178,12 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
   );
 }
 
-export function AddressModal({ isOpen, onClose }: ModalProps) {
+export function AddressModal({ isOpen, onClose, mode, data }: ModalProps) {
   const [country, setCountry] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
   const [addAddress] = useAddAddressesMutation();
+  const [updateAddress] = useUpdateAddressesMutation();
   const { position, getPosition, isLoading, error } = useGeolocation();
 
   useEffect(() => {
@@ -184,6 +191,20 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
       getPosition();
     }
   }, [isOpen, getPosition]);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (mode === "edit" && data) {
+        setCountry(data.country || "");
+        setRegion(data.region || "");
+        setCity(data.city || "");
+      } else if (mode === "add") {
+        setCountry("");
+        setRegion("");
+        setCity("");
+      }
+    }
+  }, [mode, data, isOpen]);
 
   const handeSubmit = async (e: any) => {
     e.preventDefault();
@@ -197,11 +218,17 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
     };
 
     try {
-      await addAddress({ addresses: newAddress }).unwrap();
+      if (mode === "add") {
+        await addAddress({ addresses: newAddress }).unwrap();
+      } else if (mode === "edit") {
+        await updateAddress({ id: data?.id ?? "", addresses: newAddress }).unwrap();
+      }
       onClose();
     } catch (error) {
       console.error("Failed to update address:", error);
     }
+
+
   };
 
   return (
@@ -213,6 +240,7 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
             Country:
             <input
               type="text"
+              value={country}
               onChange={(e) => setCountry(e.target.value)}
               placeholder="Enter address"
               className="w-full mt-1 p-2 border border-gray-300 rounded-md"
@@ -222,6 +250,7 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
             Region:
             <input
               type="text"
+              value={region}
               onChange={(e) => setRegion(e.target.value)}
               placeholder="Enter address"
               className="w-full mt-1 p-2 border border-gray-300 rounded-md"
@@ -231,6 +260,7 @@ export function AddressModal({ isOpen, onClose }: ModalProps) {
             City:
             <input
               type="text"
+              value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="Enter city"
               className="w-full mt-1 p-2 border border-gray-300 rounded-md"
@@ -263,7 +293,6 @@ export function SkillModal({ isOpen, onClose }: ModalProps) {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
     const updatedSkills = {
       names: [skillName]
     }
@@ -311,11 +340,27 @@ export function SkillModal({ isOpen, onClose }: ModalProps) {
   );
 }
 
-export function EducationModal({ isOpen, onClose }: ModalProps) {
+export function EducationModal({ isOpen, onClose, mode, data }: ModalProps) {
   const [school, setSchool] = useState("");
   const [degree, setDegree] = useState("");
   const [fieldOfStudy, setFieldOfStudy] = useState("");
   const [addEducations] = useAddEducationsMutation();
+  const [updateEducations] = useUpdateEducationsMutation();
+
+
+  useEffect(() => {
+    if (isOpen) {
+      if (mode === "edit" && data) {
+        setSchool(data.school || "");
+        setDegree(data.degree || "");
+        setFieldOfStudy(data.field_of_study || "");
+      } else if (mode === "add") {
+        setSchool("");
+        setDegree("");
+        setFieldOfStudy("");
+      }
+    }
+  }, [isOpen, mode, data]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -325,19 +370,29 @@ export function EducationModal({ isOpen, onClose }: ModalProps) {
       degree: degree,
       field_of_study: fieldOfStudy,
     }
-
     try {
-      await addEducations({ educations: updatedEducations }).unwrap();
+      if (mode === "add") {
+        await addEducations({ educations: updatedEducations }).unwrap();
+      } else if (mode === "edit") {
+
+        await updateEducations(
+          { id: data?.id ?? "", educations: updatedEducations }
+        ).unwrap();
+      }
       onClose();
+
     } catch (error) {
       console.error("Failed to update educations:", error);
     }
+
   }
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-        <h1 className="text-2xl font-semibold mb-4">Educations</h1>
+        <h1 className="text-2xl font-semibold mb-4">
+          {mode === "edit" ? "Edit Education" : "Add Education"}
+        </h1>
         <form>
           <label className="block mb-2">
             School:
@@ -390,10 +445,21 @@ export function EducationModal({ isOpen, onClose }: ModalProps) {
   );
 }
 
-export function CertificateModal({ isOpen, onClose }: ModalProps) {
+export function CertificateModal({ isOpen, onClose, mode, data }: ModalProps) {
   const [certificateName, setCertificateName] = useState("");
   const [certificateImage, setCertificateImage] = useState<File | null>(null);
   const [addCertificates] = useAddCertificatesMutation();
+  const [updateCertificates] = useUpdateCertificatesMutation();
+
+  useEffect(() => {
+    if (isOpen) {
+      if (mode === "edit" && data) {
+        setCertificateName(data.name || "");
+      } else if (mode === "add") {
+        setCertificateName("");
+      }
+    }
+  }, [isOpen, mode, data]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -405,7 +471,11 @@ export function CertificateModal({ isOpen, onClose }: ModalProps) {
     }
 
     try {
-      await addCertificates({ certificates: formData }).unwrap();
+      if (mode === "add") {
+        await addCertificates({ certificates: formData }).unwrap();
+      } else if (mode === "edit") {
+        await updateCertificates({ id: data?.id ?? "", certificates: formData }).unwrap();
+      }
       onClose();
     } catch (error) {
       console.error("Failed to update certificates:", error);
@@ -547,11 +617,24 @@ export function GovernmentIdModal({ isOpen, onClose }: ModalProps) {
   );
 }
 
-export function PortfolioModal({ isOpen, onClose }: ModalProps) {
+export function PortfolioModal({ isOpen, onClose, data, mode }: ModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [addPortfolios] = useAddPortifoliosMutation();
+  const [updatePortfolios] = useUpdatePortifoliosMutation();
+
+  useEffect(() => {
+    if (isOpen) {
+      if (mode === "edit" && data) {
+        setTitle(data.title || "");
+        setDescription(data.description || "");
+      } else if (mode === "add") {
+        setTitle("");
+        setDescription("");
+      }
+    }
+  }, [isOpen, mode, data]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -564,8 +647,16 @@ export function PortfolioModal({ isOpen, onClose }: ModalProps) {
     }
 
     try {
-      await addPortfolios({ portifolios: formData }).unwrap();
-      onClose();
+
+      if (mode === "edit") {
+        await updatePortfolios({ id: data?.id ?? "", portifolios: formData }).unwrap();
+        onClose();
+      } else if (mode === "add") {
+
+        await addPortfolios({ portifolios: formData }).unwrap();
+        onClose();
+      }
+
     } catch (error) {
       console.error("Failed to update portifolios:", error);
     }
