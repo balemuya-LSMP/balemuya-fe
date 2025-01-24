@@ -48,7 +48,7 @@ export const userProfileApi = createApi({
       { id: string; addresses: Record<string, any> }
     >({
       query: ({ id, addresses }) => ({
-        url: `/profile/addresses/${id}/`,
+        url: `/profile/address/${id}/`,
         method: "PUT",
         body: addresses,
       }),
@@ -56,7 +56,7 @@ export const userProfileApi = createApi({
     }),
     removeAddresses: builder.mutation<UserResponse, { id: string }>({
       query: ({ id }) => ({
-        url: `/profile/addresses/${id}`,
+        url: `/profile/address/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["UserProfile"],
