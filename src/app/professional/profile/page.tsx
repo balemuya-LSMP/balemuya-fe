@@ -4,7 +4,7 @@
 "use client";
 
 import Loader from "@/app/(features)/_components/loader";
-import { useRequestVerficationMutation, useUserProfileQuery } from "@/store/api/userProfile.api";
+import { useDeleteCertificatesMutation, useDeleteEducationsMutation, useDeletePortifoliosMutation, useRemoveAddressesMutation, useRequestVerficationMutation, useUserProfileQuery } from "@/store/api/userProfile.api";
 import { use, useState } from "react";
 import {
   FaCheckCircle,
@@ -14,8 +14,8 @@ import {
   FaPhone,
   FaUser,
 } from "react-icons/fa";
-import { FiCheckCircle } from "react-icons/fi";
-import { MdAdd, MdEdit, MdMail } from "react-icons/md";
+import { FiCheckCircle, FiEdit, FiTrash } from "react-icons/fi";
+import { MdAdd, MdDelete, MdEdit, MdMail } from "react-icons/md";
 import {
   UserModal,
   EducationModal,
@@ -31,6 +31,10 @@ import { toast } from "react-toastify";
 export default function Profile() {
   const { data: userPofile, isLoading, error } = useUserProfileQuery({});
   const [requestVerification] = useRequestVerficationMutation();
+  const [deleteEducation] = useDeleteEducationsMutation();
+  const [deletePortifolio] = useDeletePortifoliosMutation();
+  const [deleteAddress] = useRemoveAddressesMutation();
+  const [deleteCertificate] = useDeleteCertificatesMutation();
 
   const [isUserModalOpen, setUserModalOpen] = useState(false);
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
@@ -40,6 +44,12 @@ export default function Profile() {
   const [isGovernmentIdModalOpen, setGovernmentIdModalOpen] = useState(false);
   const [isPortfolioModalOpen, setPortfolioModalOpen] = useState(false);
   const [isBioModalOpen, setBioModalOpen] = useState(false);
+  const [selectdEducation, setSelectedEducation] = useState<any>(null);
+  const [selctedPortfolio, setSelectedPortfolio] = useState<any>(null);
+  const [selectedAddress, setSelectedAddress] = useState<any>(null);
+  const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
+
+
   if (isLoading) {
     return <Loader />;
   }
@@ -87,6 +97,60 @@ export default function Profile() {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  // Education Action
+  const handleDeleteEducation = async (educationId: string) => {
+    try {
+      await deleteEducation({ id: educationId });
+      toast.success("Education deleted successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const handleEditEducation = (education: any) => {
+    setSelectedEducation(education);
+    setEducationModalOpen(true);
+  }
+
+  const handleDeletePortifolio = async (portifolioId: string) => {
+    try {
+      await deletePortifolio({ id: portifolioId });
+      toast.success("Certification deleted successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const handleEditPortfolio = async (portfolio: any) => {
+    setSelectedPortfolio(portfolio);
+    setPortfolioModalOpen(true);
+  }
+  // Address Action
+  const handleDeleteAddress = async (addressId: string) => {
+    try {
+      await deleteAddress({ id: addressId });
+      toast.success("Address deleted successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const handleEditAddress = (address: any) => {
+    setSelectedAddress(address);
+    setAddressModalOpen(true);
+  }
+
+  // certificate Action
+  const handleDeleteCertificate = async (certificateId: string) => {
+    try {
+      await deleteCertificate({ id: certificateId });
+      toast.success("Certificate deleted successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const handleEditCertificate = (certificate: any) => {
+    setSelectedCertificate(certificate);
+    setCertificateModalOpen(true);
   }
 
   return (
@@ -145,8 +209,7 @@ export default function Profile() {
               isUserModalOpen && (
                 <UserModal
                   isOpen={isUserModalOpen}
-                  onClose={() => setUserModalOpen(false)}
-                />
+                  onClose={() => setUserModalOpen(false)} mode={"add"} />
               )
             }
           </div>
@@ -169,19 +232,20 @@ export default function Profile() {
               isBioModalOpen && (
                 <BioModal
                   isOpen={isBioModalOpen}
-                  onClose={() => setBioModalOpen(false)}
-                />
+                  onClose={() => setBioModalOpen(false)} mode={"add"} />
               )
             }
           </div>
-          <hr className="my-6 border-t border-gray-300" />
           {/* Addresses */}
           <hr className="my-6 border-t border-gray-300" />
           <div className="mt-6">
             <div className="flex justify-between">
               <h2 className="text-xl font-semibold text-gray-800">Addresses</h2>
               <button
-                onClick={() => setAddressModalOpen(true)}
+                onClick={() => {
+                  setSelectedAddress(null);
+                  setAddressModalOpen(true)
+                }}
                 className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
               >
                 <MdAdd />
@@ -189,14 +253,28 @@ export default function Profile() {
             </div>
 
             {addresses?.map((address: any, index: any) => (
-              <div key={index} className="mt-4">
-                <h3 className="text-gray-800 font-medium">
-                  {address.country ?? "Ethiopia"}
-                </h3>
-                <p className="text-gray-600">
-                  {address.region ?? "Addis Ababa"}
-                </p>
-                <p className="text-gray-600">{address.city ?? "AA"}</p>
+              <div key={index} className="mt-4 p-4 bg-white rounded-lg shadow-md">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-gray-800 font-medium">{address.country ?? "Ethiopia"}</h3>
+                    <p className="text-gray-600">{address.region ?? "Addis Ababa"}</p>
+                    <p className="text-gray-600">{address.city ?? "AA"}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEditAddress(address)}
+                      className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 hover:text-blue-700 transition duration-200"
+                    >
+                      <MdEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteAddress(address.id)}
+                      className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200"
+                    >
+                      <FiTrash />
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
 
@@ -204,6 +282,8 @@ export default function Profile() {
               <AddressModal
                 isOpen={isAddressModalOpen}
                 onClose={() => setAddressModalOpen(false)}
+                mode={selectedAddress ? "edit" : "add"}
+                data={selectedAddress}
               />
             )}
           </div>
@@ -235,19 +315,19 @@ export default function Profile() {
             {isSkillModalOpen && (
               <SkillModal
                 isOpen={isSkillModalOpen}
-                onClose={() => setSkillModalOpen(false)}
-              />
+                onClose={() => setSkillModalOpen(false)} mode={"add"} />
             )}
           </div>
           <hr className="my-6 border-t border-gray-300" />
           {/* Education */}
           <div className="mt-6">
             <div className="flex justify-between">
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                Education
-              </h2>
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">Education</h2>
               <button
-                onClick={() => setEducationModalOpen(true)}
+                onClick={() => {
+                  setSelectedEducation(null);
+                  setEducationModalOpen(true)
+                }}
                 className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
               >
                 <MdAdd />
@@ -258,21 +338,35 @@ export default function Profile() {
                 {educations.map((education: any, index: any) => (
                   <li
                     key={index}
-                    className="flex items-start gap-3 bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200"
+                    className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200"
                   >
-                    <FiCheckCircle className="text-purple-700 text-2xl flex-shrink-0" />
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-800">
-                        {education.degree} in {education.field_of_study}
-                      </h4>
-                      <p className="text-sm text-gray-600">
-                        {education.school}
-                      </p>
-                      {education.graduation_year && (
-                        <p className="text-sm text-gray-500">
-                          Graduated: {education.graduation_year}
-                        </p>
-                      )}
+                    <div className="flex items-start gap-3">
+                      <FiCheckCircle className="text-purple-700 text-2xl flex-shrink-0" />
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-800">
+                          {education.degree} in {education.field_of_study}
+                        </h4>
+                        <p className="text-sm text-gray-600">{education.school}</p>
+                        {education.graduation_year && (
+                          <p className="text-sm text-gray-500">
+                            Graduated: {education.graduation_year}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleEditEducation(education)}
+                        className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 hover:text-blue-700 transition duration-200"
+                      >
+                        <MdEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteEducation(education.id)}
+                        className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200"
+                      >
+                        <FiTrash />
+                      </button>
                     </div>
                   </li>
                 ))}
@@ -281,22 +375,26 @@ export default function Profile() {
               <p>No education details provided.</p>
             )}
 
-            {
-              isEducationModalOpen && (
-                <EducationModal
-                  isOpen={isSkillModalOpen}
-                  onClose={() => setEducationModalOpen(false)}
-                />
-              )
-            }
+            {isEducationModalOpen && (
+              <EducationModal
+                isOpen={isEducationModalOpen}
+                onClose={() => setEducationModalOpen(false)}
+                mode={selectdEducation ? "edit" : "add"}
+                data={selectdEducation}
+              />
+            )}
           </div>
+
           <hr className="my-6 border-t border-gray-300" />
           <div className="flex justify-between">
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
               Portfolios
             </h2>
             <button
-              onClick={() => setPortfolioModalOpen(true)}
+              onClick={() => {
+                setSelectedPortfolio(null);
+                setPortfolioModalOpen(true)
+              }}
               className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
             >
               <MdAdd />
@@ -323,6 +421,21 @@ export default function Profile() {
                       {portfolio.description || "No description available."}
                     </p>
                   </div>
+                  {/* Add icons for edit and delete */}
+                  <div className="p-2 border-t border-gray-200">
+                    <div className="flex justify-end gap-2 items-center">
+                      <button
+                        onClick={() => handleEditPortfolio(portfolio)}
+                        className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 hover:text-blue-700 transition duration-200">
+                        <MdEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeletePortifolio(portfolio.id)}
+                        className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200">
+                        <FiTrash />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -334,6 +447,8 @@ export default function Profile() {
               <PortfolioModal
                 isOpen={isPortfolioModalOpen}
                 onClose={() => setPortfolioModalOpen(false)}
+                mode={selctedPortfolio ? "edit" : "add"}
+                data={selctedPortfolio}
               />
             )
           }
@@ -345,7 +460,10 @@ export default function Profile() {
                 Certification
               </h2>
               <button
-                onClick={() => setCertificateModalOpen(true)}
+                onClick={() => {
+                  setSelectedCertificate(null);
+                  setCertificateModalOpen(true)
+                }}
                 className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200">
                 <MdAdd />
               </button>
@@ -370,7 +488,22 @@ export default function Profile() {
                         {certification.name}
                       </h4>
                     </div>
+                    <div className="p-2 border-t border-gray-200">
+                      <div className="flex justify-end gap-2 items-center">
+                        <button
+                          onClick={() => handleEditCertificate(certification)}
+                          className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 hover:text-blue-700 transition duration-200">
+                          <MdEdit />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteCertificate(certification.id)}
+                          className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200">
+                          <FiTrash />
+                        </button>
+                      </div>
+                    </div>
                   </div>
+
                 ))}
               </div>
             ) : (
@@ -381,6 +514,8 @@ export default function Profile() {
                 <CertificateModal
                   isOpen={isCertificateModalOpen}
                   onClose={() => setCertificateModalOpen(false)}
+                   mode={selectedCertificate ? "edit" : "add"}
+                   data={selectedCertificate} 
                 />
               )
             }
@@ -415,8 +550,7 @@ export default function Profile() {
               isGovernmentIdModalOpen && (
                 <GovernmentIdModal
                   isOpen={isGovernmentIdModalOpen}
-                  onClose={() => setGovernmentIdModalOpen(false)}
-                />
+                  onClose={() => setGovernmentIdModalOpen(false)} mode={"add"} />
               )
             }
           </div>
