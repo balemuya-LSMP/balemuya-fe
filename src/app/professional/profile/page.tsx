@@ -4,11 +4,12 @@
 "use client";
 
 import Loader from "@/app/(features)/_components/loader";
-import { useUserProfileQuery } from "@/store/api/userProfile.api";
-import { useState } from "react";
+import { useRequestVerficationMutation, useUserProfileQuery } from "@/store/api/userProfile.api";
+import { use, useState } from "react";
 import {
   FaCheckCircle,
   FaEdit,
+  FaExclamationCircle,
   FaMailBulk,
   FaPhone,
   FaUser,
@@ -23,10 +24,13 @@ import {
   GovernmentIdModal,
   CertificateModal,
   AddressModal,
+  BioModal,
 } from "../_components/modals";
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const { data: userPofile, isLoading, error } = useUserProfileQuery({});
+  const [requestVerification] = useRequestVerficationMutation();
 
   const [isUserModalOpen, setUserModalOpen] = useState(false);
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
@@ -35,7 +39,7 @@ export default function Profile() {
   const [isCertificateModalOpen, setCertificateModalOpen] = useState(false);
   const [isGovernmentIdModalOpen, setGovernmentIdModalOpen] = useState(false);
   const [isPortfolioModalOpen, setPortfolioModalOpen] = useState(false);
-
+  const [isBioModalOpen, setBioModalOpen] = useState(false);
   if (isLoading) {
     return <Loader />;
   }
@@ -61,6 +65,7 @@ export default function Profile() {
       user_type,
       is_active,
       is_blocked,
+      is_verified,
       created_at,
       profile_image_url,
       addresses = [],
@@ -75,6 +80,15 @@ export default function Profile() {
     bio,
   } = userPofile.user || {};
 
+  const handeSubmitRequestVerification = async () => {
+    try {
+      await requestVerification();
+      toast.success("Request for verification submitted successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className="container mx-auto py-12 px-4 bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto md:flex md:items-start md:space-x-8">
@@ -83,7 +97,7 @@ export default function Profile() {
           <div className="relative">
             <button
               className="absolute top-2 right-1 bg-gray-100 hover:bg-gray-200 rounded-full p-2 shadow-md"
-              onClick={()=>setUserModalOpen(true)}
+              onClick={() => setUserModalOpen(true)}
             >
               <MdEdit className="text-gray-600" />
             </button>
@@ -98,7 +112,7 @@ export default function Profile() {
               <h1 className="text-2xl font-bold text-gray-800 mt-2 md:ml-10">
                 {first_name} {middle_name}
               </h1>
-              <p className="text-purple-700 font-semibold md:ml-10">{}</p>
+              <p className="text-purple-700 font-semibold md:ml-10">{ }</p>
               <p className="text-gray-600 text-sm mt-2 md:ml-10">{bio}</p>
               <div className="flex items-center gap-2 mt-2 md:ml-10">
                 <FaPhone className="text-purple-700" />
@@ -137,6 +151,31 @@ export default function Profile() {
             }
           </div>
 
+          <hr className="my-6 border-t border-gray-300" />
+          {/* Bio section */}
+          <div className="mt-6">
+            <div className="flex justify-between">
+              <h2 className="text-xl font-semibold text-gray-800">Bio</h2>
+              <button
+                onClick={() => setBioModalOpen(true)}
+                className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
+              >
+                <MdEdit />
+              </button>
+            </div>
+            <p className="text-gray-600">{bio}</p>
+
+            {
+              isBioModalOpen && (
+                <BioModal
+                  isOpen={isBioModalOpen}
+                  onClose={() => setBioModalOpen(false)}
+                />
+              )
+            }
+          </div>
+          <hr className="my-6 border-t border-gray-300" />
+          {/* Addresses */}
           <hr className="my-6 border-t border-gray-300" />
           <div className="mt-6">
             <div className="flex justify-between">
@@ -203,9 +242,17 @@ export default function Profile() {
           <hr className="my-6 border-t border-gray-300" />
           {/* Education */}
           <div className="mt-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Education
-            </h2>
+            <div className="flex justify-between">
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                Education
+              </h2>
+              <button
+                onClick={() => setEducationModalOpen(true)}
+                className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
+              >
+                <MdAdd />
+              </button>
+            </div>
             {educations && educations.length > 0 ? (
               <ul className="space-y-4">
                 {educations.map((education: any, index: any) => (
@@ -233,11 +280,29 @@ export default function Profile() {
             ) : (
               <p>No education details provided.</p>
             )}
+
+            {
+              isEducationModalOpen && (
+                <EducationModal
+                  isOpen={isSkillModalOpen}
+                  onClose={() => setEducationModalOpen(false)}
+                />
+              )
+            }
           </div>
           <hr className="my-6 border-t border-gray-300" />
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">
-            Portfolios
-          </h2>
+          <div className="flex justify-between">
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              Portfolios
+            </h2>
+            <button
+              onClick={() => setPortfolioModalOpen(true)}
+              className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
+            >
+              <MdAdd />
+            </button>
+          </div>
+
           {portfolios && portfolios.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {portfolios.map((portfolio: any, index: any) => (
@@ -264,6 +329,14 @@ export default function Profile() {
           ) : (
             <p>No portfolio provided.</p>
           )}
+          {
+            isPortfolioModalOpen && (
+              <PortfolioModal
+                isOpen={isPortfolioModalOpen}
+                onClose={() => setPortfolioModalOpen(false)}
+              />
+            )
+          }
           <hr className="my-6 border-t border-gray-300" />
           {/* Certificates */}
           <div className="mt-6">
@@ -271,7 +344,9 @@ export default function Profile() {
               <h2 className="text-xl font-semibold text-gray-800 mb-2">
                 Certification
               </h2>
-              <button className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200">
+              <button
+                onClick={() => setCertificateModalOpen(true)}
+                className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200">
                 <MdAdd />
               </button>
             </div>
@@ -294,13 +369,6 @@ export default function Profile() {
                       <h4 className="text-lg font-semibold text-gray-800">
                         {certification.name}
                       </h4>
-                      <p className="text-sm text-gray-600">
-                        {certification.issuer ||
-                          "No issuer information available."}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {certification.issue_date || "Issue date not provided."}
-                      </p>
                     </div>
                   </div>
                 ))}
@@ -308,6 +376,14 @@ export default function Profile() {
             ) : (
               <p>No certifications provided.</p>
             )}
+            {
+              isCertificateModalOpen && (
+                <CertificateModal
+                  isOpen={isCertificateModalOpen}
+                  onClose={() => setCertificateModalOpen(false)}
+                />
+              )
+            }
           </div>
           <hr className="my-6 border-t border-gray-300" />
           {/* Government Issued ID */}
@@ -316,7 +392,9 @@ export default function Profile() {
               <h2 className="text-xl font-semibold text-gray-800 mb-2">
                 Government Issued ID
               </h2>
-              <button className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200">
+              <button
+                onClick={() => setGovernmentIdModalOpen(true)}
+                className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200">
                 <MdAdd />
               </button>
             </div>
@@ -333,6 +411,33 @@ export default function Profile() {
                 className="w-full h-48 object-cover rounded mb-2"
               />
             </div>
+            {
+              isGovernmentIdModalOpen && (
+                <GovernmentIdModal
+                  isOpen={isGovernmentIdModalOpen}
+                  onClose={() => setGovernmentIdModalOpen(false)}
+                />
+              )
+            }
+          </div>
+          <hr className="my-6 border-t border-gray-300" />
+          {/* request verification button */}
+          <div className="flex justify-center mt-6">
+            {
+              !is_verified ? (
+                <button
+                  onClick={handeSubmitRequestVerification}
+                  className="flex items-center justify-center gap-2 text-purple-700 cursor-pointer hover:text-purple-800 transition-all duration-300 w-full max-w-xs border-2 border-purple-700 py-3 px-6 rounded-md shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
+                  <FaExclamationCircle size={20} />
+                  <span className="text-lg font-semibold">Request Verification</span>
+                </button>
+              ) : (
+                <div className="flex items-center justify-center gap-2 text-green-700 cursor-pointer hover:text-green-800 transition-all duration-300 w-full max-w-xs py-3 px-6 focus:outline-none">
+                  <FaCheckCircle size={20} />
+                  <span className="text-lg font-semibold">Verified</span>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
