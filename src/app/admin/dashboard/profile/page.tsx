@@ -9,7 +9,6 @@ import {
 } from "@/store/api/userProfile.api";
 import Modal from "@/app/admin/dashboard/_components/modal";
 import { MdEdit, MdEmail, MdPhone } from "react-icons/md";
-import { User } from "@/store/types";
 
 const UserProfile = () => {
   const userProfile = useUserProfileQuery({});
@@ -36,28 +35,28 @@ const UserProfile = () => {
     );
   }
 
-  const handeleSubmit = (e: any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
     const user = Object.fromEntries(formData.entries());
-    updateProfile(user as unknown as User);
+    updateProfile({ updated: user });
     handleModalClose();
   };
 
   return (
-    <div className="relative container mx-auto p-6 max-w-lg bg-white rounded-lg shadow-lg">
+    <div className="relative container mx-auto p-6 max-w-lg bg-white rounded-lg shadow-xl">
       {/* Edit Icon in Top-Right */}
       <button
-        className="absolute top-4 right-4   p-2 "
+        className="absolute top-4 right-4 p-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition duration-300"
         onClick={handleEditClick}
       >
-        <MdEdit className="h-6 w-6 text-purple-700" />
+        <MdEdit className="h-6 w-6" />
       </button>
 
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-center space-y-6">
         {/* Avatar Image */}
-        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300">
+        <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-purple-600">
           <img
             src={userData.avatar || "/images/user.jpg"}
             alt="User Avatar"
@@ -66,25 +65,25 @@ const UserProfile = () => {
         </div>
 
         {/* User Info */}
-        <h1 className="text-2xl font-semibold text-gray-800">
+        <h1 className="text-3xl font-bold text-gray-900">
           {userData.first_name} {userData.middle_name} {userData.last_name}
         </h1>
 
         {/* Email */}
-        <div className="flex items-center space-x-2 text-gray-600">
-          <MdEmail className="w-5 h-5 text-purple-700" />
+        <div className="flex items-center space-x-3 text-gray-700 text-lg">
+          <MdEmail className="w-5 h-5 text-purple-600" />
           <span>{userData.email}</span>
         </div>
 
         {/* Phone */}
-        <div className="flex items-center space-x-2 text-gray-600">
-          <MdPhone className="w-5 h-5 text-purple-700" />
+        <div className="flex items-center space-x-3 text-gray-700 text-lg">
+          <MdPhone className="w-5 h-5 text-purple-600" />
           <span>{userData.phone_number}</span>
         </div>
 
         {/* User Type */}
         <div className="text-center">
-          <span className="block text-sm font-medium text-gray-500">
+          <span className="block text-sm font-medium text-gray-600">
             {userData.user_type || "User"}
           </span>
         </div>
@@ -93,55 +92,55 @@ const UserProfile = () => {
       {/* Edit Modal */}
       {isModalOpen && (
         <Modal onClose={handleModalClose}>
-          <div className="p-6 bg-white rounded-lg shadow-lg">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          <div className="p-6 bg-white rounded-lg shadow-xl w-96">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
               Edit Profile
             </h2>
             <form>
-              <div className="mb-4">
+              <div className="mb-6">
                 <label className="block text-gray-700">First Name</label>
                 <input
                   type="text"
                   defaultValue={userData.first_name}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-6">
                 <label className="block text-gray-700">Last Name</label>
                 <input
                   type="text"
                   defaultValue={userData.last_name}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-6">
                 <label className="block text-gray-700">Email</label>
                 <input
                   type="email"
                   defaultValue={userData.email}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-6">
                 <label className="block text-gray-700">Phone Number</label>
                 <input
                   type="text"
                   defaultValue={userData.phone_number}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end space-x-4">
                 <button
                   type="button"
-                  className="px-4 py-2 bg-gray-300 rounded-lg mr-2 hover:bg-gray-400"
+                  className="px-6 py-3 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition duration-300"
                   onClick={handleModalClose}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  onClick={handeleSubmit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  onClick={handleSubmit}
+                  className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-300"
                 >
                   Save
                 </button>
