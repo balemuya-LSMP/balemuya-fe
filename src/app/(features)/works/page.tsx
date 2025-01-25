@@ -4,6 +4,15 @@ import Header from "../_components/header";
 import MapComponent from "../_components/map";
 
 export default function WorksPage() {
+  // Define the positions of 5 customers (latitude and longitude)
+  const customerLocations = [
+    { name: "Customer 1", latitude: 11.609, longitude: 37.384 },
+    { name: "Customer 2", latitude: 11.610, longitude: 37.385 },
+    { name: "Customer 3", latitude: 11.611, longitude: 37.386 },
+    { name: "Customer 4", latitude: 11.612, longitude: 37.387 },
+    { name: "Customer 5", latitude: 11.613, longitude: 37.388 },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
       {/* Header */}
@@ -30,7 +39,7 @@ export default function WorksPage() {
 
         {/* Right Side: Map */}
         <div className="w-2/3">
-          <MapComponent />
+          <MapComponent userLocations={customerLocations} /> {/* Pass customer locations to MapComponent */}
         </div>
       </div>
 
