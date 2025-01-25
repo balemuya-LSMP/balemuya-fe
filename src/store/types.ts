@@ -46,3 +46,12 @@ export interface Address {
   latitude: number;
   longitude: number;
 }
+export interface ProfessionalRequest {
+  id: string;
+  professional: string;
+  professional_name: string;
+  status: string;
+  admin_comment: string;
+  created_at: string;
+  updated_at: string;
+}
