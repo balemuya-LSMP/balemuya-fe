@@ -1,14 +1,18 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { FaBell, FaFilter, FaSearch } from "react-icons/fa";
 import Image from "next/image";
+import { useUserProfileQuery } from "@/store/api/userProfile.api";
 
 export default function Header() {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
+  const { data: userProfile, isLoading } = useUserProfileQuery({});
+  
   const categories = [
     { name: "Home Services" },
     { name: "Repair and Maintenance" },
@@ -121,8 +125,8 @@ export default function Header() {
           {/* User Profile */}
           <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
             <Link href="/professional/profile">
-              <Image
-                src="/images/user.jpg"
+              <img
+                src={userProfile?.user?.user?.profile_image_url                   || "/images/user.png"}
                 alt="User"
                 width={48}
                 height={48}
