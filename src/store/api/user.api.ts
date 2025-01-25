@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { ProfessionalRequest } from "../types";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -42,8 +44,18 @@ export const userApi = createApi({
     }),
     blockUser: builder.mutation({
       query: (id) => ({
-        url: `/users/profile/${id}/block/`,
-        method: "POST",
+        url: `/users/${id}/block/`,
+        method: "PUT",
+      }),
+    }),
+    verifyUser: builder.mutation<
+      ProfessionalRequest,
+      { id: string; adminReviews: Record<string, any> }
+    >({
+      query: ({ id, adminReviews }) => ({
+        url: `admin/professionals/${id}/verify/`,
+        method: "PUT",
+        body: adminReviews,
       }),
     }),
   }),
@@ -56,4 +68,5 @@ export const {
   useGetUserQuery,
   useDeleteUserMutation,
   useBlockUserMutation,
+  useVerifyUserMutation,
 } = userApi;
