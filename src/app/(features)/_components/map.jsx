@@ -39,10 +39,8 @@ const RoutingMachine = ({ from, to }) => {
   return null;
 };
 
-const MapComponent = () => {
+const MapComponent = ({ userLocations }) => {
   const [currentLocation, setCurrentLocation] = useState(null);
-  const hotelLocation = [11.6032, 37.3845]; 
-  const hotelName = "Dib Anbessa Hotel";
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -53,21 +51,27 @@ const MapComponent = () => {
         },
         (error) => {
           console.error("Error fetching location:", error);
-          setCurrentLocation([9.0325, 38.7469]);
+          setCurrentLocation([9.0325, 38.7469]); // Fallback location if geolocation fails
         }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
-      setCurrentLocation([9.0325, 38.7469]);
+      setCurrentLocation([9.0325, 38.7469]); // Fallback location
     }
   }, []);
+
+  // Calculate the bounds based on user locations
+  const calculateBounds = () => {
+    const locations = userLocations.map((user) => [user.latitude, user.longitude]);
+    return L.latLngBounds(locations);
+  };
 
   return (
     <div className="w-full h-[500px]">
       {currentLocation ? (
         <MapContainer
           center={currentLocation}
-          zoom={6} 
+          zoom={12}
           scrollWheelZoom={true}
           className="w-full h-full rounded-lg"
         >
@@ -82,14 +86,15 @@ const MapComponent = () => {
             <Popup>You are here!</Popup>
           </Marker>
 
-          {/* Hotel Location Marker */}
-          <Marker position={hotelLocation} icon={customLocationIcon}>
-            <Tooltip>{hotelName}</Tooltip> {/* Tooltip showing hotel name */}
-            <Popup>{hotelName}</Popup>
-          </Marker>
+          {/* Render customer location markers */}
+          {userLocations.map((user, index) => (
+            <Marker key={index} position={[user.latitude, user.longitude]} icon={customLocationIcon}>
+              <Tooltip>{user.name}</Tooltip>
+              <Popup>{user.name}</Popup>
+            </Marker>
+          ))}
 
-          {/* Routing from Current Location to Hotel */}
-          <RoutingMachine from={currentLocation} to={hotelLocation} />
+          {/* Optionally: Routing from Current Location to a destination */}
         </MapContainer>
       ) : (
         <p className="text-center mt-4">Fetching your location...</p>
