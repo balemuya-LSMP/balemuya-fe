@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import React, { useState, ReactNode } from "react";
 import Sidebar from "./_components/sidebar";
 import { FaBars, FaBell } from "react-icons/fa";
 import Link from "next/link";
+import { useUserProfileQuery } from "@/store/api/userProfile.api";
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,6 +13,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { data: userProfile, isLoading } = useUserProfileQuery({});
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -34,11 +37,11 @@ export default function Layout({ children }: LayoutProps) {
             <FaBell className="h-6 w-6 text-gray-800" />
           </button>
           <Link href="/admin/dashboard/profile">
-          <img
-            src="/images/P.JPG"
-            alt="User"
-            className="w-10 h-10 rounded-full"
-          />
+            <img
+              src={userProfile?.user?.user?.profile_image_url}
+              alt="User"
+              className="w-10 h-10 rounded-full"
+            />
           </Link>
         </div>
       </header>
@@ -50,9 +53,8 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Main Content */}
         <main
-          className={`flex-1 p-6 bg-gray-100 overflow-y-auto transition-all duration-300 ${
-            sidebarOpen ? "ml-0" : "ml-0"
-          }`}
+          className={`flex-1 p-6 bg-gray-100 overflow-y-auto transition-all duration-300 ${sidebarOpen ? "ml-0" : "ml-0"
+            }`}
         >
           {children}
         </main>
