@@ -18,19 +18,26 @@ import { MdDelete } from "react-icons/md";
 import { FiCheckCircle } from "react-icons/fi";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useBlockUserMutation, useGetUserQuery } from "@/store/api/user.api";
+import { useBlockUserMutation, useGetUserQuery, useVerifyUserMutation } from "@/store/api/user.api";
 import { useDeleteUserMutation } from "@/store/api/user.api";
 import Loader from "@/app/(features)/_components/loader";
 import { useRouter } from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UserDetails() {
   const router = useRouter();
   const { id } = useParams();
-  const { data: userData, isLoading, error } = useGetUserQuery(id);
+  const { data: userData, isLoading, error } = useGetUserQuery(id as string);
   const [blockUser] = useBlockUserMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [verifyUser] = useVerifyUserMutation();
   const [deleteUser] = useDeleteUserMutation();
+
+  const [isVerificationModalOpen, setVerificationModalOpen] = useState(false);
+  const [adminComment, setAdminComment] = useState("");
+  const [verificationStatus, setVerificationStatus] = useState("approved");
+
 
   if (isLoading) {
     return <Loader />;
@@ -43,6 +50,7 @@ export default function UserDetails() {
   const handleDeleteUser = async () => {
     try {
       await deleteUser(id).unwrap();
+      toast.success("User deleted successfully");
       router.push("/admin/dashboard/users/professionals");
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -52,8 +60,23 @@ export default function UserDetails() {
   const handleBlockUser = async () => {
     try {
       await blockUser(id).unwrap();
+      toast.success("User blocked successfully");
     } catch (error) {
       console.error("Error blocking user:", error);
+    }
+  }
+
+  const handleverifyUser = async () => {
+    const adminReviews = { 
+      admin_comment: adminComment, 
+      action: verificationStatus 
+    }
+    try {
+      await verifyUser({ id: id as string, adminReviews: adminReviews }).unwrap();
+      toast.success("User verified successfully");
+      setVerificationModalOpen(false);
+    } catch (error) {
+      console.error("Error verifying user:", error);
     }
   }
 
@@ -290,11 +313,52 @@ export default function UserDetails() {
                 Account is not verified. You can verify this account.
               </p>
               <button
-                onClick={() => console.log("Verify Account")}
+                onClick={() => setVerificationModalOpen(true)}
                 className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 mt-2"
               >
                 Verify Account
               </button>
+            </div>
+          )}
+          {isVerificationModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white rounded-lg p-6 w-96">
+                <h2 className="text-lg font-semibold mb-4">Verification Modal</h2>
+
+                <label className="block mb-2 text-sm font-medium">Admin Comment</label>
+                <input
+                  type="text"
+                  value={adminComment}
+                  onChange={(e) => setAdminComment(e.target.value)}
+                  className="w-full p-2 border rounded mb-4"
+                  placeholder="Enter admin comment"
+                />
+
+                <label className="block mb-2 text-sm font-medium">Verification Status</label>
+                <select
+                  value={verificationStatus}
+                  onChange={(e) => setVerificationStatus(e.target.value)}
+                  className="w-full p-2 border rounded mb-4"
+                >
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+
+                <div className="flex justify-end gap-4">
+                  <button
+                    onClick={() => setVerificationModalOpen(false)}
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleverifyUser}
+                    className="px-4 py-2 bg-green-500 text-white rounded-md"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
             </div>
           )}
           <div className="p-4 bg-gray-100 flex justify-end gap-4">
@@ -354,6 +418,7 @@ export default function UserDetails() {
           </div>
         </div>
       )}
+      <ToastContainer position="top-center" />
     </div>
   );
 }
