@@ -17,7 +17,6 @@ import {
   useUserProfileQuery,
 } from "@/store/api/userProfile.api";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { Address} from "@/store/types";
 import { FaUpload } from "react-icons/fa";
 import Loader from "@/app/(features)/_components/loader";
 
