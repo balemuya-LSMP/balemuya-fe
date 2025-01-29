@@ -14,6 +14,7 @@ import {
   FaStar,
   FaUserShield,
   FaBan,
+  FaBriefcase,
 } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useDeleteUserMutation } from "@/store/api/user.api";
@@ -48,6 +49,13 @@ export default function CustomerDetails() {
   } = customer?.data?.user || {};
 
   const { rating, profile_image_url } = customer?.data || {};
+
+
+  const mockJobs = [
+    { id: 1, title: "Software Engineer", location: "New York, USA", status: "Open" },
+    { id: 2, title: "Graphic Designer", location: "Los Angeles, USA", status: "Closed" },
+    { id: 3, title: "Data Analyst", location: "San Francisco, USA", status: "Open" },
+  ];
 
   const handleDeleteUser = async () => {
     try {
@@ -157,6 +165,25 @@ export default function CustomerDetails() {
                 ? new Date(created_at).toLocaleDateString()
                 : "Unknown date"}
             </p>
+          </div>
+        </div>
+        <div className="p-6 space-y-4">
+          <h3 className="text-lg font-bold text-gray-800">Jobs Posted</h3>
+          <div className="max-h-60 overflow-y-auto no-scrollbar">
+            <ul className="space-y-2">
+              {mockJobs.map((job) => (
+                <li key={job.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                  <FaBriefcase className="text-purple-700 text-xl" />
+                  <div>
+                    <p className="text-gray-800 font-medium">{job.title}</p>
+                    <p className="text-gray-600 text-sm">{job.location}</p>
+                    <p className={`text-sm font-semibold ${job.status === "Open" ? "text-green-500" : "text-red-500"}`}>
+                      {job.status}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
