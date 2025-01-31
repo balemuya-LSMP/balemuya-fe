@@ -48,6 +48,10 @@ export const userApi = createApi({
         method: "PUT",
       }),
     }),
+    listRequests: builder.query({
+      query: () => "/admin/professional/verification/requests/",
+    }),
+    
     verifyUser: builder.mutation<
       ProfessionalRequest,
       { id: string; adminReviews: Record<string, any> }
@@ -69,4 +73,5 @@ export const {
   useDeleteUserMutation,
   useBlockUserMutation,
   useVerifyUserMutation,
+  useListRequestsQuery,
 } = userApi;
