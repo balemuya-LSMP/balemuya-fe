@@ -55,3 +55,16 @@ export interface ProfessionalRequest {
   created_at: string;
   updated_at: string;
 }
+export interface PaymentResponse {
+  message: string;
+  data: {
+    payment_url: string;
+    transaction_id: string;
+  };
+}
+export interface SubscriptionPayload {
+  plan_type: string;
+  duration: number;
+  amount: number;
+  return_url: string;
+}
