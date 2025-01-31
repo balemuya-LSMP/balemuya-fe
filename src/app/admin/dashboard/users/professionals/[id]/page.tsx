@@ -21,13 +21,15 @@ import { useParams } from "next/navigation";
 import { useBlockUserMutation, useGetUserQuery, useVerifyUserMutation } from "@/store/api/user.api";
 import { useDeleteUserMutation } from "@/store/api/user.api";
 import Loader from "@/app/(features)/_components/loader";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function UserDetails() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { id } = useParams();
+  const requestId = searchParams.get("requestId");
   const { data: userData, isLoading, error } = useGetUserQuery(id as string);
   const [blockUser] = useBlockUserMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,7 +58,7 @@ export default function UserDetails() {
       console.error("Error deleting user:", error);
     }
   };
-
+  
   const handleBlockUser = async () => {
     try {
       await blockUser(id).unwrap();
@@ -67,12 +69,12 @@ export default function UserDetails() {
   }
 
   const handleverifyUser = async () => {
-    const adminReviews = { 
-      admin_comment: adminComment, 
-      action: verificationStatus 
+    const adminReviews = {
+      admin_comment: adminComment,
+      action: verificationStatus
     }
     try {
-      await verifyUser({ id: id as string, adminReviews: adminReviews }).unwrap();
+      await verifyUser({ id: requestId as string, adminReviews: adminReviews }).unwrap();
       toast.success("User verified successfully");
       setVerificationModalOpen(false);
     } catch (error) {
