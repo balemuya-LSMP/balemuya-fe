@@ -2,29 +2,67 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { CheckCircle, CreditCard } from "lucide-react";
+import { useSubscribeServiceMutation } from "@/store/api/userProfile.api";
 
 export default function ProfessionalCard() {
-  type PlanType = "Silver" | "Gold" | "Premium";
+  type PlanType = "Silver" | "Gold" | "Diamond";
   const [activeTab, setActiveTab] = useState<PlanType>("Silver");
+  const [selectedDuration, setSelectedDuration] = useState<number>(1);
+  const [subscribeService] = useSubscribeServiceMutation();
+
+  const handleSubscribe = async () => {
+   const totalAmount = activePlan.price * selectedDuration; 
+
+    try {
+      await subscribeService({
+        plan_type: activeTab,
+        duration: selectedDuration, 
+        amount: totalAmount,
+        return_url: "http://localhost:3000/professional",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while subscribing. Please try again.");
+    }
+  };
 
   const plans = {
     Silver: {
-      duration: "Available for 3 months",
-      benefits: "Apply for up to 100 jobs",
-      price: "200.00 Birr",
+      price: 100,
+      planType: "Silver",
+      durations: [
+        { label: "1 month", value: 1 },
+        { label: "3 months", value: 3 },
+        { label: "6 months", value: 6 },
+        { label: "1 year", value: 12 },
+      ],
     },
     Gold: {
-      duration: "Available for 6 months",
-      benefits: "Apply for up to 200 jobs",
-      price: "400.00 Birr",
+      price: 200,
+      planType: "Gold",
+      durations: [
+        { label: "1 month", value: 1 },
+        { label: "3 months", value: 3 },
+        { label: "6 months", value: 6 },
+        { label: "1 year", value: 12 },
+      ],
     },
-    Premium: {
-      duration: "Available for 1 year",
-      benefits: "Unlimited job applications",
-      price: "700.00 Birr",
+    Diamond: {
+      price: 300,
+      planType: "Diamond",
+      durations: [
+        { label: "1 month", value: 1 },
+        { label: "3 months", value: 3 },
+        { label: "6 months", value: 6 },
+        { label: "1 year", value: 12 },
+      ],
     },
   };
+
   const activePlan = plans[activeTab as PlanType];
+
+  // Calculate the total amount based on the selected duration
+  const totalAmount = activePlan.price * selectedDuration;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-200">
@@ -34,14 +72,13 @@ export default function ProfessionalCard() {
         </h1>
 
         <div className="flex justify-between mb-8">
-          {["Silver", "Gold", "Premium"].map((tab) => (
+          {["Silver", "Gold", "Diamond"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab as PlanType)}
-              className={`flex-1 px-6 py-3 text-base font-medium text-center border rounded-md transition-all duration-200 shadow-sm ${
-                activeTab === tab
-                  ? "bg-gradient-to-r from-blue-800 to-blue-500 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className={`flex-1 px-6 py-3 text-base font-medium text-center border rounded-md transition-all duration-200 shadow-sm ${activeTab === tab
+                ? "bg-gradient-to-r from-blue-800 to-blue-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               {tab}
@@ -50,22 +87,36 @@ export default function ProfessionalCard() {
         </div>
 
         <div className="mb-6">
-          <p className="text-base text-gray-700 mb-2">
-            <strong>Duration:</strong> {activePlan.duration}
-          </p>
-          <p className="text-base text-gray-700">
-            <strong>Benefits:</strong> {activePlan.benefits}
-          </p>
+          <div>
+            <label htmlFor="duration" className="text-base text-gray-700 mb-2 block">
+              <strong>Duration:</strong>
+            </label>
+            <select
+              id="duration"
+              value={selectedDuration}
+              onChange={(e) => setSelectedDuration(Number(e.target.value))} // Store the numeric value
+              className="w-full px-4 py-3 mt-2 border-2 rounded-md bg-white text-gray-700 text-lg font-medium shadow-md focus:outline-none focus:ring-2"
+            >
+              {activePlan.durations.map((duration) => (
+                <option key={duration.value} value={duration.value}>
+                  {duration.label} {/* Display label */}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className="flex justify-between items-center mb-6">
-          <span className="text-lg font-semibold text-gray-800">Total</span>
-          <span className="text-lg font-semibold text-blue-900">{activePlan.price}</span>
+        {/* Display calculated amount */}
+        <div className="mb-6 text-center text-xl font-semibold text-gray-800">
+          <span>Total Amount: </span>
+          <span className="text-blue-600">{totalAmount} Birr</span>
         </div>
 
         <div className="flex flex-col items-center">
           <span className="text-base text-gray-600 mb-3">Pay with</span>
-          <button className="flex items-center justify-center w-full px-6 py-3 bg-blue-900 text-white rounded-md shadow-md transition-transform transform hover:scale-105">
+          <button
+            onClick={handleSubscribe}
+            className="flex items-center justify-center w-full px-6 py-3 bg-blue-900 text-white rounded-md shadow-md transition-transform transform hover:scale-105">
             <img
               src="/images/chapa.png"
               alt="Chapa"
