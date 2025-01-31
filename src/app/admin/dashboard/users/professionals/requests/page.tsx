@@ -13,7 +13,7 @@ const PendingRequests = () => {
     const { data, isLoading, error } = useListRequestsQuery({});
 
     const requests = data?.data || [];
-
+    console.log(requests);
     if (isLoading) return <Loader />;
 
 
@@ -47,7 +47,7 @@ const PendingRequests = () => {
                             </div>
 
                             {/* Profile View Button */}
-                            <Link href={`/profile/${request.user.id}`} className="text-gray-500 hover:text-blue-300">
+                            <Link href={`/admin/dashboard/users/professionals/${request.user.id}?requestId=${request.id}`} className="text-gray-500 hover:text-blue-300">
                                 <FaEye className="w-6 h-6" />
                             </Link>
                         </div>
