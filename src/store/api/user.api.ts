@@ -14,24 +14,28 @@ export const userApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Professionals", "Customers", "Admins"],
   endpoints: (builder) => ({
     listProfessionals: builder.query({
       query: (status) => {
         const params = status ? `?status=${status}` : "";
         return `/admin/professionals/${params}`;
       },
+      providesTags: ["Professionals"],
     }),
     listCustomers: builder.query({
       query: (status) => {
         const params = status ? `?status=${status}` : "";
         return `/admin/customers/${params}`;
       },
+      providesTags: ["Customers"],
     }),
     listAdmins: builder.query({
       query: (status) => {
         const params = status ? `?status=${status}` : "";
         return `/admin/admins/${params}`;
       },
+      providesTags: ["Admins"],
     }),
     getUser: builder.query({
       query: (id) => `/users/${id}`,
@@ -41,27 +45,31 @@ export const userApi = createApi({
         url: `/users/${id}/delete`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Professionals", "Customers", "Admins"],
     }),
     blockUser: builder.mutation({
       query: (id) => ({
         url: `/users/${id}/block/`,
         method: "PUT",
       }),
+      invalidatesTags: ["Professionals", "Customers", "Admins"],
     }),
     listRequests: builder.query({
       query: () => "/admin/professional/verification/requests/",
     }),
-    
     verifyUser: builder.mutation<
       ProfessionalRequest,
       { id: string; adminReviews: Record<string, any> }
     >({
       query: ({ id, adminReviews }) => ({
-        url: `admin/professionals/${id}/verify/`,
+        url: `/admin/professionals/${id}/verify/`,
         method: "PUT",
         body: adminReviews,
       }),
+      invalidatesTags: ["Professionals"],
     }),
+    
+
   }),
 });
 
