@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { UserResponse } from "../types";
+import { PaymentResponse, SubscriptionPayload, UserResponse } from "../types";
 
 export const userProfileApi = createApi({
   reducerPath: "userProfileApi",
@@ -206,6 +206,13 @@ export const userProfileApi = createApi({
       }),
       invalidatesTags: ["UserProfile"],
     }),
+    subscribeService: builder.mutation<PaymentResponse, SubscriptionPayload>({
+      query: (subscription) => ({
+        url: `/professional/subscription/payment/initiate/`,
+        method: "POST",
+        body: subscription,
+      }),
+    }),
   }),
 });
 
@@ -231,4 +238,5 @@ export const {
   useAddCategoriesMutation,
   useDeleteCategoriesMutation,
   useRequestVerficationMutation,
+  useSubscribeServiceMutation,
 } = userProfileApi;
