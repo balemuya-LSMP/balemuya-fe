@@ -55,7 +55,7 @@ export default function Header() {
             Home
           </a>
           <a
-            href="/professional"
+            href="/professional/subscription"
             className="text-gray-700 hover:text-purple-700 transition"
           >
             Subscription
