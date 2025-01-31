@@ -2,9 +2,10 @@
 "use client";
 
 import { useListProfessionalsQuery } from "@/store/api/user.api";
-import { FaEye, FaFilter, FaSearch } from "react-icons/fa";
+import { FaEye, FaFilter, FaSearch, FaUserCheck } from "react-icons/fa";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Loader from "@/app/(features)/_components/loader";
 
 export default function Users() {
@@ -43,8 +44,13 @@ export default function Users() {
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
         {/* Header Section */}
-        <div className="px-6 py-4 border-b">
+        <div className="flex justify-between px-6 py-4 border-b">
           <h1 className="text-xl font-semibold text-gray-800">Professionals</h1>
+          <Link href="/admin/dashboard/users/professionals/requests"
+            className="bg-blue-100 text-white px-4 py-2 rounded-md flex items-center gap-2"
+          >
+            <FaUserCheck />
+          </Link>
         </div>
 
         {/* Search and Filter Section */}
@@ -73,9 +79,8 @@ export default function Users() {
               <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-lg z-50 w-40">
                 <ul className="space-y-2">
                   <li
-                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                      accountStatus === "all" ? "bg-gray-100 font-bold" : ""
-                    }`}
+                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${accountStatus === "all" ? "bg-gray-100 font-bold" : ""
+                      }`}
                     onClick={() => {
                       setAccountStatus("");
                       setShowFilterDropdown(false);
@@ -84,9 +89,8 @@ export default function Users() {
                     All
                   </li>
                   <li
-                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                      accountStatus === "active" ? "bg-gray-100 font-bold" : ""
-                    }`}
+                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${accountStatus === "active" ? "bg-gray-100 font-bold" : ""
+                      }`}
                     onClick={() => {
                       setAccountStatus("active");
                       setShowFilterDropdown(false);
@@ -95,9 +99,8 @@ export default function Users() {
                     Active
                   </li>
                   <li
-                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                      accountStatus === "blocked" ? "bg-gray-100 font-bold" : ""
-                    }`}
+                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${accountStatus === "blocked" ? "bg-gray-100 font-bold" : ""
+                      }`}
                     onClick={() => {
                       setAccountStatus("blocked");
                       setShowFilterDropdown(false);
@@ -105,7 +108,7 @@ export default function Users() {
                   >
                     Blocked
                   </li>
-                  
+
                 </ul>
               </div>
             )}
@@ -141,7 +144,7 @@ export default function Users() {
                   {isLoading ? (
                     <tr>
                       <td colSpan={6} className="text-center py-4">
-                       <Loader/>
+                        <Loader />
                       </td>
                     </tr>
                   ) : filteredUsers.length > 0 ? (
@@ -150,9 +153,8 @@ export default function Users() {
                       return (
                         <tr
                           key={user.id}
-                          className={`border-t text-gray-600 ${
-                            index % 2 === 0 ? "bg-gray-50" : ""
-                          }`}
+                          className={`border-t text-gray-600 ${index % 2 === 0 ? "bg-gray-50" : ""
+                            }`}
                         >
                           <td className="px-6 py-3 whitespace-nowrap overflow-hidden text-ellipsis">
                             {user.first_name} {user.middle_name}
