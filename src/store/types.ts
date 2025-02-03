@@ -68,3 +68,28 @@ export interface SubscriptionPayload {
   amount: number;
   return_url: string;
 }
+export interface PaymentStatusResponse {
+  message: string;
+  data: {
+    payment: {
+      id: string;
+      subscription_plan: {
+        plan_type: string;
+        duration: number;
+        start_date: string;
+        end_date: string;
+      };
+      professional: string;
+      amount: string;
+      payment_date: string;
+      payment_status: string;
+      payment_method: string;
+      transaction_id: string;
+    };
+  };
+  first_name: string;
+  last_name: string;
+  email: string;
+  amount: number;
+  currency: string;
+}
