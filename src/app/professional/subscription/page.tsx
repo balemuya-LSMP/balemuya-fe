@@ -3,26 +3,36 @@
 import { useState } from "react";
 import { CheckCircle, CreditCard } from "lucide-react";
 import { useSubscribeServiceMutation } from "@/store/api/userProfile.api";
+import { toast } from "react-toastify";
 
 export default function ProfessionalCard() {
   type PlanType = "Silver" | "Gold" | "Diamond";
   const [activeTab, setActiveTab] = useState<PlanType>("Silver");
   const [selectedDuration, setSelectedDuration] = useState<number>(1);
-  const [subscribeService] = useSubscribeServiceMutation();
+
+  // Correctly using the mutation hook
+  const [subscribeService, { isLoading }] = useSubscribeServiceMutation();
 
   const handleSubscribe = async () => {
-   const totalAmount = activePlan.price * selectedDuration; 
+    const totalAmount = activePlan.price * selectedDuration;
 
     try {
-      await subscribeService({
+      const response = await subscribeService({
         plan_type: activeTab,
-        duration: selectedDuration, 
+        duration: selectedDuration,
         amount: totalAmount,
-        return_url: "http://localhost:3000/professional",
-      });
+        return_url: "http://localhost:3000/professional/check",
+      }).unwrap(); 
+      
+      if (response?.data?.payment_url) {
+        window.location.href = response.data.payment_url;
+        toast.success("You Subscribed Successfully");
+      } else {
+        throw new Error("Payment URL not found in response");
+      }
     } catch (error) {
-      console.error(error);
-      alert("An error occurred while subscribing. Please try again.");
+      console.error("Subscription failed:", error);
+      toast.error("Subscription failed. Please try again.");
     }
   };
 
@@ -59,7 +69,7 @@ export default function ProfessionalCard() {
     },
   };
 
-  const activePlan = plans[activeTab as PlanType];
+  const activePlan = plans[activeTab];
 
   // Calculate the total amount based on the selected duration
   const totalAmount = activePlan.price * selectedDuration;
@@ -79,7 +89,7 @@ export default function ProfessionalCard() {
               className={`flex-1 px-6 py-3 text-base font-medium text-center border rounded-md transition-all duration-200 shadow-sm ${activeTab === tab
                 ? "bg-gradient-to-r from-blue-800 to-blue-500 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -94,12 +104,12 @@ export default function ProfessionalCard() {
             <select
               id="duration"
               value={selectedDuration}
-              onChange={(e) => setSelectedDuration(Number(e.target.value))} // Store the numeric value
+              onChange={(e) => setSelectedDuration(Number(e.target.value))}
               className="w-full px-4 py-3 mt-2 border-2 rounded-md bg-white text-gray-700 text-lg font-medium shadow-md focus:outline-none focus:ring-2"
             >
               {activePlan.durations.map((duration) => (
                 <option key={duration.value} value={duration.value}>
-                  {duration.label} {/* Display label */}
+                  {duration.label}
                 </option>
               ))}
             </select>
@@ -116,14 +126,13 @@ export default function ProfessionalCard() {
           <span className="text-base text-gray-600 mb-3">Pay with</span>
           <button
             onClick={handleSubscribe}
-            className="flex items-center justify-center w-full px-6 py-3 bg-blue-900 text-white rounded-md shadow-md transition-transform transform hover:scale-105">
-            <img
-              src="/images/chapa.png"
-              alt="Chapa"
-              className="h-8 mr-3"
-            />
+            disabled={isLoading}
+            className={`flex items-center justify-center w-full px-6 py-3 ${isLoading ? "bg-gray-500" : "bg-blue-900"
+              } text-white rounded-md shadow-md transition-transform transform hover:scale-105`}
+          >
+            <img src="/images/chapa.png" alt="Chapa" className="h-8 mr-3" />
             <span className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5" /> Chapa
+              <CreditCard className="w-5 h-5" /> {isLoading ? "Processing..." : "Chapa"}
             </span>
           </button>
         </div>
