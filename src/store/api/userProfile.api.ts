@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { PaymentResponse, SubscriptionPayload, UserResponse } from "../types";
+import {
+  PaymentResponse,
+  PaymentStatusResponse,
+  SubscriptionPayload,
+  UserResponse,
+} from "../types";
 
 export const userProfileApi = createApi({
   reducerPath: "userProfileApi",
@@ -213,6 +218,12 @@ export const userProfileApi = createApi({
         body: subscription,
       }),
     }),
+    checkSubscription: builder.query<PaymentStatusResponse, string>({
+      query: (transactionId) => ({
+        url: `/professional/subscription/payment/check/${transactionId}/`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -239,4 +250,5 @@ export const {
   useDeleteCategoriesMutation,
   useRequestVerficationMutation,
   useSubscribeServiceMutation,
+  useCheckSubscriptionQuery,
 } = userProfileApi;
