@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "proxy": "https://balemuya-project.vercel.app",
+  "proxy": "https://balemuya-project.onrender.com",
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@react-google-maps/api": "^2.20.5",
@@ -17,6 +17,7 @@
     "@types/html2canvas": "^1.0.0",
     "@types/jspdf": "^2.0.0",
     "chart.js": "^4.4.7",
+    "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",
     "leaflet": "^1.9.4",
