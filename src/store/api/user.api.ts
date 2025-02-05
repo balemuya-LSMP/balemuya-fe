@@ -5,7 +5,7 @@ import { ProfessionalRequest } from "../types";
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://balemuya-project.vercel.app/api",
+    baseUrl: "https://balemuya-project.onrender.com/api",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("access");
       if (token) {
