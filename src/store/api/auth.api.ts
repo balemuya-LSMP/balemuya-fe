@@ -5,7 +5,7 @@ import { log } from 'console';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://balemuya-project.vercel.app/api/users' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://balemuya-project.onrender.com/api/users' }),
   endpoints: (builder) => ({
     registerUser: builder.mutation<UserResponse, User>({
       query: (user) => {
