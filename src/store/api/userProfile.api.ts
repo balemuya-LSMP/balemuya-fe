@@ -10,7 +10,7 @@ import {
 export const userProfileApi = createApi({
   reducerPath: "userProfileApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://balemuya-project.vercel.app/api/users",
+    baseUrl: "https://balemuya-project.onrender.com/api/users",
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("access");
       if (token) {
