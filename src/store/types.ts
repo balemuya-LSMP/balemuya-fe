@@ -110,8 +110,9 @@ export interface WorkPost {
   description: string;
   status: string;
   work_due_date: string;
-  location:{
-    latitude: number,
-    longitude: number
-  }
+  location: {
+    latitude?: number;
+    longitude?: number;
+  } | null;
 }
+
