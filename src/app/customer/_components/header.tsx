@@ -1,5 +1,7 @@
 
 import Image from "next/image";
+import Link from "next/link";
+
 
 export default function Header(){
 
@@ -19,6 +21,8 @@ export default function Header(){
             </a>
           </nav>
           <div className="flex items-center justify-center gap-4">
+            <Link href="/customer/profile" >
+
             <Image
               src="/images/user.jpg"
               alt="User"
@@ -26,8 +30,8 @@ export default function Header(){
               height={40}
               className="rounded-full"
             />
-            <h5>Abebe K</h5>
-          </div>
+            </Link>
+            </div>
         </div>
       </header>
     );
