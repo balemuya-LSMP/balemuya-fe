@@ -15,18 +15,19 @@ import Modal from "@/app/admin/dashboard/_components/modal";
 import { FaUser, FaUpload } from "react-icons/fa";
 import { MdEdit, MdEmail, MdLocationOn, MdPhone } from "react-icons/md";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import Loader from "@/app/(features)/_components/loader";
 
 
 const UserProfile = () => {
   const userProfile = useUserProfileQuery({});
   const [updateProfile] = useUpdateProfileMutation();
-  const { position, getPosition, isLoading, error } = useGeolocation();
+  const { position, getPosition } = useGeolocation();
   const [addAddress] = useAddAddressesMutation();
   const [updateAddress] = useUpdateAddressesMutation();
 
-  const { data } = userProfile;
+  const { data, isLoading, error } = userProfile;
   const userData = data?.user?.user;
-  const address =  userData?.addresses && userData?.addresses.length > 0
+  const address = userData?.addresses && userData?.addresses.length > 0
     ? userData.addresses[0]
     : null;
 
@@ -46,14 +47,7 @@ const UserProfile = () => {
     }
   }, []);
 
-
-  if (!userData) {
-    return (
-      <p className="text-center text-gray-600">
-        No user data available to display.
-      </p>
-    );
-  }
+  if (isLoading) return <Loader />
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
