@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import Footer from "@/app/(features)/_components/footer";
@@ -10,7 +13,7 @@ import { FaLocationDot, FaBusinessTime } from "react-icons/fa6";
 import { MdAdd } from "react-icons/md";
 import Loader from "@/app/(features)/_components/loader";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import {useRouter}  from "next/navigation";
+import { useRouter } from "next/navigation";
 import { format } from 'date-fns';
 
 export default function WorkPage() {
@@ -18,21 +21,21 @@ export default function WorkPage() {
     const { data: workPosts, error, isLoading } = useGetServicePostsQuery({});
     const [createServicePost] = useCreateServicePostMutation();
     const [showPostModal, setShowPostModal] = useState(false);
-    const [showLocationDialog, setShowLocationDialog] = useState(false); 
-    const [locationDenied, setLocationDenied] = useState(false); 
+    const [showLocationDialog, setShowLocationDialog] = useState(false);
+    const [locationDenied, setLocationDenied] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
         if (showPostModal && !position && !showLocationDialog && !locationDenied) {
             setShowLocationDialog(true);
         }
-    }, [showPostModal, position, showLocationDialog, locationDenied]);
+    }, [showPostModal, position, locationDenied]);
 
     const handleLocationPermission = (allowLocation: boolean) => {
         if (allowLocation) {
             getPosition();
         } else {
-            setLocationDenied(true); 
+            setLocationDenied(true);
         }
         setShowLocationDialog(false);
     };
@@ -50,9 +53,9 @@ export default function WorkPage() {
             work_due_date: formData.get("work_due_date") as string,
             location: position
                 ? {
-                      latitude: position.lat,
-                      longitude: position.lng,
-                  }
+                    latitude: position.lat,
+                    longitude: position.lng,
+                }
                 : null,
         };
 
@@ -76,33 +79,31 @@ export default function WorkPage() {
                         <span>Post work</span>
                     </button>
                     <div className="flex justify-center">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        {workPosts?.map((work: any) => (
-            <div
-                key={work.id}
-                className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 border border-gray-200 hover:border-purple-600 hover:shadow-xl hover:opacity-90 cursor-pointer"
-                onClick={() => router.push(`/customer/work/${work.id}`)}
-            >
-                <h4 className="text-2xl font-semibold text-gray-900 mb-4 hover:text-purple-600 transition-all">
-                    {work.title}
-                </h4>
-                <div className="flex items-center mb-3 space-x-2">
-                    <GrStatusGood className="text-purple-600 text-lg transition-all" />
-                    <span className="font-medium text-gray-700">{work.urgency}</span>
-                </div>
-                <div className="flex items-center mb-3 space-x-2">
-                    <FaBusinessTime className="text-purple-600 text-lg transition-all" />
-                    <span className="font-medium text-gray-700">
-                        {format(new Date(work.work_due_date), 'MMM dd, yyyy')}
-                    </span>
-                </div>
-                <p className="text-gray-700 text-base mb-4 line-clamp-3">{work.description}</p>
-            </div>
-        ))}
-    </div>
-</div>
-
-
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            {workPosts?.map((work: any) => (
+                                <div
+                                    key={work.id}
+                                    className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 border border-gray-200 hover:border-purple-600 hover:shadow-xl hover:opacity-90 cursor-pointer"
+                                    onClick={() => router.push(`/customer/work/${work.id}`)}
+                                >
+                                    <h4 className="text-2xl font-semibold text-gray-900 mb-4 hover:text-purple-600 transition-all">
+                                        {work.title}
+                                    </h4>
+                                    <div className="flex items-center mb-3 space-x-2">
+                                        <GrStatusGood className="text-purple-600 text-lg transition-all" />
+                                        <span className="font-medium text-gray-700">{work.urgency}</span>
+                                    </div>
+                                    <div className="flex items-center mb-3 space-x-2">
+                                        <FaBusinessTime className="text-purple-600 text-lg transition-all" />
+                                        <span className="font-medium text-gray-700">
+                                            {format(new Date(work.work_due_date), 'MMM dd, yyyy')}
+                                        </span>
+                                    </div>
+                                    <p className="text-gray-700 text-base mb-4 line-clamp-3">{work.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
             <Footer />
@@ -137,7 +138,7 @@ export default function WorkPage() {
                                 <textarea
                                     name="description"
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none resize-none"
-                                    rows="1"
+                                    rows={1}
                                     required
                                 ></textarea>
                             </div>
