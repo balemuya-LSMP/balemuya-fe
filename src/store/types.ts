@@ -1,24 +1,22 @@
-
 export interface User {
-    email: string;
-    password: string;
-    first_name: string;
-    middle_name: string;
-    last_name: string;
-    phone_number: string;
-    gender: string;
-    user_type: string;
-    confirmPassword: string;
-  }
+  email: string;
+  password: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  phone_number: string;
+  gender: string;
+  user_type: string;
+  confirmPassword: string;
+}
 export interface UserResponse {
-    id: string;
-    email: string;
-    first_name: string;
-    middle_name: string;
-    last_name: string;
-    phone_number: string;
-    user_type: string;
-
+  id: string;
+  email: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  phone_number: string;
+  user_type: string;
 }
 
 // types for  login page
@@ -34,10 +32,9 @@ export interface loginResponse {
     access: string;
     refresh: string;
     email: string;
-    user_type: string
- }
+    user_type: string;
+  };
 }
-
 
 export interface Address {
   country: string;
@@ -92,4 +89,29 @@ export interface PaymentStatusResponse {
   email: string;
   amount: number;
   currency: string;
+}
+
+export interface WorkPostResponse {
+  id: string;
+  customer: string;
+  category: string;
+  description: string;
+  location: Address;
+  status: string;
+  urgency: string;
+  work_due_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkPost {
+  title: string;
+  category: string;
+  description: string;
+  status: string;
+  work_due_date: string;
+  location:{
+    latitude: number,
+    longitude: number
+  }
 }
