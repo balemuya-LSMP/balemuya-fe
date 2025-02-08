@@ -1,9 +1,11 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { CheckCircle, CreditCard } from "lucide-react";
 import { useSubscribeServiceMutation } from "@/store/api/userProfile.api";
 import { toast } from "react-toastify";
+import Header from "../_components/header";
 
 export default function ProfessionalCard() {
   type PlanType = "Silver" | "Gold" | "Diamond";
@@ -22,8 +24,8 @@ export default function ProfessionalCard() {
         duration: selectedDuration,
         amount: totalAmount,
         return_url: "http://localhost:3000/professional/check",
-      }).unwrap(); 
-      
+      }).unwrap();
+
       if (response?.data?.payment_url) {
         window.location.href = response.data.payment_url;
         toast.success("You Subscribed Successfully");
@@ -75,72 +77,95 @@ export default function ProfessionalCard() {
   const totalAmount = activePlan.price * selectedDuration;
 
   return (
+    <>
+    <Header />
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-200">
-      <div className="max-w-md w-full bg-white shadow-2xl rounded-2xl p-8">
-        <h1 className="text-center text-2xl font-bold text-gray-800 mb-6">
-          Choose Your Plan
-        </h1>
+  <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-6">
+    
+    {/* Left Side Card */}
+    <div className="w-full max-w-xs bg-white shadow-lg rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-gray-800">Why Choose Us?</h3>
+      <p className="text-gray-600 mt-2">
+        Get the best professional plans with secure and easy payment.
+      </p>
+    </div>
 
-        <div className="flex justify-between mb-8">
-          {["Silver", "Gold", "Diamond"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab as PlanType)}
-              className={`flex-1 px-6 py-3 text-base font-medium text-center border rounded-md transition-all duration-200 shadow-sm ${activeTab === tab
+    {/* Subscription Card (Main) */}
+    <div className="max-w-md w-full bg-white shadow-2xl rounded-2xl p-8">
+      <h1 className="text-center text-2xl font-bold text-gray-800 mb-6">
+        Choose Your Plan
+      </h1>
+
+      <div className="flex justify-between mb-8">
+        {["Silver", "Gold", "Diamond"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab as PlanType)}
+            className={`flex-1 px-6 py-3 text-base font-medium text-center border rounded-md transition-all duration-200 shadow-sm ${
+              activeTab === tab
                 ? "bg-gradient-to-r from-blue-800 to-blue-500 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        <div className="mb-6">
-          <div>
-            <label htmlFor="duration" className="text-base text-gray-700 mb-2 block">
-              <strong>Duration:</strong>
-            </label>
-            <select
-              id="duration"
-              value={selectedDuration}
-              onChange={(e) => setSelectedDuration(Number(e.target.value))}
-              className="w-full px-4 py-3 mt-2 border-2 rounded-md bg-white text-gray-700 text-lg font-medium shadow-md focus:outline-none focus:ring-2"
-            >
-              {activePlan.durations.map((duration) => (
-                <option key={duration.value} value={duration.value}>
-                  {duration.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Display calculated amount */}
-        <div className="mb-6 text-center text-xl font-semibold text-gray-800">
-          <span>Total Amount: </span>
-          <span className="text-blue-600">{totalAmount} Birr</span>
-        </div>
-
-        <div className="flex flex-col items-center">
-          <span className="text-base text-gray-600 mb-3">Pay with</span>
-          <button
-            onClick={handleSubscribe}
-            disabled={isLoading}
-            className={`flex items-center justify-center w-full px-6 py-3 ${isLoading ? "bg-gray-500" : "bg-blue-900"
-              } text-white rounded-md shadow-md transition-transform transform hover:scale-105`}
+            }`}
           >
-            <img src="/images/chapa.png" alt="Chapa" className="h-8 mr-3" />
-            <span className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5" /> {isLoading ? "Processing..." : "Chapa"}
-            </span>
+            {tab}
           </button>
-        </div>
+        ))}
+      </div>
 
-        <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500">
-          <CheckCircle className="w-5 h-5 text-green-500" /> Secure Payment
-        </div>
+      <div className="mb-6">
+        <label htmlFor="duration" className="text-base text-gray-700 mb-2 block">
+          <strong>Duration:</strong>
+        </label>
+        <select
+          id="duration"
+          value={selectedDuration}
+          onChange={(e) => setSelectedDuration(Number(e.target.value))}
+          className="w-full px-4 py-3 mt-2 border-2 rounded-md bg-white text-gray-700 text-lg font-medium shadow-md focus:outline-none focus:ring-2"
+        >
+          {activePlan.durations.map((duration) => (
+            <option key={duration.value} value={duration.value}>
+              {duration.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mb-6 text-center text-xl font-semibold text-gray-800">
+        <span>Total Amount: </span>
+        <span className="text-blue-600">{totalAmount} Birr</span>
+      </div>
+
+      <div className="flex flex-col items-center">
+        <span className="text-base text-gray-600 mb-3">Pay with</span>
+        <button
+          onClick={handleSubscribe}
+          disabled={isLoading}
+          className={`flex items-center justify-center w-full px-6 py-3 ${
+            isLoading ? "bg-gray-500" : "bg-blue-900"
+          } text-white rounded-md shadow-md transition-transform transform hover:scale-105`}
+        >
+          <img src="/images/chapa.png" alt="Chapa" className="h-8 mr-3" />
+          <span className="flex items-center gap-2">
+            <CreditCard className="w-5 h-5" /> {isLoading ? "Processing..." : "Chapa"}
+          </span>
+        </button>
+      </div>
+
+      <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500">
+        <CheckCircle className="w-5 h-5 text-green-500" /> Secure Payment
       </div>
     </div>
+
+    {/* Right Side Card */}
+    <div className="w-full max-w-xs bg-white shadow-lg rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-gray-800">Testimonials</h3>
+      <p className="text-gray-600 mt-2">
+        "This platform helped me grow my career with great courses!" - John D.
+      </p>
+    </div>
+
+  </div>
+</div>
+</>
   );
 }
