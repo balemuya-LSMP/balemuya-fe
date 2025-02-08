@@ -78,7 +78,7 @@ export default function Profile() {
       is_verified,
       created_at,
       profile_image_url,
-      addresses = [],
+      address = {},
     } = {},
     skills = [],
     educations = [],
@@ -88,7 +88,7 @@ export default function Profile() {
     kebele_id_back_image_url,
     rating,
     bio,
-  } = userPofile.user || {};
+  } = userPofile?.user || {};
 
   const handeSubmitRequestVerification = async () => {
     try {
@@ -126,17 +126,13 @@ export default function Profile() {
     setPortfolioModalOpen(true);
   }
   // Address Action
-  const handleDeleteAddress = async (addressId: string) => {
+  const handleDeleteAddress = async () => {
     try {
-      await deleteAddress({ id: addressId });
+      await deleteAddress();
       toast.success("Address deleted successfully");
     } catch (error) {
       console.error(error);
     }
-  }
-  const handleEditAddress = (address: any) => {
-    setSelectedAddress(address);
-    setAddressModalOpen(true);
   }
 
   // certificate Action
@@ -243,49 +239,46 @@ export default function Profile() {
               <h2 className="text-xl font-semibold text-gray-800">Addresses</h2>
               <button
                 onClick={() => {
-                  setSelectedAddress(null);
-                  setAddressModalOpen(true)
+                  setSelectedAddress(address ?? null); 
+                  setAddressModalOpen(true);
                 }}
                 className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
               >
-                <MdAdd />
+                {address ? <MdEdit /> : <MdAdd />}
               </button>
             </div>
-
-            {addresses?.map((address: any, index: any) => (
-              <div key={index} className="mt-4 p-4 bg-white rounded-lg shadow-md">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-gray-800 font-medium">{address.country ?? "Ethiopia"}</h3>
-                    <p className="text-gray-600">{address.region ?? "Addis Ababa"}</p>
-                    <p className="text-gray-600">{address.city ?? "AA"}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEditAddress(address)}
-                      className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 hover:text-blue-700 transition duration-200"
-                    >
-                      <MdEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteAddress(address.id)}
-                      className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200"
-                    >
-                      <FiTrash />
-                    </button>
-                  </div>
+            {
+              address ? (
+                <div className="mt-4 p-4 bg-white rounded-lg shadow-md">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-gray-800 font-medium">{address?.country }</h3>
+                  <p className="text-gray-600">{address?.region}</p>
+                  <p className="text-gray-600">{address?.city }</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleDeleteAddress()}
+                    className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200"
+                  >
+                    <FiTrash />
+                  </button>
                 </div>
               </div>
-            ))}
+            </div>
+              ):(
+                <p>please add your address</p>
+              )
+            }
 
-            {isAddressModalOpen && (
-              <AddressModal
-                isOpen={isAddressModalOpen}
-                onClose={() => setAddressModalOpen(false)}
-                mode={selectedAddress ? "edit" : "add"}
-                data={selectedAddress}
-              />
-            )}
+          {isAddressModalOpen && (
+           <AddressModal
+             isOpen={isAddressModalOpen}
+             onClose={() => setAddressModalOpen(false)}
+             mode={address ? "edit" : "add"} 
+             data={address} 
+        />
+)}
           </div>
           <hr className="my-6 border-t border-gray-300" />
           {/* Skills */}
@@ -514,8 +507,8 @@ export default function Profile() {
                 <CertificateModal
                   isOpen={isCertificateModalOpen}
                   onClose={() => setCertificateModalOpen(false)}
-                   mode={selectedCertificate ? "edit" : "add"}
-                   data={selectedCertificate} 
+                  mode={selectedCertificate ? "edit" : "add"}
+                  data={selectedCertificate}
                 />
               )
             }
