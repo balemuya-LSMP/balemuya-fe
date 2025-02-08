@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
+'use client';
 import { FaUser, FaRegFileAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { MdVerifiedUser, MdPersonAdd, MdPayment } from "react-icons/md";
 import { GrStatusGood } from "react-icons/gr";
@@ -6,85 +9,84 @@ import { FiClipboard } from "react-icons/fi";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosTime } from "react-icons/io";
-
-import Image from "next/image";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import Footer from "../(features)/_components/footer";
 import Link from "next/link";
 import Header from "./_components/header";
+import { useGetServicePostsQuery } from "@/store/api/services.api";
+import { useUserProfileQuery } from "@/store/api/userProfile.api";
+import Loader from "../(features)/_components/loader";
+import { useEffect } from "react";
 
-const workSamples = [
-  {
-    id: 1,
-    poster_image: "/images/user.jpg",
-    postr_name: "John Doe",
-    category: "Home Services",
-    title: "Electrician",
-    description:
-      "Expert in residential and commercial electrical repairs and installations.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 2,
-    poster_image: "/images/user.jpg",
-    postr_name: "John Doe",
-    category: "Repair and Maintenance",
-    title: "Appliance Repair Technician",
-    description:
-      "Specialist in repairing household appliances like refrigerators and washing machines.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 3,
-    poster_image: "/images/user.jpg",
-    postr_name: "John Doe",
-    category: "Event Services",
-    title: "Photographer",
-    description:
-      "Professional photographer for weddings, parties, and corporate events.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 4,
-    poster_image: "/images/user.jpg",
-    postr_name: "John Doe",
-    category: "Technology and IT",
-    title: "CCTV Installation Technician",
-    description:
-      "Secure your home and office with expert CCTV installation services.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 5,
-    poster_image: "/images/user.jpg",
-    postr_name: "John Doe",
-    category: "Construction and Renovation",
-    title: "Painter",
-    description: "Professional painting services for homes and offices.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 6,
-    poster_image: "/images/user.jpg",
-    postr_name: "John Doe",
-    category: "Health and Wellness",
-    title: "Personal Trainer",
-    description:
-      "Customized fitness training programs for individuals and groups.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 7,
-    poster_image: "/images/user.jpg",
-    postr_name: "John Doe",
-    category: "Health and Wellness",
-    title: "Personal Trainer",
-    description:
-      "Customized fitness training programs for individuals and groups.",
-    image: "/images/user.jpg",
-  },
-];
 
 export default function Home() {
+  const { data: workPosts, error, isLoading } = useGetServicePostsQuery({});
+  const { data: userProfile } = useUserProfileQuery({});
+  const { position, getPosition } = useGeolocation();
+
+  useEffect(() => {
+    getPosition();
+  }, []);
+
+
+  const userLat = position?.lat ?? userProfile?.user?.user?.address.latitude;
+  const userLng = position?.lng ?? userProfile?.user?.user?.address.longitude;
+
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  function getDistanceFromLatLon(lat1: number | string, lon1: number | string, lat2: number | string, lon2: number | string): string {
+    const R = 6371; // Radius of the Earth in km
+
+    // Ensure the values are numbers
+    lat1 = parseFloat(lat1 as string);
+    lon1 = parseFloat(lon1 as string);
+    lat2 = parseFloat(lat2 as string);
+    lon2 = parseFloat(lon2 as string);
+
+    function deg2rad(deg: number) {
+      return deg * (Math.PI / 180);
+    }
+
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const dKm = R * c; // Distance in km
+    const dMeters = dKm * 1000; // Convert km to meters
+
+    return dMeters < 1000 ? `${Math.round(dMeters)} m` : `${dKm.toFixed(2)} km`;
+  }
+
+
+  function timeDifference(current: any, previous: any) {
+    const milliSecondsPerMinute = 60 * 1000;
+    const milliSecondsPerHour = milliSecondsPerMinute * 60;
+    const milliSecondsPerDay = milliSecondsPerHour * 24;
+
+    const elapsed = current - previous;
+
+    if (elapsed < milliSecondsPerMinute / 3) {
+      return "just now";
+    }
+
+    if (elapsed < milliSecondsPerMinute) {
+      return "less than 1 min ago";
+    } else if (elapsed < milliSecondsPerHour) {
+      return Math.round(elapsed / milliSecondsPerMinute) + " min ago";
+    } else if (elapsed < milliSecondsPerDay) {
+      return Math.round(elapsed / milliSecondsPerHour) + " hours ago";
+    } else {
+      return Math.round(elapsed / milliSecondsPerDay) + " days ago";
+    }
+  }
+
+
   return (
     <div className="bg-gray-50 font-sans">
       <Header />
@@ -92,7 +94,7 @@ export default function Home() {
       {/* Hero Section */}
       <section
         className="relative bg-cover bg-center h-[35rem] flex items-center justify-center"
-        style={{ backgroundImage: "url('/images/ele.png')" }}
+        style={{ backgroundImage: "url('/images/main.jpg')" }}
       >
         <div className="absolute inset-0 bg-black opacity-40"></div>
         <div className="relative max-w-3xl text-center text-white space-y-6">
@@ -100,14 +102,7 @@ export default function Home() {
           <p className="text-xl">
             Connecting Professionals and Customers in Ethiopia
           </p>
-          <div className="flex justify-center space-x-6">
-            <button className="px-8 py-3 bg-purple-700 text-white rounded-full hover:bg-purple-800 transition">
-              Get Started
-            </button>
-            <button className="px-8 py-3 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-300 transition">
-              Learn More
-            </button>
-          </div>
+
         </div>
       </section>
 
@@ -135,49 +130,50 @@ export default function Home() {
       </section>
 
       {/* Work Posts Section */}
-      <section className="py-12 bg-gray-100">
-        <div className="text-center mb-10">
-          <h3 className="text-4xl font-bold text-gray-800">New Jobs</h3>
-          <p className="text-gray-600 text-lg">Work Posted by customers.</p>
+      <section className="py-16 bg-gray-50">
+        <div className="text-center mb-12">
+          <h3 className="text-5xl font-extrabold text-gray-800">New Jobs</h3>
+          <p className="text-gray-600 text-lg mt-2">Work Posted by Customers</p>
         </div>
-        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
-          {workSamples.map((work) => (
+
+        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-6">
+          {workPosts?.map((work: any) => (
             <div
               key={work.id}
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all"
+              className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all duration-300 relative"
             >
-              <h4 className="text-lg text-gray-800 mb-2">{work.title}</h4>
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">{work.title}</h4>
 
-              <div className="flex items-center text-gray-500">
-                <IoIosTime className="text-purple-700 text-lg mr-2" />
-                <span className="text-sm">
-                  {Math.floor(Math.random() * 24)} hours ago
-                </span>
+              <div className="flex items-center text-gray-600 text-sm">
+                <IoIosTime className="text-purple-700 text-xl mr-2" />
+                <span>{timeDifference(new Date(), new Date(work.created_at))}</span>
               </div>
-              <div className="flex  justify-between  items-center py-4">
-                <div className="flex items-center text-gray-500">
-                  <GrStatusGood className="text-purple-700 text-lg mr-2" />
-                  <span className="text-sm">
-                    {Math.random() > 0.5 ? "Urgent" : "Normal"}
-                  </span>
+
+              <div className="flex justify-between items-center py-4 border-b border-gray-200">
+                <div className="flex items-center text-gray-600 text-sm">
+                  <GrStatusGood className="text-purple-700 text-xl mr-2" />
+                  <span>{work.urgency}</span>
                 </div>
-                <div className="flex items-center text-gray-500">
-                  <FaLocationDot className="text-purple-700 text-lg mr-2" />
-                  <span className="text-sm">2km Away</span>
+                <div className="flex items-center text-gray-600 text-sm">
+                  <FaLocationDot className="text-purple-700 text-xl mr-2" />
+                  <span>{getDistanceFromLatLon(userLat, userLng, work.location.latitude, work.location.longitude)}</span>
                 </div>
               </div>
-              <p className="text-gray-600 mb-4">{work.description}</p>
-              <div className="flex justify-start mt-6">
-                <button className="px-2 py-2 bg-purple-transparent text-purple-700 rounded-lg transition">
-                  Apply
+
+              <p className="text-gray-700 mt-4">{work.description}</p>
+
+              <div className="mt-6">
+                <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-lg shadow-md hover:scale-105 transition-transform">
+                  Apply Now
                 </button>
               </div>
-              <div className="flex items-center mt-4 pt-4 border-t border-gray-200">
-                <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm">
+
+              <div className="flex items-center mt-6 pt-4 border-t border-gray-200">
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-600 shadow-md">
                   <Link href="/professional/profile">
-                    <Image
-                      src={work.poster_image}
-                      alt={work.postr_name}
+                    <img
+                      src={work.customer_profile_image}
+                      alt={work.customer_first_name}
                       width={48}
                       height={48}
                       className="rounded-full"
@@ -185,9 +181,8 @@ export default function Home() {
                   </Link>
                 </div>
                 <div className="ml-3">
-                  <h5 className="text-sm font-medium text-gray-800">
-                    <span className="text-purple-700">Post by: </span>
-                    {work.postr_name}
+                  <h5 className="text-sm font-medium text-gray-900">
+                    <span className="text-purple-700">Posted by:</span> {work.customer_first_name}
                   </h5>
                 </div>
               </div>
@@ -195,7 +190,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
       {/* How It Works Section */}
       <section className="py-12 bg-gray-200">
         <div className="text-center mb-10">
