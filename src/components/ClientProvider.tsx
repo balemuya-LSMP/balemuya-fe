@@ -3,6 +3,7 @@
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { AuthProvider } from "@/contexts/authContext";
+import {WebSocketProvider} from "./WebSocketProvider";
 
 export default function ClientProvider({
   children,
@@ -11,7 +12,11 @@ export default function ClientProvider({
 }) {
   return (
     <Provider store={store}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <WebSocketProvider>
+        {children}
+        </WebSocketProvider>
+        </AuthProvider>
     </Provider>
   );
 }
