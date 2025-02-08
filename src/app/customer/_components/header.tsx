@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import { useAuth } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
@@ -11,6 +12,7 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
   const { logout } = useAuth();
+  const { data: userProfile } = useUserProfileQuery({});
 
 const handleLogout = async() =>{
   await logout();
@@ -24,10 +26,10 @@ const handleLogout = async() =>{
         <h1 className="text-2xl font-bold text-purple-700">BALEMUYA</h1>
 
         <nav className="flex space-x-6">
-          <a href="#" className="text-gray-700 hover:text-purple-700">
+          <Link href="/customer" className="text-gray-700 hover:text-purple-700">
             Home
-          </a>
-          <Link href="/customer/work" className="text-gray-700 hover:text-purple-700">
+          </Link>
+          <Link href="/customer/professionals" className="text-gray-700 hover:text-purple-700">
             Professionals
           </Link>
           <Link href="/customer/work" className="text-gray-700 hover:text-purple-700">
@@ -38,12 +40,12 @@ const handleLogout = async() =>{
         {/* Profile Section with Dropdown */}
         <div className="relative">
           <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
-            <Image
-              src="/images/user.jpg"
+            <img
+              src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
               alt="User"
               width={40}
               height={40}
-              className="rounded-full border border-gray-300 cursor-pointer"
+              className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer object-cover"
             />
           </button>
 
