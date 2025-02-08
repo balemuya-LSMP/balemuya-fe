@@ -218,9 +218,9 @@ export function AddressModal({ isOpen, onClose, mode, data }: ModalProps) {
 
     try {
       if (mode === "add") {
-        await addAddress({ addresses: newAddress }).unwrap();
+        await addAddress({ address: newAddress }).unwrap();
       } else if (mode === "edit") {
-        await updateAddress({ id: data?.id ?? "", addresses: newAddress }).unwrap();
+        await updateAddress({ address: newAddress }).unwrap();
       }
       onClose();
     } catch (error) {
