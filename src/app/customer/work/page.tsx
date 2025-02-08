@@ -5,7 +5,7 @@
 
 import Footer from "@/app/(features)/_components/footer";
 import Header from "../_components/header";
-import { useGetServicePostsQuery, useCreateServicePostMutation } from "@/store/api/services.api";
+import { useGetServicePostsQuery, useGetCategoriesQuery, useCreateServicePostMutation } from "@/store/api/services.api";
 import { useState, useEffect } from "react";
 import { IoIosTime } from "react-icons/io";
 import { GrStatusGood } from "react-icons/gr";
@@ -19,11 +19,14 @@ import { format } from 'date-fns';
 export default function WorkPage() {
     const { position, getPosition } = useGeolocation();
     const { data: workPosts, error, isLoading } = useGetServicePostsQuery({});
+    const { data: categories } = useGetCategoriesQuery();
     const [createServicePost] = useCreateServicePostMutation();
     const [showPostModal, setShowPostModal] = useState(false);
     const [showLocationDialog, setShowLocationDialog] = useState(false);
     const [locationDenied, setLocationDenied] = useState(false);
     const router = useRouter();
+
+    console.log(categories);
 
     useEffect(() => {
         if (showPostModal && !position && !showLocationDialog && !locationDenied) {
@@ -78,33 +81,58 @@ export default function WorkPage() {
                         <MdAdd className="text-white text-lg" />
                         <span>Post work</span>
                     </button>
-                    <div className="flex justify-center">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                            {workPosts?.map((work: any) => (
+
+                    {workPosts?.length === 0 ? (
+                        <div className="text-center mt-10 text-gray-600">
+                            <p className="text-lg">No work posts available.</p>
+                            <button
+                                onClick={() => setShowPostModal(true)}
+                                className="mt-4 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-all"
+                            >
+                                Create a Post
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                            {workPosts.map((work: any) => (
                                 <div
                                     key={work.id}
-                                    className="bg-white p-6 rounded-lg shadow-lg transition-all transform hover:scale-105 border border-gray-200 hover:border-purple-600 hover:shadow-xl hover:opacity-90 cursor-pointer"
-                                    onClick={() => router.push(`/customer/work/${work.id}`)}
+                                    className="bg-white p-7 rounded-xl shadow-xl border border-gray-300 
+                    hover:border-purple-600 hover:shadow-2xl hover:scale-105 transition-transform 
+                    cursor-pointer"
+
                                 >
-                                    <h4 className="text-2xl font-semibold text-gray-900 mb-4 hover:text-purple-600 transition-all">
+                                    <h4 className="text-2xl font-bold text-gray-900 mb-4 hover:text-purple-600 transition-all">
                                         {work.title}
                                     </h4>
-                                    <div className="flex items-center mb-3 space-x-2">
-                                        <GrStatusGood className="text-purple-600 text-lg transition-all" />
-                                        <span className="font-medium text-gray-700">{work.urgency}</span>
+
+                                    <div className="flex items-center gap-3 text-gray-700 text-lg mb-3">
+                                        <GrStatusGood className="text-purple-600" />
+                                        <span className="font-medium">{work.urgency}</span>
                                     </div>
-                                    <div className="flex items-center mb-3 space-x-2">
-                                        <FaBusinessTime className="text-purple-600 text-lg transition-all" />
-                                        <span className="font-medium text-gray-700">
-                                            {format(new Date(work.work_due_date), 'MMM dd, yyyy')}
-                                        </span>
+
+                                    <div className="flex items-center gap-3 text-gray-700 text-lg mb-3">
+                                        <FaBusinessTime className="text-purple-600" />
+                                        <span>{format(new Date(work.work_due_date), 'MMM dd, yyyy')}</span>
                                     </div>
-                                    <p className="text-gray-700 text-base mb-4 line-clamp-3">{work.description}</p>
+
+                                    <p className="text-gray-700 text-lg mb-5 line-clamp-2">
+                                        {work.description}
+                                    </p>
+
+                                    <button
+                                        onClick={() => router.push(`/customer/work/${work.id}`)}
+                                        className="mt-3 w-full bg-purple-500 text-white px-6 py-3 rounded-lg 
+                        hover:bg-purple-600 transition-all font-semibold">
+                                        View Details
+                                    </button>
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    )}
                 </div>
+
+
             </div>
             <Footer />
 
@@ -147,14 +175,20 @@ export default function WorkPage() {
                                 <label className="block text-gray-700 text-sm font-medium">Category</label>
                                 <select
                                     name="category"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                                    className="w-full p-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-purple-500 outline-none text-gray-700 cursor-pointer"
                                     required
+                                    defaultValue=""
                                 >
-                                    <option value="Web Development">Web Development</option>
-                                    <option value="Design">Design</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Writing">Writing</option>
+                                    <option value="" hidden>
+                                        Select a category
+                                    </option>
+                                    {categories?.map((category: { name: string }, index: number) => (
+                                        <option key={index} value={category.name} className="text-gray-900">
+                                            {category.name}
+                                        </option>
+                                    ))}
                                 </select>
+
                             </div>
 
                             <div>
