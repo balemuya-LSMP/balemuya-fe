@@ -118,6 +118,9 @@ export const serviceApi = createApi({
       }),
       invalidatesTags: ["Bookings"],
     }),
+    getCategories: builder.query<any, void>({
+      query: () => "services/categories/",
+    }),
   }),
 });
 
@@ -137,4 +140,5 @@ export const {
   useGetBookingByIdQuery,
   useUpdateBookingMutation,
   useDeleteBookingMutation,
+  useGetCategoriesQuery,
 } = serviceApi;
