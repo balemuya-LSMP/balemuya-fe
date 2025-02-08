@@ -67,7 +67,7 @@ export default function WorkDetails() {
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div
         key={work.id}
-        className="bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 border border-gray-200 hover:border-purple-600 hover:shadow-xl hover:opacity-90 cursor-pointer max-w-lg w-full"
+        className="bg-white p-6 rounded-lg shadow-lg transition-all transform hover:scale-105 border border-gray-200 hover:border-purple-600 hover:shadow-xl hover:opacity-90 cursor-pointer max-w-lg w-full"
       >
         <h4 className="text-2xl font-semibold text-gray-900 mb-4 hover:text-purple-600 transition-all">
           {work.title}
@@ -100,7 +100,7 @@ export default function WorkDetails() {
       </div>
 
       {showEditModal && (
-        <div className="fixed inset-0 flex items-start justify-center bg-black bg-opacity-50 backdrop-blur-md p-4">
+        <div className="fixed inset-0 flex items-start justify-center bg-black bg-opacity-50 p-4">
           <div className="bg-white p-5 rounded-lg w-full max-w-xs shadow-3xl relative mt-16 overflow-auto max-h-[90vh]">
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-lg"
