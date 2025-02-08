@@ -39,29 +39,29 @@ export const userProfileApi = createApi({
     }),
     addAddresses: builder.mutation<
       UserResponse,
-      { addresses: Record<string, any> }
+      { address: Record<string, any> }
     >({
-      query: ({ addresses }) => ({
-        url: `/profile/address/create/`,
+      query: ({ address }) => ({
+        url: `/profile/address/`,
         method: "POST",
-        body: addresses,
+        body: address,
       }),
       invalidatesTags: ["UserProfile"],
     }),
     updateAddresses: builder.mutation<
       UserResponse,
-      { id: string; addresses: Record<string, any> }
+      {  address: Record<string, any> }
     >({
-      query: ({ id, addresses }) => ({
-        url: `/profile/address/${id}/`,
+      query: ({ address }) => ({
+        url: `/profile/address/`,
         method: "PUT",
-        body: addresses,
+        body: address,
       }),
       invalidatesTags: ["UserProfile"],
     }),
-    removeAddresses: builder.mutation<UserResponse, { id: string }>({
-      query: ({ id }) => ({
-        url: `/profile/address/${id}`,
+    removeAddresses: builder.mutation<any, void>({
+      query: () => ({
+        url: `/profile/address/`,
         method: "DELETE",
       }),
       invalidatesTags: ["UserProfile"],
