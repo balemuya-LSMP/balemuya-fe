@@ -26,10 +26,9 @@ const UserProfile = () => {
   const [updateAddress] = useUpdateAddressesMutation();
 
   const { data, isLoading, error } = userProfile;
+
   const userData = data?.user?.user;
-  const address = userData?.addresses && userData?.addresses.length > 0
-    ? userData.addresses[0]
-    : null;
+  const address = userData?.address
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -73,14 +72,12 @@ const UserProfile = () => {
       country: formData.get("country"),
       latitude: position?.lat,
       longitude: position?.lng,
-      is_current: true,
-
     };
 
     if (address) {
-      await updateAddress({ id: address.id, addresses: addressData });
+      await updateAddress({ address: addressData });
     } else {
-      await addAddress({ addresses: addressData });
+      await addAddress({ address: addressData });
     }
 
     setIsAddressModalOpen(false);
@@ -161,7 +158,7 @@ const UserProfile = () => {
                   <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
                     Edit Address
                   </h2>
-                  <form className="space-y-5">
+                  <form className="space-y-5"  onSubmit={handleAddressSubmit}>
                     {/* City */}
                     <div>
                       <label className="block text-gray-700 font-medium">City</label>
@@ -200,7 +197,6 @@ const UserProfile = () => {
                       <button
                         type="submit"
                         className="px-6 py-3 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-all"
-                        onClick={handleAddressSubmit}
                       >
                         Save
                       </button>
