@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
@@ -6,7 +7,7 @@ import { MdEdit, MdDelete } from 'react-icons/md';
 import { format } from 'date-fns';
 import { useParams, useRouter } from 'next/navigation';
 import { GrStatusGood } from "react-icons/gr";
-import { FaLocationDot, FaBusinessTime } from "react-icons/fa6";
+import { FaLocationDot, FaBusinessTime, FaStar, FaUser } from "react-icons/fa6";
 import {
   useGetServicePostByIdQuery,
   useUpdateServicePostMutation,
@@ -34,6 +35,8 @@ export default function WorkDetails() {
   if (isLoading) {
     return <Loader />;
   }
+
+  console.log(work);
 
   const handleEditClick = () => {
     setFormData({
@@ -63,42 +66,71 @@ export default function WorkDetails() {
     router.push('/customer/work');
   };
 
-  return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+  return (<div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
       <div
         key={work.id}
-        className="bg-white p-6 rounded-lg shadow-lg transition-all transform hover:scale-105 border border-gray-200 hover:border-purple-600 hover:shadow-xl hover:opacity-90 cursor-pointer max-w-lg w-full"
+        className="bg-white p-8 rounded-xl shadow-xl transition-all transform hover:scale-105 border border-gray-200 hover:border-purple-600 hover:shadow-2xl hover:opacity-95 cursor-pointer max-w-3xl w-full"
       >
-        <h4 className="text-2xl font-semibold text-gray-900 mb-4 hover:text-purple-600 transition-all">
-          {work.title}
-        </h4>
-        <div className="flex items-center mb-3 space-x-2">
-          <GrStatusGood className="text-purple-600 text-lg transition-all" />
-          <span className="font-medium text-gray-700">{work.urgency}</span>
+        <div className="flex items-center mb-6 space-x-4">
+          <img
+            src={work.customer_profile_image}
+            alt="Customer Profile"
+            className="w-16 h-16 rounded-full border-2 border-purple-500 shadow-md"
+          />
+          <div>
+            <h4 className="text-2xl font-bold text-gray-900 mb-1 hover:text-purple-600 transition-all">
+              {work.title}
+            </h4>
+            <div className="flex items-center space-x-2 text-gray-700">
+              <FaUser className="text-purple-600" />
+              <span className="font-medium">Customer ID: {work.customer_id}</span>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center mb-3 space-x-2">
-          <FaBusinessTime className="text-purple-600 text-lg transition-all" />
-          <span className="font-medium text-gray-700">
-            {format(new Date(work.work_due_date), 'MMM dd, yyyy')}
-          </span>
+
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="flex items-center space-x-2">
+            <GrStatusGood className="text-green-500 text-lg" />
+            <span className="font-medium text-gray-700">{work.urgency}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <FaBusinessTime className="text-purple-600 text-lg" />
+            <span className="font-medium text-gray-700">
+              Due: {format(new Date(work.work_due_date), 'MMM dd, yyyy')}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <FaLocationDot className="text-blue-600 text-lg" />
+            <span className="font-medium text-gray-700">
+              {work.location.city}, {work.location.region}, {work.location.country}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <FaStar className="text-yellow-500 text-lg" />
+            <span className="font-medium text-gray-700">Rating: {work.customer_rating}</span>
+          </div>
         </div>
-        <p className="text-gray-700 text-base mb-4 line-clamp-3">{work.description}</p>
-        <div className="flex justify-end gap-6">
+
+        <p className="text-gray-700 text-lg mb-6 leading-relaxed">{work.description}</p>
+
+        <div className="flex justify-end gap-4">
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center space-x-2"
             onClick={handleEditClick}
           >
-            Edit
+            <MdEdit />
+            <span>Edit</span>
           </button>
           <button
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 transition-all"
+            className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all flex items-center space-x-2"
             onClick={handleDelete}
           >
-            Delete
+            <MdDelete />
+            <span>Delete</span>
           </button>
         </div>
       </div>
-
+      
       {showEditModal && (
         <div className="fixed inset-0 flex items-start justify-center bg-black bg-opacity-50 p-4">
           <div className="bg-white p-5 rounded-lg w-full max-w-xs shadow-3xl relative mt-16 overflow-auto max-h-[90vh]">
