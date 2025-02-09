@@ -163,7 +163,7 @@ export default function Users() {
                             {user.is_active ? "Active" : "Inactive"}
                           </td>
                           <td className="px-6 py-3">
-                            {user.addresses[0]?.city || "N/A"}
+                            {user?.address?.city ?? "N/A"} 
                           </td>
                           <td className="px-6 py-3">
                             <button
