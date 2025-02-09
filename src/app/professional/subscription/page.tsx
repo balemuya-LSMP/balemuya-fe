@@ -2,17 +2,18 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
-import { CheckCircle, CreditCard } from "lucide-react";
+import { ListOrdered, CheckCircle, CreditCard, ShieldCheck, Star, UserCheck, TrendingUp, Briefcase, User, Mail } from "lucide-react";
 import { useSubscribeServiceMutation } from "@/store/api/userProfile.api";
 import { toast } from "react-toastify";
 import Header from "../_components/header";
+import Footer from "@/app/(features)/_components/footer";
 
 export default function ProfessionalCard() {
   type PlanType = "Silver" | "Gold" | "Diamond";
   const [activeTab, setActiveTab] = useState<PlanType>("Silver");
   const [selectedDuration, setSelectedDuration] = useState<number>(1);
 
-  // Correctly using the mutation hook
+  // Mutation hook
   const [subscribeService, { isLoading }] = useSubscribeServiceMutation();
 
   const handleSubscribe = async () => {
@@ -39,133 +40,101 @@ export default function ProfessionalCard() {
   };
 
   const plans = {
-    Silver: {
-      price: 100,
-      planType: "Silver",
-      durations: [
-        { label: "1 month", value: 1 },
-        { label: "3 months", value: 3 },
-        { label: "6 months", value: 6 },
-        { label: "1 year", value: 12 },
-      ],
-    },
-    Gold: {
-      price: 200,
-      planType: "Gold",
-      durations: [
-        { label: "1 month", value: 1 },
-        { label: "3 months", value: 3 },
-        { label: "6 months", value: 6 },
-        { label: "1 year", value: 12 },
-      ],
-    },
-    Diamond: {
-      price: 300,
-      planType: "Diamond",
-      durations: [
-        { label: "1 month", value: 1 },
-        { label: "3 months", value: 3 },
-        { label: "6 months", value: 6 },
-        { label: "1 year", value: 12 },
-      ],
-    },
+    Silver: { price: 100, planType: "Silver", durations: [{ label: "1 month", value: 1 }, { label: "3 months", value: 3 }, { label: "6 months", value: 6 }, { label: "1 year", value: 12 }] },
+    Gold: { price: 200, planType: "Gold", durations: [{ label: "1 month", value: 1 }, { label: "3 months", value: 3 }, { label: "6 months", value: 6 }, { label: "1 year", value: 12 }] },
+    Diamond: { price: 300, planType: "Diamond", durations: [{ label: "1 month", value: 1 }, { label: "3 months", value: 3 }, { label: "6 months", value: 6 }, { label: "1 year", value: 12 }] },
   };
 
   const activePlan = plans[activeTab];
-
-  // Calculate the total amount based on the selected duration
   const totalAmount = activePlan.price * selectedDuration;
 
   return (
     <>
-    <Header />
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-200">
-  <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-6">
-    
-    {/* Left Side Card */}
-    <div className="w-full max-w-xs bg-white shadow-lg rounded-lg p-6">
-      <h3 className="text-lg font-semibold text-gray-800">Why Choose Us?</h3>
-      <p className="text-gray-600 mt-2">
-        Get the best professional plans with secure and easy payment.
-      </p>
-    </div>
+      <Header />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-4">
+        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-8 w-full max-w-6xl">
+          {/* Left Card */}
+          <div className="w-full lg:w-1/3 bg-white shadow-lg rounded-xl p-6 space-y-6">
+            <h3 className="text-xl font-bold text-gray-800 text-center">Why Choose Us?</h3>
+            {[{ icon: ShieldCheck, title: "Secure Payments", desc: "All transactions are encrypted and safe.", color: "text-blue-600" },
+            { icon: Star, title: "Premium Content", desc: "Access exclusive professional resources.", color: "text-yellow-500" },
+            { icon: UserCheck, title: "Career Growth", desc: "Boost your career with expert guidance.", color: "text-green-600" },
+            { icon: TrendingUp, title: "Skill Improvement", desc: "Stay ahead with the latest industry trends.", color: "text-purple-600" },
+            { icon: Briefcase, title: "Professional Networking", desc: "Connect with industry experts and peers.", color: "text-red-600" }
+            ].map(({ icon: Icon, title, desc, color }) => (
+              <div key={title} className="flex items-start gap-4">
+                <Icon className={`${color} w-7 h-7`} />
+                <div>
+                  <h4 className="font-medium text-gray-700">{title}</h4>
+                  <p className="text-gray-600 text-sm">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
 
-    {/* Subscription Card (Main) */}
-    <div className="max-w-md w-full bg-white shadow-2xl rounded-2xl p-8">
-      <h1 className="text-center text-2xl font-bold text-gray-800 mb-6">
-        Choose Your Plan
-      </h1>
+          {/* Subscription Card */}
+          <div className="w-full lg:w-1/3 bg-white shadow-lg rounded-xl p-6">
+            <h1 className="text-center text-2xl font-bold text-gray-800 mb-6">Choose Your Plan</h1>
+            <div className="grid grid-cols-3 gap-2 mb-6">
+              {["Silver", "Gold", "Diamond"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab as PlanType)}
+                  className={`py-2 rounded-md font-medium transition-all text-center ${activeTab === tab ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <label className="block text-gray-700 font-medium mb-2">Duration:</label>
+            <select
+              value={selectedDuration}
+              onChange={(e) => setSelectedDuration(Number(e.target.value))}
+              className="w-full px-4 py-2 border rounded-md bg-white text-gray-700 shadow-sm"
+            >
+              {activePlan.durations.map(({ label, value }) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+            <div className="text-center text-lg font-semibold text-gray-800 mt-4">
+              <span>Total Amount: </span>
+              <span className="text-blue-600">{totalAmount} Birr</span>
+            </div>
+            <button
+              onClick={handleSubscribe}
+              disabled={isLoading}
+              className="mt-6 w-full py-2 bg-blue-700 text-white rounded-md font-medium shadow-md hover:bg-blue-800 disabled:bg-gray-500"
+            >
+              {isLoading ? "Processing..." : "Subscribe Now"}
+            </button>
+            <div className="mt-4 text-center text-gray-600 text-sm">
+              <CheckCircle className="inline-block w-5 h-5 text-green-500 mr-2" />
+              Secure Payment
+            </div>
+          </div>
 
-      <div className="flex justify-between mb-8">
-        {["Silver", "Gold", "Diamond"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as PlanType)}
-            className={`flex-1 px-6 py-3 text-base font-medium text-center border rounded-md transition-all duration-200 shadow-sm ${
-              activeTab === tab
-                ? "bg-gradient-to-r from-blue-800 to-blue-500 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+          {/* Steps Card */}
+          <div className="w-full lg:w-1/3 bg-white shadow-lg rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800">Subscription Steps</h3>
+            <div className="mt-4 space-y-4">
+              {[{ icon: ListOrdered, title: "Select a plan and duration", desc: "Choose the subscription plan that best suits your needs.", color: "text-blue-600" },
+              { icon: User, title: "Create an account", desc: "Sign up or log in to proceed.", color: "text-indigo-600" },
+              { icon: CreditCard, title: "Make payment securely", desc: "Complete your payment through our secure gateway.", color: "text-green-600" },
+              { icon: Mail, title: "Get confirmation", desc: "Receive confirmation email with plan details.", color: "text-yellow-600" }
+              ].map(({ icon: Icon, title, desc, color }) => (
+                <div key={title} className="flex items-start gap-3">
+                  <Icon className={`${color} w-6 h-6`} />
+                  <div>
+                    <p className="text-gray-700 font-medium">{title}</p>
+                    <p className="text-sm text-gray-500">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div className="mb-6">
-        <label htmlFor="duration" className="text-base text-gray-700 mb-2 block">
-          <strong>Duration:</strong>
-        </label>
-        <select
-          id="duration"
-          value={selectedDuration}
-          onChange={(e) => setSelectedDuration(Number(e.target.value))}
-          className="w-full px-4 py-3 mt-2 border-2 rounded-md bg-white text-gray-700 text-lg font-medium shadow-md focus:outline-none focus:ring-2"
-        >
-          {activePlan.durations.map((duration) => (
-            <option key={duration.value} value={duration.value}>
-              {duration.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="mb-6 text-center text-xl font-semibold text-gray-800">
-        <span>Total Amount: </span>
-        <span className="text-blue-600">{totalAmount} Birr</span>
-      </div>
-
-      <div className="flex flex-col items-center">
-        <span className="text-base text-gray-600 mb-3">Pay with</span>
-        <button
-          onClick={handleSubscribe}
-          disabled={isLoading}
-          className={`flex items-center justify-center w-full px-6 py-3 ${
-            isLoading ? "bg-gray-500" : "bg-blue-900"
-          } text-white rounded-md shadow-md transition-transform transform hover:scale-105`}
-        >
-          <img src="/images/chapa.png" alt="Chapa" className="h-8 mr-3" />
-          <span className="flex items-center gap-2">
-            <CreditCard className="w-5 h-5" /> {isLoading ? "Processing..." : "Chapa"}
-          </span>
-        </button>
-      </div>
-
-      <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500">
-        <CheckCircle className="w-5 h-5 text-green-500" /> Secure Payment
-      </div>
-    </div>
-
-    {/* Right Side Card */}
-    <div className="w-full max-w-xs bg-white shadow-lg rounded-lg p-6">
-      <h3 className="text-lg font-semibold text-gray-800">Testimonials</h3>
-      <p className="text-gray-600 mt-2">
-        "This platform helped me grow my career with great courses!" - John D.
-      </p>
-    </div>
-
-  </div>
-</div>
-</>
+      <Footer />
+    </>
   );
 }
