@@ -13,16 +13,28 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import Footer from "../(features)/_components/footer";
 import Link from "next/link";
 import Header from "./_components/header";
-import { useGetServicePostsQuery } from "@/store/api/services.api";
+import { useGetServicePostsQuery, useCreateApplicationMutation } from "@/store/api/services.api";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import Loader from "../(features)/_components/loader";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function Home() {
   const { data: workPosts, error, isLoading } = useGetServicePostsQuery({});
   const { data: userProfile } = useUserProfileQuery({});
   const { position, getPosition } = useGeolocation();
+  const [createApplication] = useCreateApplicationMutation();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [selectedWorkId, setSelectedWorkId] = useState("")
+
+
+
+  // it sends  the id and message to the server 
+  const handleApply = async (id: string) => {
+    await createApplication({ service_id: id, message: message }).unwrap();
+  };
+
 
   useEffect(() => {
     getPosition();
@@ -163,14 +175,18 @@ export default function Home() {
               <p className="text-gray-700 mt-4">{work.description}</p>
 
               <div className="mt-6">
-                <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-lg shadow-md hover:scale-105 transition-transform">
+                <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-lg shadow-md hover:scale-105 transition-transform"
+                  onClick={() => {
+                    setSelectedWorkId(work.id)
+                    setModalOpen(true)
+                  }}>
                   Apply Now
                 </button>
               </div>
 
               <div className="flex items-center mt-6 pt-4 border-t border-gray-200">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-600 shadow-md">
-                  <Link href="/professional/profile">
+                  <Link href={`/professional/customer/${work.customer_id}`}>
                     <img
                       src={work.customer_profile_image}
                       alt={work.customer_first_name}
@@ -189,6 +205,50 @@ export default function Home() {
             </div>
           ))}
         </div>
+        {modalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-96 relative">
+              {/* Close Button (Top Right) */}
+              <button
+                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
+                onClick={() => setModalOpen(false)}
+              >
+                &times;
+              </button>
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Apply for Job</h3>
+              <p className="text-gray-600 mb-4">Write a message to the customer</p>
+
+              <textarea
+                className="w-full h-22 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 transition-all"
+                placeholder="Write a message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              ></textarea>
+
+              {/* Button Container */}
+              <div className="flex justify-end space-x-3 mt-5">
+                <button
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-all"
+                  onClick={() => {
+                    if (selectedWorkId !== null) {
+                      handleApply(selectedWorkId);
+                      setModalOpen(false);
+                    }
+                  }}
+                >
+                  Submit
+                </button>
+                <button
+                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-all"
+                  onClick={() => setModalOpen(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
       {/* How It Works Section */}
       <section className="py-12 bg-gray-200">
