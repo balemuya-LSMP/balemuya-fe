@@ -56,16 +56,22 @@ export const serviceApi = createApi({
     }),
     createApplication: builder.mutation<
       any,
-      { servicePostId: string; data: any }
+      { service_id: string; message: any }
     >({
-      query: ({ servicePostId, data }) => ({
-        url: `services/service-posts/${servicePostId}/applications/`,
+      query: ({ service_id, message }) => ({
+        url: `services/service-posts/applications/create/`,
         method: "POST",
-        body: data,
+        headers: {
+          "Content-Type": "application/json", 
+        },
+        body: JSON.stringify({service_id, message}),
       }),
       invalidatesTags: ["Applications"],
     }),
-
+    getApplicationforServicePost: builder.query<any, string>({
+      query: (id) => `services/service-posts/customer/${id}/applications/`,
+      providesTags: ["Applications"],
+    }),
     getApplicationById: builder.query<any, string>({
       query: (id) => `services/applications/${id}/`,
       providesTags: ["Applications"],
@@ -121,6 +127,27 @@ export const serviceApi = createApi({
     getCategories: builder.query<any, void>({
       query: () => "services/categories/",
     }),
+    getNotifications: builder.query<any, void>({
+      query: () => "notifications/ ",
+    }),
+    readNotification: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `notifications/${id}/read/`,
+        method: "PUT",
+      }),
+    }),
+    readNotifications: builder.mutation<any, void>({
+      query: () => ({
+        url: `notifications/all/read/`,
+        method: "PUT",
+      }),
+    }),
+    acceptApplication: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `services/service-posts/applications/${id}/accept/`,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -141,4 +168,10 @@ export const {
   useUpdateBookingMutation,
   useDeleteBookingMutation,
   useGetCategoriesQuery,
+  useGetNotificationsQuery,
+  useReadNotificationMutation,
+  useReadNotificationsMutation,
+  useGetApplicationforServicePostQuery,
+  useAcceptApplicationMutation,
+
 } = serviceApi;
