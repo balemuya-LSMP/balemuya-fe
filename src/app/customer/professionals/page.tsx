@@ -68,6 +68,8 @@ export default function Professionals() {
                     />
                     <p className="text-lg font-semibold">{professional.name}</p>
                   </div>
+                  {/* how to show the rating comes from backend like 4.5  using stars */}
+                  
                   <span className="text-yellow-500">★★★★★</span>
                 </div>
                 <div className="flex items-center ml-8 mt-2 gap-2 text-gray-600">
