@@ -23,7 +23,18 @@ const handleLogout = async() =>{
   return (
     <header className="bg-white shadow sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-purple-700">BALEMUYA</h1>
+        {/* Logo image*/}
+
+        <Link href="/customer">
+          <img
+            src="/images/logo.jpg"
+            alt="Logo"
+            width={60}
+            height={60}
+            className="cursor-pointer bg-transparent"
+          />
+        </Link>
+
 
         <nav className="flex space-x-6">
           <Link href="/customer" className="text-gray-700 hover:text-purple-700">
