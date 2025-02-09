@@ -26,8 +26,6 @@ export default function WorkPage() {
     const [locationDenied, setLocationDenied] = useState(false);
     const router = useRouter();
 
-    console.log(categories);
-
     useEffect(() => {
         if (showPostModal && !position && !showLocationDialog && !locationDenied) {
             setShowLocationDialog(true);
@@ -131,8 +129,6 @@ export default function WorkPage() {
                         </div>
                     )}
                 </div>
-
-
             </div>
             <Footer />
 
