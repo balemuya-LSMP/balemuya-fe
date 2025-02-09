@@ -1,3 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+'use client';
 import {
   FaClipboardList,
   FaHandshake,
@@ -9,11 +13,11 @@ import { MdPayment } from "react-icons/md";
 import { FiArrowRight, FiClipboard } from "react-icons/fi";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import { FaLocationDot } from "react-icons/fa6";
-
-import Image from "next/image";
+import { useGetNearByProfessionalsQuery } from "@/store/api/user.api";
 import React from "react";
 import Footer from "../(features)/_components/footer";
 import Header from "./_components/header";
+import { useRouter } from "next/navigation";
 
 const workSamples = [
   {
@@ -74,6 +78,10 @@ const workSamples = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+  const { data: professionalsData, error, isLoading } = useGetNearByProfessionalsQuery({});
+
+  const professionals = professionalsData?.nearby_professionals;
   return (
     <div className="bg-gray-100 font-sans no-scrollbar">
       <Header />
@@ -133,32 +141,41 @@ export default function Home() {
           </p>
         </div>
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {workSamples.map((work) => (
+          {professionals?.map((professional: any) => (
             <div
-              key={work.id}
+              key={professional.id}
+              onClick={() => router.push(`/customer/professionals/${professional.id}`)}
               className="bg-gray-100 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
               <div className="flex justify-between items-center">
                 <div className="flex justify-center gap-2 items-center">
-                  <Image
-                    src={work.image}
-                    alt={work.title}
+                  <img
+                    src={professional.profile_image}
+                    alt={professional.title}
                     width={45}
                     height={45}
-                    className="rounded-full"
+                    className="object-cover"
+                    style={{
+                      borderRadius: "50%",
+                      width: "60px",
+                      height: "60px",
+                    }}
                   />
-                  <p className="tetx-lg font-semibold ">{work.name}</p>
+                  <p className="tetx-lg font-semibold ">{professional.name}</p>
                 </div>
                 <span className="text-yellow-500">★★★★★</span>
               </div>
               <div className="flex justify-start items-center ml-3 mt-2 gap-2">
                 <FaLocationDot className="text-purple-700" />
-                <p>2km Away</p>
+                <p>{professional?.distance} Km</p>
               </div>
               <h4 className="text-lg font-bold mt-4 text-gray-800">
-                {work.title}
+                {professional.title}
               </h4>
-              <p className="text-gray-600 mt-2 text-sm">{work.description}</p>
+              <p className="text-gray-600 py-2 overflow-hidden line-clamp-3">
+                {professional?.bio}
+              </p>
+
               <div className="flex justify-end items-center">
                 <button className="mt-4 mr-0 px-4 py-2 text-purple-700">
                   Details
