@@ -162,7 +162,7 @@ export default function UserDetails() {
                 <div className="flex items-center gap-2 text-gray-800">
                   <FaMapMarkerAlt className="text-purple-700" />
                   <span>
-                    {userData?.data?.user?.address || "No address available."}
+                    {userData?.data?.user?.address?.country ?? "No address available."}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-800">
