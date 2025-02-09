@@ -38,11 +38,11 @@ export const userApi = createApi({
       providesTags: ["Admins"],
     }),
     getUser: builder.query({
-      query: (id) => `/users/${id}`,
+      query: (id) => `/users/${id}/`,
     }),
     deleteUser: builder.mutation({
       query: (id) => ({
-        url: `/users/${id}/delete`,
+        url: `/users/${id}/delete/`,
         method: "DELETE",
       }),
       invalidatesTags: ["Professionals", "Customers", "Admins"],
@@ -68,8 +68,18 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["Professionals"],
     }),
-    
-
+    getNearByProfessionals: builder.query({
+      query: () => `/users/customer/nearby-professionals/`,
+    }),
+    getNearByProfessionalsByCategory: builder.query({
+      query: (category) => `/users/customer/nearby-professional/?category=${category}`,
+    }),
+    getProfessionalById: builder.query({
+      query: (id) => `/users/professional/${id}/profile/`,
+    }),
+    getCustomerById: builder.query({
+      query: (id) => `/users/customer/${id}/profile/`,
+    }),
   }),
 });
 
@@ -82,4 +92,8 @@ export const {
   useBlockUserMutation,
   useVerifyUserMutation,
   useListRequestsQuery,
+  useGetNearByProfessionalsQuery,
+  useGetNearByProfessionalsByCategoryQuery,
+  useGetProfessionalByIdQuery,
+  useGetCustomerByIdQuery,
 } = userApi;
