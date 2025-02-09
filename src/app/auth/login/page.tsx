@@ -28,7 +28,6 @@ export default function Login() {
     try {
       const response = await loginUser({ email, password }).unwrap();
       login(response);
-      console.log("Login successful:", response);
       toast.success("Login successful");
       if (response.user.user_type == "admin") {
         router.push("/admin/dashboard");
