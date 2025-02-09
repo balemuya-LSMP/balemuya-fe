@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Landing() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,8 +14,15 @@ export default function Landing() {
   return (
     <header className="bg-white shadow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
-        <h1 className="text-xl sm:text-2xl font-bold text-purple-700">BALEMUYA</h1>
-
+      <Link href="/customer">
+          <Image
+            src="/images/logo.jpg"
+            alt="Logo"
+            width={60}
+            height={60}
+            className="cursor-pointer bg-transparent"
+          />
+        </Link>
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-4">
           <a href="#features" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
