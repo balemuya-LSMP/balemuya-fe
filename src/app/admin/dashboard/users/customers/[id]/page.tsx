@@ -41,7 +41,7 @@ export default function CustomerDetails() {
     last_name,
     email,
     phone_number,
-    addresses,
+    address,
     gender,
     user_type,
     is_active,
@@ -140,8 +140,8 @@ export default function CustomerDetails() {
           <div className="flex items-center space-x-4">
             <FaMapMarkerAlt className="text-purple-700 text-xl" />
             <p className="text-gray-800">
-              {addresses && addresses.length > 0
-                ? addresses[0].city
+              {address && address.length > 0
+                ? address?.city
                 : "No address provided"}
             </p>
           </div>
