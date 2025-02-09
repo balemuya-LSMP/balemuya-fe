@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -21,7 +21,7 @@ const customLocationIcon = L.icon({
   popupAnchor: [0, -25],
 });
 
-// Routing Machine Component
+// Routing Machine Component: draws a route between two points on the map
 const RoutingMachine = ({ from, to }) => {
   const map = useMap();
 
@@ -31,9 +31,16 @@ const RoutingMachine = ({ from, to }) => {
     const routingControl = L.Routing.control({
       waypoints: [L.latLng(...from), L.latLng(...to)],
       routeWhileDragging: true,
+      show: false, // Hide the control UI if you only need the route line
+      addWaypoints: false,
     }).addTo(map);
 
-    return () => map.removeControl(routingControl);
+    return () => {
+      // Check that the routing control is still attached before removing it
+      if (routingControl && routingControl._map) {
+        map.removeControl(routingControl);
+      }
+    };
   }, [from, to, map]);
 
   return null;
@@ -42,6 +49,7 @@ const RoutingMachine = ({ from, to }) => {
 const MapComponent = ({ userLocations }) => {
   const [currentLocation, setCurrentLocation] = useState(null);
 
+  // Get the current location of the user
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -51,7 +59,7 @@ const MapComponent = ({ userLocations }) => {
         },
         (error) => {
           console.error("Error fetching location:", error);
-          setCurrentLocation([9.0325, 38.7469]); // Fallback location if geolocation fails
+          setCurrentLocation([9.0325, 38.7469]);
         }
       );
     } else {
@@ -59,12 +67,6 @@ const MapComponent = ({ userLocations }) => {
       setCurrentLocation([9.0325, 38.7469]); // Fallback location
     }
   }, []);
-
-  // Calculate the bounds based on user locations
-  const calculateBounds = () => {
-    const locations = userLocations.map((user) => [user.latitude, user.longitude]);
-    return L.latLngBounds(locations);
-  };
 
   return (
     <div className="w-full h-[500px]">
@@ -81,20 +83,30 @@ const MapComponent = ({ userLocations }) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {/* Current Location Marker */}
+          {/* Marker for the current location */}
           <Marker position={currentLocation} icon={customLocationIcon}>
             <Popup>You are here!</Popup>
           </Marker>
 
-          {/* Render customer location markers */}
-          {userLocations.map((user, index) => (
-            <Marker key={index} position={[user.latitude, user.longitude]} icon={customLocationIcon}>
-              <Tooltip>{user.name}</Tooltip>
-              <Popup>{user.name}</Popup>
-            </Marker>
-          ))}
+          {/* Markers for other user locations */}
+          {userLocations &&
+            userLocations.map((user, index) => (
+              <Marker
+                key={index}
+                position={[user.latitude, user.longitude]}
+                icon={customLocationIcon}
+              >
+                <Popup>{user?.name}</Popup>
+              </Marker>
+            ))}
 
-          {/* Optionally: Routing from Current Location to a destination */}
+          {/* Draw a route from the current location to the first user location */}
+          {currentLocation && userLocations && userLocations.length > 0 && (
+            <RoutingMachine
+              from={currentLocation}
+              to={[userLocations[0].latitude, userLocations[0].longitude]}
+            />
+          )}
         </MapContainer>
       ) : (
         <p className="text-center mt-4">Fetching your location...</p>
