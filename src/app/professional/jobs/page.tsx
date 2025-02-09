@@ -101,15 +101,14 @@ export default function JobsPage() {
         {/* Tabs Section */}
         <div className="container mx-auto px-6 py-6">
           <div className="flex justify-center space-x-4 mb-4">
-            {["New Jobs", "Pending", "Completed", "Cancelled"].map((tab) => (
+            {["New Jobs", "Applied", "Pending", "Completed", "Cancelled"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 text-sm font-medium transition-colors duration-300 ${
-                  activeTab === tab
+                className={`px-6 py-2 text-sm font-medium transition-colors duration-300 ${activeTab === tab
                     ? "text-purple-700 border-b-2 border-purple-700"
                     : "text-gray-700 hover:text-purple-700"
-                }`}
+                  }`}
               >
                 {tab}
               </button>
@@ -137,7 +136,7 @@ export default function JobsPage() {
                         </span>
                       </div>
                       <div className="flex justify-between items-center py-2">
-                        
+
                         <div className="flex items-center text-gray-500">
                           <IoIosTime className="text-purple-700 text-lg mr-2" />
                           <span className="text-sm">
@@ -154,9 +153,9 @@ export default function JobsPage() {
                   <p className="text-gray-600 mb-4">{job.description}</p>
                 </div>
                 <div className="flex justify-end items-center">
-                <button className="px-4 py-2 w-1/4 bg-transparent font-bold text-purple-700 rounded-lg transition">
-                  Apply
-                </button>
+                  <button className="px-4 py-2 w-1/4 bg-transparent font-bold text-purple-700 rounded-lg transition">
+                    Apply
+                  </button>
                 </div>
                 <div className="flex items-center mt-4 pt-4 border-t border-gray-200">
                   <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm">
