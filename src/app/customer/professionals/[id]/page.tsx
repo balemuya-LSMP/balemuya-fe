@@ -43,6 +43,7 @@ export default function ProfessionalDetailsPage() {
   const lat = professionalInfo?.professional?.user?.address?.latitude;
   const lng = professionalInfo?.professional?.user?.address?.longitude;
 
+  
   const userLocations = [
     {
       latitude: lat,
