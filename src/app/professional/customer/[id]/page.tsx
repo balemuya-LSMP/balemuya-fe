@@ -38,23 +38,22 @@ export default function ProfessionalDetailsPage() {
   const { id } = useParams();
   const { data: customerData, isLoading } = useGetCustomerByIdQuery(id);
 
-  const professionalInfo = customerData?.data
+  const customerInfo = customerData?.data
 
-  console.log(professionalInfo);
+  console.log(customerInfo);
 
-//   const lat = professionalInfo?.professional?.user?.address?.latitude;
-//   const lng = professionalInfo?.professional?.user?.address?.longitude;
+  const lat = customerInfo?.customer?.user?.address?.latitude;
+  const lng = customerInfo?.customer?.user?.address?.longitude;
 
-//   const userLocations = [
-//     {
-//       latitude: lat,
-//       longitude: lng,
-//       name: professionalInfo?.professional?.user?.first_name,
-//     },
-//   ];
+  const userLocations = [
+    {
+      latitude: lat,
+      longitude: lng,
+      name: customerInfo?.customer?.user?.first_name,
+    },
+  ];
 
   if(isLoading) return <Loader/>
-  console.log(professionalInfo);
   return (
     <div className="flex h-screen items-start justify-between gap-6 px-6 py-6">
       <div className="container mx-auto px-6 py-6 w-1/2 h-[calc(100vh-20px)] overflow-y-auto no-scrollbar">
@@ -64,25 +63,25 @@ export default function ProfessionalDetailsPage() {
             <div className="flex items-center mb-2">
               <div className="w-12 h-12 rounded-full overflow-hidden shadow-md">
                 <img
-                  src={professionalInfo?.professional?.user?.profile_image_url}
-                  alt={professionalInfo?.professional?.user?.first_name}
+                  src={customerInfo?.customer?.user?.profile_image_url}
+                  alt={customerInfo?.customer?.user?.first_name}
                   className="w-full h-full object-cover"
                 />
               </div>
 
               <div className="ml-4">
                 <h2 className="text-lg font-semibold text-gray-800">
-                  {professionalInfo?.professional?.user?.first_name}
+                  {customerInfo?.customer?.user?.first_name}
                 </h2>
                 <h3 className="text-lg font-serif mb-4 text-gray-800">
-                  {professionalInfo?.professional?.user?.user_type}
+                  {customerInfo?.customer?.user?.user_type}
                 </h3>
               </div>
             </div>
             <div>
 
               <span className="text-yellow-500 text-lg">★★★★★</span>
-              <p>{professionalInfo?.professional?.user?.address?.country}</p>
+              <p>{customerInfo?.customer?.user?.address?.country}</p>
             </div>
           </div>
 
@@ -95,7 +94,7 @@ export default function ProfessionalDetailsPage() {
           </div>
           <h2 className="tetx-lg text-gray-700 font-medium">Bio</h2>
           <p className="text-gray-600 py-2 ">
-            {professionalInfo?.professional?.user?.bio}
+            {customerInfo?.customer?.user?.bio}
           </p>
 
         </div>
@@ -160,7 +159,7 @@ export default function ProfessionalDetailsPage() {
         </div>
       </div>
       <div className="w-1/2 bg-white rounded-lg shadow-md p-6">
-        <MapComponent userLocations={[]} />
+        <MapComponent userLocations={userLocations} />
       </div>
     </div>
   );
