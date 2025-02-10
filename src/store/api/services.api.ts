@@ -62,9 +62,9 @@ export const serviceApi = createApi({
         url: `services/service-posts/applications/create/`,
         method: "POST",
         headers: {
-          "Content-Type": "application/json", 
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({service_id, message}),
+        body: JSON.stringify({ service_id, message }),
       }),
       invalidatesTags: ["Applications"],
     }),
@@ -148,6 +148,12 @@ export const serviceApi = createApi({
         method: "POST",
       }),
     }),
+    getServices: builder.query<any, string | undefined>({
+      query: (query) =>
+        query
+          ? `users/professional/services/?status=${query}`
+          : `users/professional/services/`,
+    }),
   }),
 });
 
@@ -173,5 +179,5 @@ export const {
   useReadNotificationsMutation,
   useGetApplicationforServicePostQuery,
   useAcceptApplicationMutation,
-
+  useGetServicesQuery,
 } = serviceApi;
