@@ -14,7 +14,7 @@ export const serviceApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["ServicePosts", "Applications", "Bookings"],
+  tagTypes: ["ServicePosts", "Applications", "Bookings", "Categories", "Notifications"],
   endpoints: (builder) => ({
     getServicePosts: builder.query<any, any>({
       query: () => "services/service-posts/",
@@ -129,17 +129,20 @@ export const serviceApi = createApi({
     }),
     getNotifications: builder.query<any, void>({
       query: () => "notifications/ ",
+      providesTags: ["Notifications"],
     }),
     readNotification: builder.mutation<any, string>({
       query: (id) => ({
         url: `notifications/${id}/read/`,
         method: "PUT",
+        invalidatesTags: ["Notifications"],
       }),
     }),
     readNotifications: builder.mutation<any, void>({
       query: () => ({
         url: `notifications/all/read/`,
         method: "PUT",
+        invalidatesTags: ["Notifications"],
       }),
     }),
     acceptApplication: builder.mutation<any, string>({
@@ -153,6 +156,51 @@ export const serviceApi = createApi({
         query
           ? `users/professional/services/?status=${query}`
           : `users/professional/services/`,
+    }),
+    reviewService: builder.mutation<any, {data: any }>({
+      query: ({data }) => ({
+        url: `services/bookings/review/`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Bookings"],
+    }),
+    giveComplaint: builder.mutation<any, {data: any }>({
+      query: ({data }) => ({
+        url: `services/bookings/complain/create/`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getCustomerServices: builder.query<any, string | undefined>({
+      query: (query) =>
+        query
+          ? `users/customer/services/?status=${query}`
+          : `users/customer/services/`,
+        providesTags: ["ServicePosts"]
+    }),
+    cancelBooking: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `services/service-bookings/${id}/cancel/`,
+        method: "POST",
+      }),
+    }),
+    completeBooking: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `services/service-bookings/${id}/complete/`,
+        method: "POST",
+      }),
+    }),
+    requestProfessionalService: builder.mutation<any, { data:any}>({
+      query: ({ data }) => ({
+        url: `users/customer/service-request/`,
+        method: "POST",
+        body: data
+      }),
+    }),
+    getRequestedServices: builder.query<any, string |undefined>({
+      query: (query) => `/users/customer/service-request/?status=${query}`,
+      providesTags: ["ServicePosts"],
     }),
   }),
 });
@@ -180,4 +228,11 @@ export const {
   useGetApplicationforServicePostQuery,
   useAcceptApplicationMutation,
   useGetServicesQuery,
+  useReviewServiceMutation,
+  useGiveComplaintMutation,
+  useGetCustomerServicesQuery,
+  useCancelBookingMutation,
+  useCompleteBookingMutation,
+  useRequestProfessionalServiceMutation,
+  useGetRequestedServicesQuery
 } = serviceApi;
