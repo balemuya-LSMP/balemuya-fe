@@ -21,7 +21,7 @@ export default function ProfessionalCard() {
 
     try {
       const response = await subscribeService({
-        plan_type: activeTab,
+        plan_type: activeTab.toLowerCase(),
         duration: selectedDuration,
         amount: totalAmount,
         return_url: "http://localhost:3000/professional/check",
@@ -80,7 +80,7 @@ export default function ProfessionalCard() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab as PlanType)}
-                  className={`py-2 rounded-md font-medium transition-all text-center ${activeTab === tab ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+                  className={`py-2 rounded-md font-medium transition-all text-center ${activeTab === tab ? "bg-purple-700 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
                 >
                   {tab}
                 </button>
@@ -98,12 +98,12 @@ export default function ProfessionalCard() {
             </select>
             <div className="text-center text-lg font-semibold text-gray-800 mt-4">
               <span>Total Amount: </span>
-              <span className="text-blue-600">{totalAmount} Birr</span>
+              <span className="text-purple-700">{totalAmount} Birr</span>
             </div>
             <button
               onClick={handleSubscribe}
               disabled={isLoading}
-              className="mt-6 w-full py-2 bg-blue-700 text-white rounded-md font-medium shadow-md hover:bg-blue-800 disabled:bg-gray-500"
+              className="mt-6 w-full py-2 bg-purple-700 text-white rounded-md font-medium shadow-md hover:bg-purple-800 disabled:bg-gray-500"
             >
               {isLoading ? "Processing..." : "Subscribe Now"}
             </button>
