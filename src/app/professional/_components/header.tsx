@@ -93,6 +93,9 @@ export default function Header() {
           >
             Job
           </Link>
+          <Link href="/professional/requests" className="text-gray-700 hover:text-purple-700">
+            Requests
+          </Link>
         </nav>
 
         {/* Search, Filter, Notification, and Profile Section */}
