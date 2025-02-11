@@ -66,7 +66,13 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8 my-8">
-        <div className="relative -top-14 mx-auto w-16 h-16 bg-white rounded-full border-4 shadow-md"></div>
+        <img
+          src="/images/logo.jpg"
+          alt="Logo"
+          width={60}
+          height={60}
+          className="relative -top-14 mx-auto w-16 h-16 bg-white rounded-full shadow-md"
+        />
         <h2 className="text-2xl text-gray-800 font-bold mb-6 text-center">
           Register
         </h2>
