@@ -1,11 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState } from "react";
 import Link from "next/link";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
+
 import { useAuth } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
+import { useGetNotificationsQuery } from "@/store/api/services.api";
+import { FaBell } from "react-icons/fa";
+import NotificationsPanel from "@/app/professional/_components/NotificationsPanel";
 
 
 export default function Header() {
@@ -13,16 +18,24 @@ export default function Header() {
   const router = useRouter();
   const { logout } = useAuth();
   const { data: userProfile } = useUserProfileQuery({});
+  const { data: notificationData } = useGetNotificationsQuery();
+  const [isOpen, setIsOpen] = useState(false);
 
-const handleLogout = async() =>{
-  await logout();
 
-  router.push("/auth/login")
-}
+
+
+  const unreadCount = notificationData?.notifications?.filter((notif: any) => !notif.is_read).length ?? 0;
+
+
+  const handleLogout = async () => {
+    await logout();
+
+    router.push("/auth/login")
+  }
 
   return (
     <header className="bg-white shadow sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         {/* Logo image*/}
 
         <Link href="/customer">
@@ -47,6 +60,16 @@ const handleLogout = async() =>{
             Work Post
           </Link>
         </nav>
+        <div className="flex items-center space-x-6">
+        <button onClick={() => setIsOpen(true)} className="relative">
+          <FaBell className="text-xl text-gray-700 hover:text-purple-700 cursor-pointer" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+              {unreadCount}
+            </span>
+          )}
+        </button>
+
 
         {/* Profile Section with Dropdown */}
         <div className="relative">
@@ -86,6 +109,8 @@ const handleLogout = async() =>{
             </div>
           )}
         </div>
+        </div>
+        <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
       </div>
     </header>
   );
