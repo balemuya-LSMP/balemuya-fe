@@ -7,14 +7,17 @@ import MapComponent from "@/app/(features)/_components/map";
 import Image from "next/image";
 import { FaLocationDot } from "react-icons/fa6";
 import { useParams } from "next/navigation";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import { useGetCustomerByIdQuery } from "@/store/api/user.api";
+import { useRequestProfessionalServiceMutation } from "@/store/api/services.api";
 import Loader from "@/app/(features)/_components/loader";
+import { useEffect, useState } from "react";
+import { getDistanceFromLatLon } from "@/shared/utils";
+import StarRating from "@/app/(features)/_components/StarRating";
+import { toast, ToastContainer } from "react-toastify";
+
 const job = {
   id: 1,
-  title: "Electrician",
-  description: "Expert in residential and commercial electrical repairs.",
-  poster_name: "John Doe",
-  poster_image: "/images/user.jpg",
   reviews: [
     { client: "Jane", rating: 5, comment: "Great work!" },
     { client: "Bob", rating: 4, comment: "Quick and professional." },
@@ -28,19 +31,24 @@ const job = {
     "/images/main.jpg",
     "/images/main.jpg",
   ],
-  certifications: [
-    "/images/c1.png",
-    "/images/c2.jpg",
-  ]
+
 };
 
 export default function ProfessionalDetailsPage() {
   const { id } = useParams();
   const { data: customerData, isLoading } = useGetCustomerByIdQuery(id);
+  const { position, getPosition } = useGeolocation();
+  const [requestService] = useRequestProfessionalServiceMutation();
+  const [requestModal, setRequestModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   const customerInfo = customerData?.data
 
   console.log(customerInfo);
+
+  useEffect(() => { 
+    getPosition();
+  }, []); 
 
   const lat = customerInfo?.customer?.user?.address?.latitude;
   const lng = customerInfo?.customer?.user?.address?.longitude;
@@ -53,6 +61,17 @@ export default function ProfessionalDetailsPage() {
     },
   ];
 
+  const handelRequest = () => {
+
+    const newData = {
+      professional_id: customerInfo?.customer?.user?.id,
+      detail: message
+    }
+    requestService({data: newData}).unwrap();
+    toast.success("Request sent successfully");
+    setMessage("");
+    setRequestModal(false);
+  }
   if(isLoading) return <Loader/>
   return (
     <div className="flex h-screen items-start justify-between gap-6 px-6 py-6">
@@ -80,7 +99,8 @@ export default function ProfessionalDetailsPage() {
             </div>
             <div>
 
-              <span className="text-yellow-500 text-lg">★★★★★</span>
+              <span className="text-gray-800 text-lg">{customerInfo?.customer?.rating}</span>
+              <StarRating rating={customerInfo?.customer?.rating}/>
               <p>{customerInfo?.customer?.user?.address?.country}</p>
             </div>
           </div>
@@ -88,7 +108,7 @@ export default function ProfessionalDetailsPage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center text-gray-500">
               <FaLocationDot className="text-purple-700 text-lg mr-2" />
-              <span className="text-sm">2km Away</span>
+              <span className="text-sm">{getDistanceFromLatLon(position?.lat ?? 11.60000000, position?.lng ?? 37.38333330, lat, lng)}</span>
             </div>
 
           </div>
@@ -153,7 +173,8 @@ export default function ProfessionalDetailsPage() {
 
         {/* Apply Button */}
         <div className="flex justify-center">
-          <button className="w-full px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800 transition mt-6">
+          <button className="w-full px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800 transition mt-6"
+          onClick={() => setRequestModal(true)}>
             Request Service
           </button>
         </div>
@@ -161,6 +182,27 @@ export default function ProfessionalDetailsPage() {
       <div className="w-1/2 bg-white rounded-lg shadow-md p-6">
         <MapComponent userLocations={userLocations} />
       </div>
+     {
+      requestModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-1/3">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Request Service</h3>
+            <textarea
+              className="w-full p-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <button
+              className="bg-purple-700 text-white py-2 px-4 rounded-lg w-full hover:bg-purple-600 transition"
+              onClick={handelRequest}
+            >
+              Send Request
+            </button>
+          </div>
+        </div>
+      )
+     }
+     <ToastContainer position="top-center"/>
     </div>
   );
 }
