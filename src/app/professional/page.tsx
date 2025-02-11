@@ -51,6 +51,7 @@ export default function Home() {
   }
 
 
+  console.log(workPosts);
   return (
     <div className="bg-gray-50 font-sans">
       <Header />
@@ -138,7 +139,7 @@ export default function Home() {
 
               <div className="flex items-center mt-6 pt-4 border-t border-gray-200">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-600 shadow-md">
-                  <Link href={`/professional/customer/${work.customer_id}`}>
+                  <Link href={`/professional/customer/${work.customer?.user?.id}`}>
                     <img
                       src={work.customer_profile_image}
                       alt={work.customer_first_name}
@@ -150,7 +151,7 @@ export default function Home() {
                 </div>
                 <div className="ml-3">
                   <h5 className="text-sm font-medium text-gray-900">
-                    <span className="text-purple-700">Posted by:</span> {work.customer_first_name}
+                    <span className="text-purple-700">Posted by:</span> {work.customer?.user?.first_name}
                   </h5>
                 </div>
               </div>
