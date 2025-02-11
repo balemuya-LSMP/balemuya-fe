@@ -60,7 +60,13 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 relative">
       <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-md p-8 md:flex">
         <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-          <div className="w-16 h-16 bg-white rounded-full border-4 shadow-md"></div>
+        <img
+          src="/images/logo.jpg"
+          alt="Logo"
+          width={60}
+          height={60}
+          className="cursor-pointer bg-transparent rounded-full shadow"
+        />
         </div>
         <div className="mt-12 md:w-1/2">
           <h2 className="text-2xl text-gray-800 font-bold mb-4 text-center ">
