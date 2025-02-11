@@ -80,6 +80,21 @@ export const userApi = createApi({
     getCustomerById: builder.query({
       query: (id) => `/users/customer/${id}/profile/`,
     }),
+    getGeneralStats: builder.query({
+      query: () => "/admin/stats/",
+    }),
+    filterProfessionals: builder.query({
+      query: ({ category, rating, distance }: { category?: string; rating?: number; distance?: number } = {}) => {
+        const query = new URLSearchParams();
+    
+        if (category) query.append("category", category);
+        if (rating) query.append("rating", rating.toString());
+        if (distance) query.append("distance", distance.toString());
+    
+        return `/users/customer/filter-professionals/${query.toString() ? `?${query.toString()}` : ""}`;
+      },
+    }),
+    
   }),
 });
 
@@ -96,4 +111,6 @@ export const {
   useGetNearByProfessionalsByCategoryQuery,
   useGetProfessionalByIdQuery,
   useGetCustomerByIdQuery,
+  useGetGeneralStatsQuery,
+  useFilterProfessionalsQuery,
 } = userApi;
