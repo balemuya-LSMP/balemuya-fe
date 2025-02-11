@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
@@ -84,7 +85,7 @@ export default function TransactionDetails() {
             <div className="flex items-center justify-end w-full print:hidden">
                 <Link
                     href="/professional"
-                    className="p-3 rounded-md text-gray-700 print:hidden shadow-sm transition-all duration-300 hover:bg-gray-200"
+                    className="p-3 rounded-md bg-blue-100 text-gray-700 print:hidden shadow-sm transition-all duration-300 hover:bg-gray-200"
                 >
                     <FaArrowLeft className="w-6 h-4" />
                 </Link>
@@ -92,6 +93,13 @@ export default function TransactionDetails() {
             </div>
 
             <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-2xl border border-gray-300">
+                <div
+                    className="absolute inset-0 flex items-center mt-52 justify-center pointer-events-none h-full"
+                >
+                    <img src="/images/logo.jpg" alt="Watermark"
+                        className="w-3/4 opacity-10"
+                    />
+                </div>
                 {/* Payment Status Icon */}
                 <div className="flex justify-center -mt-12">
                     {payment.payment_status === "completed" ? (
