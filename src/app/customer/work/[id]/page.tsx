@@ -20,6 +20,7 @@ import {
 import Loader from "@/app/(features)/_components/loader";
 import Header from '../../_components/header';
 import Footer from '@/app/(features)/_components/footer';
+import { toast, ToastContainer } from 'react-toastify';
 
 
 export default function WorkDetails() {
@@ -61,6 +62,7 @@ export default function WorkDetails() {
 
   const handleAcceptApplication = async (id: string) => {
     await acceptApplication(id);
+    toast.success('Application accepted successfully');
   }
   const handleUpdatePost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -281,6 +283,7 @@ export default function WorkDetails() {
             ))}
           </div>
         </div>
+        <ToastContainer position='top-center'/>
       </div>
       <Footer />
     </>
