@@ -9,7 +9,9 @@ export const UserSchema = z.object({
   gender: z.enum(["male", "female"], {
     errorMap: () => ({ message: "Please select a gender" }),
   }),
-  user_type: z.enum(["customer", "professional"]),
+  user_type: z.enum(["customer", "professional"], {
+    errorMap: () => ({ message: "Please select a user type" }),
+  }),
   password: z.string().min(8, "Password must be at least 8 characters"),
   confirmPassword: z.string().min(8, "Confirm Password must be at least 8 characters"),
 }).refine((data) => data.password === data.confirmPassword, {
