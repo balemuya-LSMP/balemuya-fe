@@ -18,70 +18,16 @@ import React from "react";
 import Footer from "../(features)/_components/footer";
 import Header from "./_components/header";
 import { useRouter } from "next/navigation";
+import { Rat } from "lucide-react";
+import StarRating from "../(features)/_components/StarRating";
 
-const workSamples = [
-  {
-    id: 1,
-    name: "John Doe",
-    category: "Home Services",
-    location: "2 km",
-    addresses: "Addis Ababa",
-    title: "Electrician",
-    description:
-      "Expert in residential and commercial electrical repairs and installations.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 2,
-    name: "John Doe",
-    category: "Repair and Maintenance",
-    title: "Appliance Repair Technician",
-    description:
-      "Specialist in repairing household appliances like refrigerators and washing machines.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 3,
-    name: "John Doe",
-    category: "Event Services",
-    title: "Photographer",
-    description:
-      "Professional photographer for weddings, parties, and corporate events.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 4,
-    name: "John Doe",
-    category: "Technology and IT",
-    title: "CCTV Installation Technician",
-    description:
-      "Secure your home and office with expert CCTV installation services.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 5,
-    name: "John Doe",
-    category: "Construction and Renovation",
-    title: "Painter",
-    description: "Professional painting services for homes and offices.",
-    image: "/images/user.jpg",
-  },
-  {
-    id: 6,
-    name: "John Doe",
-    category: "Health and Wellness",
-    title: "Personal Trainer",
-    description:
-      "Customized fitness training programs for individuals and groups.",
-    image: "/images/user.jpg",
-  },
-];
 
 export default function Home() {
   const router = useRouter();
   const { data: professionalsData, error, isLoading } = useGetNearByProfessionalsQuery({});
 
   const professionals = professionalsData?.nearby_professionals;
+
   return (
     <div className="bg-gray-100 font-sans no-scrollbar">
       <Header />
@@ -144,7 +90,6 @@ export default function Home() {
           {professionals?.map((professional: any) => (
             <div
               key={professional.id}
-              onClick={() => router.push(`/customer/professionals/${professional.id}`)}
               className="bg-gray-100 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
               <div className="flex justify-between items-center">
@@ -163,7 +108,7 @@ export default function Home() {
                   />
                   <p className="tetx-lg font-semibold ">{professional.name}</p>
                 </div>
-                <span className="text-yellow-500">★★★★★</span>
+                <StarRating  rating={professional?.rating}/>
               </div>
               <div className="flex justify-start items-center ml-3 mt-2 gap-2">
                 <FaLocationDot className="text-purple-700" />
@@ -177,7 +122,9 @@ export default function Home() {
               </p>
 
               <div className="flex justify-end items-center">
-                <button className="mt-4 mr-0 px-4 py-2 text-purple-700">
+                <button className="mt-4 mr-0 px-4 py-2 text-purple-700"
+                onClick={() => router.push(`/customer/professionals/${professional.id}`)}
+                >
                   Details
                 </button>
               </div>
