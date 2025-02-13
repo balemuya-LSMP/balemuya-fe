@@ -35,7 +35,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
+  const [bio, setBio] = useState("");
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
   if (isLoading) {
@@ -59,7 +59,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
       middle_name: middleName || user?.middle_name,
       last_name: lastName || user?.last_name,
       phone_number: phoneNumber || user?.phone_number,
-      email: email || user?.email,
+      bio: bio || user?.bio,
       profile_image: profilePicture || null,
     };
 
@@ -68,7 +68,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
     formData.append("middle_name", updatedData.middle_name);
     formData.append("last_name", updatedData.last_name);
     formData.append("phone_number", updatedData.phone_number);
-    formData.append("email", updatedData.email);
+    formData.append("bio", updatedData.bio);
 
     if (updatedData.profile_image) {
       formData.append("profile_image", updatedData.profile_image);
@@ -131,14 +131,13 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
             />
           </label>
           <label className="block mb-2">
-            Email:
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={user?.email || "Enter email"}
+            Bio:
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder={user?.bio || "Enter Bio"}
               className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-            />
+            ></textarea>
           </label>
           <label className="block mb-4">
             Profile Picture:
@@ -723,56 +722,3 @@ export function PortfolioModal({ isOpen, onClose, data, mode }: ModalProps) {
   );
 }
 
-export function BioModal({ isOpen, onClose }: ModalProps) {
-  const [bio, setBio] = useState("");
-  const [updateProfile] = useUpdateProfessionalProfileMutation();
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-
-    const updatedData = {
-      bio: bio
-    };
-
-    try {
-      await updateProfile({ updated: updatedData }).unwrap();
-      onClose();
-    } catch (error) {
-      console.error("Failed to update bio:", error);
-    }
-  }
-
-  return (
-    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-        <h1 className="text-2xl font-semibold mb-4">Bio</h1>
-        <form>
-          <label className="block mb-2">
-            Bio:
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Enter bio"
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-            />
-          </label>
-          <div className="flex justify-end gap-4">
-            <button
-              type="submit"
-              onClick={(e) => handleSubmit(e)}
-              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
-            >
-              Submit
-            </button>
-            <button
-              onClick={onClose}
-              className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
