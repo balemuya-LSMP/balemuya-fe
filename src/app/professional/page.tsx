@@ -13,11 +13,12 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import Footer from "../(features)/_components/footer";
 import Link from "next/link";
 import Header from "./_components/header";
-import { useGetServicePostsQuery, useCreateApplicationMutation } from "@/store/api/services.api";
+import { useGetServicePostsQuery, useCreateApplicationMutation, useSearchServicesQuery, useServiceFilterMutation } from "@/store/api/services.api";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import Loader from "../(features)/_components/loader";
 import { useEffect, useState } from "react";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
+import {toast, ToastContainer} from "react-toastify";
 
 
 export default function Home() {
@@ -28,14 +29,34 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [selectedWorkId, setSelectedWorkId] = useState("")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<string[]>([]);
 
 
+  const { data: searchResults } = useSearchServicesQuery(searchQuery);
+  const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
+
+
+
+  const handleFilter = async (updatedFilter: string[]) => {
+    const newData = {
+      categories: updatedFilter,
+    }
+    await filterServices({ data: newData }).unwrap();
+  };
 
   // it sends  the id and message to the server 
   const handleApply = async (id: string) => {
-    await createApplication({ service_id: id, message: message }).unwrap();
+    try{
+     await createApplication({ service_id: id, message: message }).unwrap();
+      toast.success("Application Sent Successfully");
+      setMessage("");
+      setModalOpen(false);
+    }catch(err){
+      console.log(err);
+      toast.error("Please update your subscription plan to apply for this job");
+    }
   };
-
 
   useEffect(() => {
     getPosition();
@@ -50,11 +71,14 @@ export default function Home() {
     return <Loader />;
   }
 
-
-  console.log(workPosts);
   return (
     <div className="bg-gray-50 font-sans">
-      <Header />
+      <Header searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        filter={filter}
+        setFilter={setFilter}
+        handleFilter={handleFilter}
+      />
 
       {/* Hero Section */}
       <section
@@ -102,18 +126,18 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-6">
-          {workPosts?.map((work: any) => (
-            <div
-              key={work.id}
-              className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all duration-300 relative"
-            >
+          {(searchQuery && searchResults?.length > 0
+            ? searchResults
+            : filter.length > 0
+              ? filteredResults
+              : workPosts
+          )?.map((work: any) => (
+            <div key={work.id} className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all duration-300 relative">
               <h4 className="text-xl font-semibold text-gray-900 mb-2">{work.title}</h4>
-
               <div className="flex items-center text-gray-600 text-sm">
                 <IoIosTime className="text-purple-700 text-xl mr-2" />
                 <span>{timeDifference(new Date(), new Date(work.created_at))}</span>
               </div>
-
               <div className="flex justify-between items-center py-4 border-b border-gray-200">
                 <div className="flex items-center text-gray-600 text-sm">
                   <GrStatusGood className="text-purple-700 text-xl mr-2" />
@@ -124,9 +148,7 @@ export default function Home() {
                   <span>{getDistanceFromLatLon(userLat, userLng, work.location.latitude, work.location.longitude)}</span>
                 </div>
               </div>
-
               <p className="text-gray-700 mt-4">{work.description}</p>
-
               <div className="mt-6">
                 <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-lg shadow-md hover:scale-105 transition-transform"
                   onClick={() => {
