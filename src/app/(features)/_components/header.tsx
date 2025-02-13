@@ -25,15 +25,15 @@ export default function Landing() {
         </Link>
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-4">
-          <a href="#features" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
-            Features
-          </a>
-          <a href="#categories" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
-            Categories
-          </a>
-          <a href="#contact" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
+          <Link href="/" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
+            Home
+          </Link>
+          <Link href="/contact" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
             Contact
-          </a>
+          </Link>
+          <Link href="/about" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
+            About
+          </Link>
           <Link href="/auth/login" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
             Login
           </Link>
@@ -63,13 +63,6 @@ export default function Landing() {
       >
         <nav className="flex flex-col space-y-2 p-4">
           <Link
-            href="#features"
-            className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600"
-            onClick={() => setIsMenuOpen(false)} 
-          >
-            Features
-          </Link>
-          <Link
             href="#categories"
             className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600 hover:underline"
             onClick={() => setIsMenuOpen(false)} 
@@ -77,11 +70,18 @@ export default function Landing() {
             Categories
           </Link>
           <Link
-            href="#contact"
+            href="/contact"
             className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600 hover:underline"
             onClick={() => setIsMenuOpen(false)} 
           >
             Contact
+          </Link>
+          <Link
+            href="/about"
+            className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600"
+            onClick={() => setIsMenuOpen(false)} 
+          >
+            About
           </Link>
           <Link
             href="/auth/login"
