@@ -24,6 +24,7 @@ export default function JobsPage() {
   const [giveComplaint] = useGiveComplaintMutation();
   const [cancelBooking] = useCancelBookingMutation();
   const [completeBooking] = useCompleteBookingMutation();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["pending", "rejected", "booked", "canceled"];
@@ -95,7 +96,9 @@ export default function JobsPage() {
 
   return (
     <>
-      <Header />
+      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={[]} setFilter={function (filter: string[]): void {
+        throw new Error("Function not implemented.");
+      } } />
       <div className="bg-gray-50 min-h-screen">
         {/* Tabs Section */}
         <div className="container mx-auto px-6 py-6">
@@ -117,7 +120,7 @@ export default function JobsPage() {
 
           {/* Jobs Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
-            {services.map((job: any) => (
+            {services?.map((job: any) => (
               <div
                 key={job.id}
                 className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex flex-col justify-between space-y-4"
