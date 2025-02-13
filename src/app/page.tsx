@@ -9,19 +9,21 @@ import "swiper/css/autoplay";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import Footer from "./(features)/_components/footer";
 import Header from "./(features)/_components/header";
+import { FaDownload } from "react-icons/fa";
+
 
 export default function Landing() {
   const testimonials = [
     {
       image:
         "https://img.freepik.com/free-vector/young-prince-royal-attire_1308-176144.jpg?t=st=1734116405~exp=1734120005~hmac=9d83712b527a76bde4381cf825822c4256d5d6a1120aedcdc283d90792bb6556&w=740",
-      name: "John Doe",
+      name: "Ephrem Habtamu",
       feedback: "This platform helped me find great professionals quickly!",
     },
     {
       image:
         "https://img.freepik.com/free-vector/young-prince-royal-attire_1308-176144.jpg?t=st=1734116405~exp=1734120005~hmac=9d83712b527a76bde4381cf825822c4256d5d6a1120aedcdc283d90792bb6556&w=740",
-      name: "Jane Smith",
+      name: "Esubalew Kunta",
       feedback: "A fantastic experience! I found everything I needed!",
     },
     {
@@ -33,7 +35,7 @@ export default function Landing() {
     {
       image:
         "https://img.freepik.com/free-vector/young-prince-royal-attire_1308-176144.jpg?t=st=1734116405~exp=1734120005~hmac=9d83712b527a76bde4381cf825822c4256d5d6a1120aedcdc283d90792bb6556&w=740",
-      name: "Bob Brown",
+      name: "Yikeber Misganaw",
       feedback: "I found the perfect professional for my project!",
     },
   ];
@@ -114,7 +116,26 @@ export default function Landing() {
           </button>
         </div>
       </section>
-
+      <section className="py-12 sm:py-16 bg-gray-300">
+        <div className="max-w-7xl mx-auto text-center text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-500">
+            Get Our Mobile App
+          </h2>
+          <p className="text-sm sm:text-base mb-6 text-gray-500">
+            Download the app and take your professional connections with you
+            anywhere.
+          </p>
+          <div className="flex justify-center gap-6">
+            <a
+              href="https://drive.google.com/file/d/1fmLA_Fi9L6b5K2jxtXOoxh5JeG4LNKSc/view?usp=drivesdk"
+              className="flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg shadow-md hover:from-purple-600 hover:to-purple-500 transition-all duration-300 transform hover:scale-105"
+            >
+              <FaDownload className="w-5 h-5 mr-3" />
+              Download on Our App
+            </a>
+          </div>
+        </div>
+      </section>
       {/* Testimonials Section */}
       <section className="w-full bg-gray-200 text-white py-12 sm:py-16">
         <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">
