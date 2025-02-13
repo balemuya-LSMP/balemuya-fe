@@ -8,22 +8,29 @@ import Link from "next/link";
 import { FaBell, FaFilter, FaSearch } from "react-icons/fa";
 import { FiUser, FiLogOut } from "react-icons/fi";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
-import { useGetNotificationsQuery } from "@/store/api/services.api";
+import { useGetNotificationsQuery, useGetCategoriesQuery } from "@/store/api/services.api";
 import { useAuth } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 import NotificationsPanel from "./NotificationsPanel";
 
-export default function Header() {
+interface HeaderProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  filter: string[];
+  setFilter: (filter: string[]) => void;
+  handleFilter?: (updatedFilter: string[]) => void;
+}
+
+export default function Header({ searchQuery, setSearchQuery, filter, setFilter, handleFilter }: HeaderProps) {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { data: userProfile, isLoading } = useUserProfileQuery({});
+  const {data:categories} = useGetCategoriesQuery();
   const { data: notificationData } = useGetNotificationsQuery();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { logout } = useAuth();
-
-
   const unreadCount = notificationData?.notifications?.filter((notif: any) => !notif.is_read).length ?? 0;
 
   const handleLogout = async () => {
@@ -32,31 +39,15 @@ export default function Header() {
 
   }
 
-  const categories = [
-    { name: "Home Services" },
-    { name: "Repair and Maintenance" },
-    { name: "Event Services" },
-    { name: "Technology and IT" },
-    { name: "Construction and Renovation" },
-    { name: "Health and Wellness" },
-  ];
-
-  const handleCategoryToggle = (categoryName: string) => {
-    if (selectedCategories.includes(categoryName)) {
-      // Remove category if already selected
-      setSelectedCategories(
-        selectedCategories.filter((name) => name !== categoryName)
-      );
-    } else {
-      // Add category if not selected
-      setSelectedCategories([...selectedCategories, categoryName]);
+  const handleCategoryChange = (categoryName: string) => {
+    const updatedFilter = filter.includes(categoryName)
+      ? filter.filter((item: string) => item !== categoryName)
+      : [...filter, categoryName];
+    setFilter(updatedFilter);
+    
+    if (handleFilter) {
+      handleFilter(updatedFilter); // Pass updated filter
     }
-  };
-
-  const applyFilter = () => {
-    setShowFilter(false);
-    console.log("Selected Categories:", selectedCategories);
-    // Logic to apply filter with selectedCategories can go here
   };
 
   return (
@@ -104,6 +95,8 @@ export default function Header() {
             <input
               type="text"
               placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="px-4 py-2 w-72 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
             <FaSearch className="absolute right-3 text-gray-500 hover:text-purple-700 cursor-pointer" />
@@ -118,10 +111,10 @@ export default function Header() {
             {showFilter && (
               <div className="absolute top-10 right-0 w-56 bg-white shadow-lg rounded-lg p-4 z-20">
                 <ul className="space-y-2">
-                  {categories.map((category, index) => (
+                  {categories?.map((category:any, index:any) => (
                     <li
                       key={index}
-                      onClick={() => handleCategoryToggle(category.name)}
+                      
                       className={`flex items-center gap-2 text-gray-700 hover:text-purple-700 cursor-pointer ${selectedCategories.includes(category.name)
                         ? "font-bold text-purple-700"
                         : ""
@@ -129,19 +122,13 @@ export default function Header() {
                     >
                       <input
                         type="checkbox"
-                        checked={selectedCategories.includes(category.name)}
-                        onChange={() => handleCategoryToggle(category.name)}
+                        checked={filter.includes(category.name)}
+                        onChange={() => handleCategoryChange(category.name)}
                       />
                       {category.name}
                     </li>
                   ))}
                 </ul>
-                <button
-                  onClick={applyFilter}
-                  className="mt-4 px-4 py-2 text-purple-700 rounded-lg"
-                >
-                  Apply Filter
-                </button>
               </div>
             )}
           </div>
@@ -195,17 +182,7 @@ export default function Header() {
             )}
           </div>
         </div>
-      </div>
-
-      {/* Display Selected Categories */}
-      {selectedCategories.length > 0 && (
-        <div className="bg-gray-100 py-2 px-4 mt-4 text-center">
-          <p>
-            <strong>Selected Categories:</strong>{" "}
-            {selectedCategories.join(", ")}
-          </p>
-        </div>
-      )}
+      </div>      
 
       {/* Notifications Panel */}
       <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
