@@ -4,14 +4,17 @@
 "use client";
 
 import Loader from "@/app/(features)/_components/loader";
-import { useDeleteCertificatesMutation, useDeleteEducationsMutation, useDeletePortifoliosMutation, useRemoveAddressesMutation, useRequestVerficationMutation, useUserProfileQuery } from "@/store/api/userProfile.api";
+import { useDeleteCertificatesMutation, useDeleteEducationsMutation, useDeletePortifoliosMutation, useRemoveAddressesMutation, useRequestVerficationMutation, useUserProfileQuery, useAddCategoriesMutation, useRemoveCategoriesMutation } from "@/store/api/userProfile.api";
+import { useGetCategoriesQuery } from "@/store/api/services.api";
 import { use, useState } from "react";
 import {
   FaCheckCircle,
   FaEdit,
   FaExclamationCircle,
+  FaExclamationTriangle,
   FaMailBulk,
   FaPhone,
+  FaTrash,
   FaUser,
 } from "react-icons/fa";
 import { FiCheckCircle, FiEdit, FiTrash } from "react-icons/fi";
@@ -24,12 +27,14 @@ import {
   GovernmentIdModal,
   CertificateModal,
   AddressModal,
-  BioModal,
 } from "../_components/modals";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function Profile() {
   const { data: userPofile, isLoading, error } = useUserProfileQuery({});
+  const { data: categoriesData } = useGetCategoriesQuery();
+  const [addCategory] = useAddCategoriesMutation();
+  const [removeCategory] = useRemoveCategoriesMutation();
   const [requestVerification] = useRequestVerficationMutation();
   const [deleteEducation] = useDeleteEducationsMutation();
   const [deletePortifolio] = useDeletePortifoliosMutation();
@@ -43,11 +48,12 @@ export default function Profile() {
   const [isCertificateModalOpen, setCertificateModalOpen] = useState(false);
   const [isGovernmentIdModalOpen, setGovernmentIdModalOpen] = useState(false);
   const [isPortfolioModalOpen, setPortfolioModalOpen] = useState(false);
-  const [isBioModalOpen, setBioModalOpen] = useState(false);
   const [selectdEducation, setSelectedEducation] = useState<any>(null);
   const [selctedPortfolio, setSelectedPortfolio] = useState<any>(null);
   const [selectedAddress, setSelectedAddress] = useState<any>(null);
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
+  const [isCategoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
 
   if (isLoading) {
@@ -75,12 +81,14 @@ export default function Profile() {
       user_type,
       is_active,
       is_blocked,
-      is_verified,
       created_at,
       profile_image_url,
       address = {},
     } = {},
+    is_verified,
+    num_of_request,
     skills = [],
+    categories = [],
     educations = [],
     portfolios = [],
     certificates = [],
@@ -96,6 +104,35 @@ export default function Profile() {
       toast.success("Request for verification submitted successfully");
     } catch (error) {
       console.error(error);
+    }
+  }
+
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const newCategory = {
+      name: selectedCategory
+    }
+
+    try {
+      await addCategory({ data: newCategory }).unwrap();
+      toast.success("Category add Successfully")
+      setCategoryModalOpen(false)
+
+    } catch (error) {
+      console.error("Failed to add category:", error);
+    }
+  }
+
+  const handleDelete = async (category: string) => {
+    const newData = {
+      name: category,
+    }
+    try {
+      await removeCategory({ data: newData }).unwrap();
+      toast.success("Remove Category")
+    } catch (error) {
+      toast.error("Failed to delete category")
     }
   }
 
@@ -172,34 +209,51 @@ export default function Profile() {
               <h1 className="text-2xl font-bold text-gray-800 mt-2 md:ml-10">
                 {first_name} {middle_name}
               </h1>
-              <p className="text-purple-700 font-semibold md:ml-10">{ }</p>
               <p className="text-gray-600 text-sm mt-2 md:ml-10">{bio}</p>
-              <div className="flex items-center gap-2 mt-2 md:ml-10">
-                <FaPhone className="text-purple-700" />
-                <a
-                  href={`tel:${phone_number}`}
-                  className="text-gray-700 hover:underline"
-                >
-                  {phone_number}
-                </a>
+              <div className="flex flex-col justify-start items-center gap-3 p-4 rounded-lg shadow-md bg-white">
+                <div className="flex items-center gap-2 mt-2 md:ml-10">
+                  <FaPhone className="text-purple-700" />
+                  <a
+                    href={`tel:${phone_number}`}
+                    className="text-gray-700 hover:underline"
+                  >
+                    {phone_number}
+                  </a>
+                </div>
+                <div className="flex items-center gap-2 md:ml-10">
+                  <MdMail className="text-purple-700" />
+                  <a
+                    href={`mailto:${email}`}
+                    className="text-gray-700 hover:underline"
+                  >
+                    {email}
+                  </a>
+                </div>
+                <div className="flex items-center gap-2 md:ml-10">
+                  <FaUser className="text-purple-700" />
+                  <p className="text-gray-800">
+                    {user_type
+                      ? user_type.charAt(0).toUpperCase() + user_type.slice(1)
+                      : "Unknown"}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-2 md:ml-10">
-                <MdMail className="text-purple-700" />
-                <a
-                  href={`mailto:${email}`}
-                  className="text-gray-700 hover:underline"
-                >
-                  {email}
-                </a>
+
+              {/* num of request left */}
+              <div className="flex items-center gap-3 p-4 mt-2 rounded-lg shadow-md bg-white">
+                {num_of_request === 0 ? (
+                  <div className="flex items-center gap-2 text-red-600">
+                    <FaExclamationTriangle className="text-2xl" />
+                    <p className="font-semibold">You have finished the subscription</p>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <FaCheckCircle className="text-2xl" />
+                    <p className="font-semibold">You have {num_of_request} job request left</p>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-2 md:ml-10">
-                <FaUser className="text-purple-700" />
-                <p className="text-gray-800">
-                  {user_type
-                    ? user_type.charAt(0).toUpperCase() + user_type.slice(1)
-                    : "Unknown"}
-                </p>
-              </div>
+
             </div>
             {
               isUserModalOpen && (
@@ -209,26 +263,79 @@ export default function Profile() {
               )
             }
           </div>
-
+          {/* Add categories  is drop down select and post */}
           <hr className="my-6 border-t border-gray-300" />
-          {/* Bio section */}
           <div className="mt-6">
             <div className="flex justify-between">
-              <h2 className="text-xl font-semibold text-gray-800">Bio</h2>
-              <button
-                onClick={() => setBioModalOpen(true)}
-                className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
-              >
-                <MdEdit />
-              </button>
-            </div>
-            <p className="text-gray-600">{bio}</p>
+              <h2 className="text-xl font-semibold text-gray-800">Categories</h2>
+              {Array.isArray(categories) && categories.length < 3 && (
+                <button
+                  onClick={() => setCategoryModalOpen(true)}
+                  className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
+                >
+                  <MdAdd />
+                </button>
+              )}
 
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {categories.map((category: any, index: any) => (
+                <div
+                  key={index}
+                  className="flex items-center p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-shadow"
+                >
+                  <FaCheckCircle className="text-blue-500 text-lg mr-3" />
+                  <span className="text-gray-700 font-medium">
+                    {category?.name}
+                  </span>
+
+                  <button
+                    onClick={() => handleDelete(category.name)}
+                    className="ml-auto text-gray-600 bg-blue-100 rounded-full p-2 hover:bg-gray-300 hover:text-blue-700 transition duration-200"
+
+                  ><FaTrash /></button>
+                </div>
+              ))}
+            </div>
             {
-              isBioModalOpen && (
-                <BioModal
-                  isOpen={isBioModalOpen}
-                  onClose={() => setBioModalOpen(false)} mode={"add"} />
+              isCategoryModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                  <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                    <h2 className="text-xl font-bold mb-4">Add Category</h2>
+
+                    <form onSubmit={handleSubmit}>
+                      <label className="block mb-2 font-medium">Select Category</label>
+                      <select
+                        className="w-full p-2 border rounded mb-4"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                      >
+                        <option value="">selcet category --</option>
+                        {categoriesData?.map((category: any, index: any) => (
+                          <option key={category.id ?? index} value={category.name}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          className="px-4 py-2 bg-gray-300 rounded"
+                          onClick={() => setCategoryModalOpen(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-blue-600 text-white rounded"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
               )
             }
           </div>
@@ -239,7 +346,7 @@ export default function Profile() {
               <h2 className="text-xl font-semibold text-gray-800">Addresses</h2>
               <button
                 onClick={() => {
-                  setSelectedAddress(address ?? null); 
+                  setSelectedAddress(address ?? null);
                   setAddressModalOpen(true);
                 }}
                 className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
@@ -250,35 +357,35 @@ export default function Profile() {
             {
               address ? (
                 <div className="mt-4 p-4 bg-white rounded-lg shadow-md">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-gray-800 font-medium">{address?.country }</h3>
-                  <p className="text-gray-600">{address?.region}</p>
-                  <p className="text-gray-600">{address?.city }</p>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-gray-800 font-medium">{address?.country}</h3>
+                      <p className="text-gray-600">{address?.region}</p>
+                      <p className="text-gray-600">{address?.city}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleDeleteAddress()}
+                        className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200"
+                      >
+                        <FiTrash />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleDeleteAddress()}
-                    className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200"
-                  >
-                    <FiTrash />
-                  </button>
-                </div>
-              </div>
-            </div>
-              ):(
+              ) : (
                 <p>please add your address</p>
               )
             }
 
-          {isAddressModalOpen && (
-           <AddressModal
-             isOpen={isAddressModalOpen}
-             onClose={() => setAddressModalOpen(false)}
-             mode={address ? "edit" : "add"} 
-             data={address} 
-        />
-)}
+            {isAddressModalOpen && (
+              <AddressModal
+                isOpen={isAddressModalOpen}
+                onClose={() => setAddressModalOpen(false)}
+                mode={address ? "edit" : "add"}
+                data={address}
+              />
+            )}
           </div>
           <hr className="my-6 border-t border-gray-300" />
           {/* Skills */}
@@ -550,24 +657,23 @@ export default function Profile() {
           <hr className="my-6 border-t border-gray-300" />
           {/* request verification button */}
           <div className="flex justify-center mt-6">
-            {
-              !is_verified ? (
-                <button
-                  onClick={handeSubmitRequestVerification}
-                  className="flex items-center justify-center gap-2 text-purple-700 cursor-pointer hover:text-purple-800 transition-all duration-300 w-full max-w-xs border-2 border-purple-700 py-3 px-6 rounded-md shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
-                  <FaExclamationCircle size={20} />
-                  <span className="text-lg font-semibold">Request Verification</span>
-                </button>
-              ) : (
-                <div className="flex items-center justify-center gap-2 text-green-700 cursor-pointer hover:text-green-800 transition-all duration-300 w-full max-w-xs py-3 px-6 focus:outline-none">
-                  <FaCheckCircle size={20} />
-                  <span className="text-lg font-semibold">Verified</span>
-                </div>
-              )
-            }
+            {is_verified ? (
+              <div className="flex items-center justify-center gap-2 text-green-700 cursor-pointer hover:text-green-800 transition-all duration-300 w-full max-w-xs py-3 px-6 focus:outline-none">
+                <FaCheckCircle size={20} />
+                <span className="text-lg font-semibold">Verified</span>
+              </div>
+            ) : (
+              <button
+                onClick={handeSubmitRequestVerification}
+                className="flex items-center justify-center gap-2 text-purple-700 cursor-pointer hover:text-purple-800 transition-all duration-300 w-full max-w-xs border-2 border-purple-700 py-3 px-6 rounded-md shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-700 focus:ring-offset-2">
+                <FaExclamationCircle size={20} />
+                <span className="text-lg font-semibold">Request Verification</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
+      <ToastContainer position="top-center" />
     </div>
   );
 }
