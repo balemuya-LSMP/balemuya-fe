@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
+import { useState } from "react";
 import {
   FaClipboardList,
   FaHandshake,
@@ -26,11 +27,16 @@ export default function Home() {
   const router = useRouter();
   const { data: professionalsData, error, isLoading } = useGetNearByProfessionalsQuery({});
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { data: searchResults } = useGetNearByProfessionalsQuery(searchQuery);
+
   const professionals = professionalsData?.nearby_professionals;
+  const resultToDisplay = searchQuery ? searchResults : professionals;
 
   return (
     <div className="bg-gray-100 font-sans no-scrollbar">
-      <Header />
+      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* Hero Section */}
       <section
@@ -87,7 +93,7 @@ export default function Home() {
           </p>
         </div>
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {professionals?.map((professional: any) => (
+          { resultToDisplay?.map((professional: any) => (
             <div
               key={professional.id}
               className="bg-gray-100 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -108,7 +114,7 @@ export default function Home() {
                   />
                   <p className="tetx-lg font-semibold ">{professional.name}</p>
                 </div>
-                <StarRating  rating={professional?.rating}/>
+                <StarRating rating={professional?.rating} />
               </div>
               <div className="flex justify-start items-center ml-3 mt-2 gap-2">
                 <FaLocationDot className="text-purple-700" />
@@ -123,7 +129,7 @@ export default function Home() {
 
               <div className="flex justify-end items-center">
                 <button className="mt-4 mr-0 px-4 py-2 text-purple-700"
-                onClick={() => router.push(`/customer/professionals/${professional.id}`)}
+                  onClick={() => router.push(`/customer/professionals/${professional.id}`)}
                 >
                   Details
                 </button>
