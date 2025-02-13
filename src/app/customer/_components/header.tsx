@@ -9,11 +9,16 @@ import { useAuth } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 import { FiLogOut, FiUser } from "react-icons/fi";
 import { useGetNotificationsQuery } from "@/store/api/services.api";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaSearch } from "react-icons/fa";
 import NotificationsPanel from "@/app/professional/_components/NotificationsPanel";
 
+interface HeaderProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+}
 
-export default function Header() {
+
+export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
   const { logout } = useAuth();
@@ -61,54 +66,64 @@ export default function Header() {
           </Link>
         </nav>
         <div className="flex items-center space-x-6">
-        <button onClick={() => setIsOpen(true)} className="relative">
-          <FaBell className="text-xl text-gray-700 hover:text-purple-700 cursor-pointer" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-              {unreadCount}
-            </span>
-          )}
-        </button>
-
-
-        {/* Profile Section with Dropdown */}
-        <div className="relative">
-          <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
-            <img
-              src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
-              alt="User"
-              width={40}
-              height={40}
-              className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer object-cover"
+          <div className="relative flex items-center">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="px-4 py-2 w-72 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
+            <FaSearch className="absolute right-3 text-gray-500 hover:text-purple-700 cursor-pointer" />
+          </div>
+          <button onClick={() => setIsOpen(true)} className="relative">
+            <FaBell className="text-xl text-gray-700 hover:text-purple-700 cursor-pointer" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                {unreadCount}
+              </span>
+            )}
           </button>
 
-          {/* Dropdown Menu */}
-          {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-52 bg-white border rounded-lg shadow-lg overflow-hidden transition-all duration-200">
-              <ul className="py-2">
-                <li>
-                  <Link
-                    href="/customer/profile"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-all"
-                  >
-                    <FiUser className="mr-3 text-lg text-purple-700" />
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    onClick={handleLogout} // Replace with logout logic
-                    className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-all"
-                  >
-                    <FiLogOut className="mr-3 text-lg text-red-600" />
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
+
+          {/* Profile Section with Dropdown */}
+          <div className="relative">
+            <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
+              <img
+                src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
+                alt="User"
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer object-cover"
+              />
+            </button>
+
+            {/* Dropdown Menu */}
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-52 bg-white border rounded-lg shadow-lg overflow-hidden transition-all duration-200">
+                <ul className="py-2">
+                  <li>
+                    <Link
+                      href="/customer/profile"
+                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-all"
+                    >
+                      <FiUser className="mr-3 text-lg text-purple-700" />
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleLogout} // Replace with logout logic
+                      className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-all"
+                    >
+                      <FiLogOut className="mr-3 text-lg text-red-600" />
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
         <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
       </div>
