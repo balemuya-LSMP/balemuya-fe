@@ -171,28 +171,24 @@ export const userProfileApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["UserProfile"],
-    }),
-    addCategories: builder.mutation<
-      UserResponse,
-      { categories: Record<string, any> }
-    >({
-      query: ({ categories }) => ({
-        url: `/professional/profile/categories/     `,
+    }),    
+    addCategories: builder.mutation<any, { data: any }>({
+      query: ({ data }) => ({
+        url: `/professional/profile/categories/`,
         method: "POST",
-        body: categories,
+        body: data,
       }),
       invalidatesTags: ["UserProfile"],
     }),
-    deleteCategories: builder.mutation<
-      UserResponse,
-      { categories: Record<string, any> }
-    >({
-      query: ({ categories }) => ({
-        url: `professional/profile/${categories}/`,
+    removeCategories: builder.mutation<any, { data: any }>({
+      query: ({ data }) => ({
+        url: `/professional/profile/categories/`,
         method: "DELETE",
+        body: data,
       }),
       invalidatesTags: ["UserProfile"],
     }),
+   
     updateProfessionalProfile: builder.mutation<
       UserResponse,
       { updated: Record<string, any> }
@@ -246,9 +242,9 @@ export const {
   useLazyUserProfileQuery,
   useUpdatePortifoliosMutation,
   useUpdateProfessionalProfileMutation,
-  useAddCategoriesMutation,
-  useDeleteCategoriesMutation,
   useRequestVerficationMutation,
   useSubscribeServiceMutation,
   useCheckSubscriptionQuery,
+  useAddCategoriesMutation,
+  useRemoveCategoriesMutation,
 } = userProfileApi;
