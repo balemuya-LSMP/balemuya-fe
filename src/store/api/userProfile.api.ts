@@ -220,6 +220,13 @@ export const userProfileApi = createApi({
         method: "GET",
       }),
     }),
+    giveFeedback: builder.mutation<any, { data: any }>({
+      query: ({ data }) => ({
+        url: `/feedback/add/`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -247,4 +254,5 @@ export const {
   useCheckSubscriptionQuery,
   useAddCategoriesMutation,
   useRemoveCategoriesMutation,
+  useGiveFeedbackMutation,
 } = userProfileApi;
