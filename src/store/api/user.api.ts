@@ -94,6 +94,9 @@ export const userApi = createApi({
         return `/users/customer/filter-professionals/${query.toString() ? `?${query.toString()}` : ""}`;
       },
     }),
+    getFeedbacks: builder.query({
+      query: () => "/users/feedbacks/",
+    }),
     
   }),
 });
@@ -113,4 +116,5 @@ export const {
   useGetCustomerByIdQuery,
   useGetGeneralStatsQuery,
   useFilterProfessionalsQuery,
+  useGetFeedbacksQuery,
 } = userApi;
