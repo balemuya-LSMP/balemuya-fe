@@ -107,7 +107,7 @@ export default function Footer() {
             <button onClick={handleSubmit} className="px-4 py-2 bg-purple-700 text-white rounded hover:bg-purple-800">
                 Submit
               </button>
-              <button onClick={() => setIsOpen(false)} className="px-4 py-2 bg-gray-400 text-gray-600 hover:text-gray-800">
+              <button onClick={() => setIsOpen(false)} className="px-4 py-2 bg-gray-400 rounded text-gray-600 hover:text-gray-800">
                 Cancel
               </button>
            
