@@ -3,9 +3,7 @@
 
 
 export function getDistanceFromLatLon(lat1: number | string, lon1: number | string, lat2: number | string, lon2: number | string): string {
-    const R = 6371; // Radius of the Earth in km
-
-    // Ensure the values are numbers
+    const R = 6371; 
     lat1 = parseFloat(lat1 as string);
     lon1 = parseFloat(lon1 as string);
     lat2 = parseFloat(lat2 as string);
@@ -22,9 +20,8 @@ export function getDistanceFromLatLon(lat1: number | string, lon1: number | stri
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const dKm = R * c; // Distance in km
-    const dMeters = dKm * 1000; // Convert km to meters
-
+    const dKm = R * c; 
+    const dMeters = dKm * 1000; 
     return dMeters < 1000 ? `${Math.round(dMeters)} m` : `${dKm.toFixed(2)} km`;
   }
 
@@ -50,3 +47,5 @@ export function getDistanceFromLatLon(lat1: number | string, lon1: number | stri
       return Math.round(elapsed / milliSecondsPerDay) + " days ago";
     }
   }
+
+
