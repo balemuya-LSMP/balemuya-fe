@@ -8,46 +8,51 @@ export default function Landing() {
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
-    console.log("Menu state:", !isMenuOpen); // Debugging log
   };
 
   return (
-    <header className="bg-white shadow sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
-      <Link href="/customer">
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 sm:px-8 py-3">
+        {/* Logo & Branding */}
+        <Link href="/customer" className="flex items-center space-x-2">
           <Image
             src="/images/logo.jpg"
-            alt="Logo"
-            width={60}
-            height={60}
-            className="cursor-pointer bg-transparent"
+            alt="Balamuya Logo"
+            width={70}
+            height={50}
+            className="rounded-full"
           />
+          <span className="text-lg font-semibold text-gray-800">Balamuya</span>
         </Link>
+
         {/* Desktop Menu */}
-        <nav className="hidden md:flex space-x-4">
-          <Link href="/" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
+        <nav className="hidden md:flex space-x-6 text-gray-700 font-medium">
+          <Link href="/" className="hover:text-indigo-600 transition">
             Home
           </Link>
-          <Link href="/contact" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
+          <Link href="/contact" className="hover:text-indigo-600 transition">
             Contact
           </Link>
-          <Link href="/about" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
+          <Link href="/about" className="hover:text-indigo-600 transition">
             About
           </Link>
-          <Link href="/auth/login" className="px-3 py-2 text-gray-600 font-bold hover:text-purple-700">
+          <Link
+            href="/auth/login"
+            className="px-4 py-2 rounded-lg bg-purple-700 text-white font-semibold hover:bg-purple-800 transition"
+          >
             Login
           </Link>
           <Link
             href="/auth/signup"
-            className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600"
+            className="px-4 py-2 rounded-lg border border-purple-700 text-indigo-600 font-semibold hover:bg-purple-800 hover:text-white transition"
           >
             Signup
           </Link>
         </nav>
 
-        {/* Hamburger Icon */}
+        {/* Mobile Menu Toggle */}
         <button
-          className="md:hidden text-gray-600 text-xl focus:outline-none"
+          className="md:hidden text-gray-700 text-2xl focus:outline-none"
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >
@@ -58,42 +63,28 @@ export default function Landing() {
       {/* Mobile Menu */}
       <div
         className={`${
-          isMenuOpen ? "block" : "hidden"
-        } md:hidden bg-white shadow-lg transition-all duration-300`}
+          isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+        } md:hidden absolute top-16 left-0 w-full bg-white shadow-md transition-all duration-300 ease-in-out`}
       >
-        <nav className="flex flex-col space-y-2 p-4">
-          <Link
-            href="#categories"
-            className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600 hover:underline"
-            onClick={() => setIsMenuOpen(false)} 
-          >
-            Categories
+        <nav className="flex flex-col space-y-4 p-4 text-center">
+          <Link href="/" className="text-gray-700 font-medium hover:text-indigo-600">
+            Home
           </Link>
-          <Link
-            href="/contact"
-            className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600 hover:underline"
-            onClick={() => setIsMenuOpen(false)} 
-          >
+          <Link href="/contact" className="text-gray-700 font-medium hover:text-indigo-600">
             Contact
           </Link>
-          <Link
-            href="/about"
-            className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600"
-            onClick={() => setIsMenuOpen(false)} 
-          >
+          <Link href="/about" className="text-gray-700 font-medium hover:text-indigo-600">
             About
           </Link>
           <Link
             href="/auth/login"
-            className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600 hover:underline"
-            onClick={() => setIsMenuOpen(false)} 
+            className="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
           >
             Login
           </Link>
           <Link
             href="/auth/signup"
-            className="px-3 py-2 text-gray-600 font-bold rounded hover:text-indigo-600 hover:underline"
-            onClick={() => setIsMenuOpen(false)} 
+            className="px-4 py-2 rounded-lg border border-indigo-600 text-indigo-600 font-semibold hover:bg-indigo-600 hover:text-white transition"
           >
             Signup
           </Link>
