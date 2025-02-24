@@ -43,14 +43,16 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         {/* Logo image*/}
 
-        <Link href="/customer">
+        <Link href="/customer" className="flex items-center space-x-2">
+
           <img
             src="/images/logo.jpg"
             alt="Logo"
-            width={60}
-            height={60}
+            width={80}
+            height={80}
             className="cursor-pointer bg-transparent"
           />
+          <span className="text-xl font-semibold text-purple-800">Balamuya</span>
         </Link>
 
 
