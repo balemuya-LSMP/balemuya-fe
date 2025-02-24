@@ -12,7 +12,7 @@ export default function Landing() {
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 sm:px-8 py-2">
+      <div className="max-w-8xl mx-auto flex justify-between items-center px-6 sm:px-8 py-2">
         {/* Logo & Branding (Left) */}
         <Link href="/customer" className="flex items-center space-x-2">
           <Image
