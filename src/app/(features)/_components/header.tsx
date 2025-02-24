@@ -22,7 +22,7 @@ export default function Landing() {
             height={80}
             className="rounded-full"
           />
-          <span className="text-xl font-bold text-gray-800">Balamuya</span>
+          <span className="text-xl font-semibold text-purple-800">Balamuya</span>
         </Link>
 
         {/* Center Menu */}
