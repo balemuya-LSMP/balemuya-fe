@@ -25,7 +25,7 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
   const [showFilter, setShowFilter] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { data: userProfile, isLoading } = useUserProfileQuery({});
-  const {data:categories} = useGetCategoriesQuery();
+  const { data: categories } = useGetCategoriesQuery();
   const { data: notificationData } = useGetNotificationsQuery();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
       ? filter.filter((item: string) => item !== categoryName)
       : [...filter, categoryName];
     setFilter(updatedFilter);
-    
+
     if (handleFilter) {
       handleFilter(updatedFilter); // Pass updated filter
     }
@@ -52,16 +52,17 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
 
   return (
     <header className="bg-white shadow sticky top-0 z-10">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-8xl mx-auto px-6 py-2 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/professional">
+        <Link href="/professional" className="flex items-center space-x-2">
           <img
             src="/images/logo.jpg"
             alt="Logo"
-            width={60}
-            height={60}
+            width={80}
+            height={80}
             className="cursor-pointer bg-transparent"
           />
+          <span className="text-xl font-semibold text-purple-800">Balamuya</span>
         </Link>
 
         {/* Navigation Links */}
@@ -111,10 +112,10 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
             {showFilter && (
               <div className="absolute top-10 right-0 w-56 bg-white shadow-lg rounded-lg p-4 z-20">
                 <ul className="space-y-2">
-                  {categories?.map((category:any, index:any) => (
+                  {categories?.map((category: any, index: any) => (
                     <li
                       key={index}
-                      
+
                       className={`flex items-center gap-2 text-gray-700 hover:text-purple-700 cursor-pointer ${selectedCategories.includes(category.name)
                         ? "font-bold text-purple-700"
                         : ""
@@ -182,7 +183,7 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
             )}
           </div>
         </div>
-      </div>      
+      </div>
 
       {/* Notifications Panel */}
       <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
