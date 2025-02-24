@@ -143,7 +143,9 @@ export default function WorkPage() {
 
     return (
         <>
-            <Header />
+            <Header searchQuery={""} setSearchQuery={function (query: string): void {
+                throw new Error("Function not implemented.");
+            } } />
             <div className="bg-gray-100 min-h-screen">
                 <div className="container mx-auto px-6 py-6">
                     {" "}
@@ -276,7 +278,7 @@ export default function WorkPage() {
             {/* Modal to create post */}
             {showPostModal && (
                 <div className="fixed inset-0 flex items-start justify-center bg-black bg-opacity-50 p-4">
-                    <div className="bg-white p-5 rounded-lg w-full max-w-xs shadow-3xl relative mt-16 overflow-auto max-h-[90vh]">
+                    <div className="bg-white p-5 rounded-lg w-full max-w-xs shadow-3xl relative mt-24 overflow-auto max-h-[90vh]">
                         {/* Close Button */}
                         <button
                             className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-lg"
