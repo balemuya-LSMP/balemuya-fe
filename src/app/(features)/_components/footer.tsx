@@ -4,118 +4,131 @@ import { useState } from "react";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { useGiveFeedbackMutation } from "@/store/api/userProfile.api";
 import { toast, ToastContainer } from "react-toastify";
+import {
+  AppBar,
+  Toolbar,
+  Container,
+  IconButton,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Rating,
+  Box,
+} from "@mui/material";
 
 export default function Footer() {
   const [giveFeedback] = useGiveFeedbackMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState<number | null>(0);
 
-  const handleSubmit = async() => {
-    const newData = {
-      message: message,
-      rating: rating,
-    }
+  const handleSubmit = async () => {
+    const newData = { message, rating };
+
     try {
       await giveFeedback({ data: newData }).unwrap();
-      toast ("Feedback submitted successfully");
+      toast("Feedback submitted successfully");
       setIsOpen(false);
       setMessage("");
       setRating(0);
     } catch (error) {
       console.error(error);
     }
- 
-   
   };
 
   return (
-    <footer className="bg-gray-800 py-8 text-gray-400">
-      <div className="max-w-7xl mx-auto px-4 flex flex-row justify-between items-center">
-        {/* Left side - Social Media Icons */}
-        <div className="flex space-x-6 items-center">
-          <a href="https://www.facebook.com/balemuya" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
-            <FaFacebook size={24} />
-          </a>
-          <a href="https://www.twitter.com/balemuya" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
-            <FaTwitter size={24} />
-          </a>
-          <a href="https://www.instagram.com/balemuya" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
-            <FaInstagram size={24} />
-          </a>
-          <a href="https://www.linkedin.com/company/balemuya" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300">
-            <FaLinkedin size={24} />
-          </a>
-        </div>
+    <AppBar position="static" sx={{ backgroundColor: "#1f2937", paddingY: 2 }}>
+      <Container maxWidth="lg">
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          {/* Social Media Icons */}
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <IconButton href="https://www.facebook.com/balemuya" target="_blank" color="inherit">
+              <FaFacebook size={24} />
+            </IconButton>
+            <IconButton href="https://www.twitter.com/balemuya" target="_blank" color="inherit">
+              <FaTwitter size={24} />
+            </IconButton>
+            <IconButton href="https://www.instagram.com/balemuya" target="_blank" color="inherit">
+              <FaInstagram size={24} />
+            </IconButton>
+            <IconButton href="https://www.linkedin.com/company/balemuya" target="_blank" color="inherit">
+              <FaLinkedin size={24} />
+            </IconButton>
+          </Box>
 
-        {/* Right side - Footer text & Feedback Button */}
-        <div className="flex items-center jusify-end gap-8">
-          <div>
-          <p className="text-lg font-semibold text-gray-300">
-            © 2024 Balemuya. All rights reserved.
-          </p>
-          <p className="mt-2">
-            Have questions? Contact us at {" "}
-            <a href="mailto:support@balemuya.com" className="text-blue-400 hover:underline">
-              support@balemuya.com
-            </a>
-          </p>
-          <p className="mt-6 text-sm text-gray-500">
-            Designed and developed with ❤️ by the Balemuya Team
-          </p>
-          </div>
-          {/* Feedback Button */}
-          <button onClick={() => setIsOpen(true)} className="mt-4 bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded">
-            Give Feedback
-          </button>
-        </div>
-      </div>
+          {/* Footer Text & Feedback Button */}
+          <Box textAlign="right">
+            <Typography variant="body1" color="gray.300">
+              © 2024 Balemuya. All rights reserved.
+            </Typography>
+            <Typography variant="body2" color="gray.500">
+              Have questions? Contact us at{" "}
+              <a href="mailto:support@balemuya.com" style={{ color: "#7E22CE", textDecoration: "none" }}>
+                support@balemuya.com
+              </a>
+            </Typography>
+            <Typography variant="caption" color="gray.500">
+              Designed and developed with ❤️ by the Balemuya Team
+            </Typography>
 
-      {/* Feedback Modal */}
-      {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-semibold text-gray-800">Give Feedback</h2>
+            {/* Feedback Button */}
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: "primary.main", mt: 2, ml: 2, "&:hover": { backgroundColor: "primary.main" } }}
+              onClick={() => setIsOpen(true)}
+            >
+              Give Feedback
+            </Button>
+          </Box>
+        </Toolbar>
+      </Container>
 
-            {/* Message Input */}
-            <textarea
-              className="w-full mt-3 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
-              placeholder="Write your feedback..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
+      {/* Feedback Dialog (Modal) */}
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Give Feedback</DialogTitle>
+        <DialogContent>
+          {/* Message Input */}
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            label="Write your feedback..."
+            variant="outlined"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            sx={{ mt: 2 }}
+          />
 
-            {/* Rating Section */}
-            <div className="mt-4">
-              <p className="text-gray-600">Rate our app:</p>
-              <div className="flex space-x-1 mt-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    onClick={() => setRating(star)}
-                    className={`text-2xl ${rating >= star ? "text-yellow-500" : "text-gray-300"}`}
-                  >
-                    ★
-                  </button>
-                ))}
-              </div>
-            </div>
+          {/* Rating Section */}
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="body2">Rate our app:</Typography>
+            <Rating value={rating} onChange={(_, newValue) => setRating(newValue)} />
+          </Box>
+        </DialogContent>
 
-            {/* Action Buttons */}
-            <div className="mt-6 flex justify-end space-x-4">
-            <button onClick={handleSubmit} className="px-4 py-2 bg-purple-700 text-white rounded hover:bg-purple-800">
-                Submit
-              </button>
-              <button onClick={() => setIsOpen(false)} className="px-4 py-2 bg-gray-400 rounded text-gray-600 hover:text-gray-800">
-                Cancel
-              </button>
-           
-            </div>
-          </div>
-        </div>
-      )}
-      <ToastContainer position="top-center"/>
-    </footer>
+        {/* Action Buttons */}
+        <DialogActions>
+          <Button
+            onClick={handleSubmit}
+            sx={{
+              backgroundColor: "primary.main",
+              color: "white",
+              "&:hover": { backgroundColor: "primary.dark" },
+            }}
+          >
+            Submit
+          </Button>
+          <Button onClick={() => setIsOpen(false)} color="secondary" variant="outlined">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <ToastContainer position="top-center" />
+    </AppBar>
   );
 }
