@@ -10,7 +10,12 @@
   },
   "proxy": "https://balemuya-project.onrender.com",
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^3.10.0",
+    "@mui/icons-material": "^6.4.8",
+    "@mui/material": "^6.4.8",
+    "@mui/styled-engine-sc": "^6.4.6",
     "@react-google-maps/api": "^2.20.5",
     "@react-pdf/renderer": "^4.1.6",
     "@reduxjs/toolkit": "^2.5.0",
@@ -36,6 +41,7 @@
     "react-redux": "^9.2.0",
     "react-spinners": "^0.15.0",
     "react-toastify": "^11.0.2",
+    "styled-components": "^6.1.16",
     "swiper": "^11.2.0",
     "zod": "^3.24.1"
   },
