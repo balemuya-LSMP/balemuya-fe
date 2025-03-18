@@ -107,7 +107,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
             <FaSignOutAlt className="mr-2" />
             Logout
           </button>
-        </div>
+        </div> 
       )}
     </div>
   );
