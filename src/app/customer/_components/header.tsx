@@ -11,7 +11,7 @@ import { FiLogOut, FiUser } from "react-icons/fi";
 import { useGetNotificationsQuery } from "@/store/api/services.api";
 import { FaBell, FaSearch } from "react-icons/fa";
 import NotificationsPanel from "@/app/professional/_components/NotificationsPanel";
-
+import { ToastContainer, toast } from "react-toastify";
 interface HeaderProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -33,9 +33,17 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
 
 
   const handleLogout = async () => {
-    await logout();
+    try {
+      await logout();
 
-    router.push("/auth/login")
+      toast.success("Logout successful");
+      router.push("/auth/login")
+
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Logout failed");
+
+    }
   }
 
   return (
@@ -68,7 +76,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
           </Link>
         </nav>
         <div className="flex items-center space-x-6">
-          <div className="relative flex items-center">
+          <div className="relanpmnnnnnnnntive flex items-center">
             <input
               type="text"
               placeholder="Search..."
@@ -129,6 +137,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
         </div>
         <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
       </div>
+      <ToastContainer position="top-center" />
     </header>
   );
 }
