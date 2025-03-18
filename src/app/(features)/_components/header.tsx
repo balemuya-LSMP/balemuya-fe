@@ -1,87 +1,127 @@
 import { useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, Box } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import { LightMode, DarkMode } from "@mui/icons-material"; 
 import Link from "next/link";
 import Image from "next/image";
+import useThemeToggle from "@/hooks/useTheme";
 
 export default function Landing() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { toggleTheme, currentTheme } = useThemeToggle();
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-8xl mx-auto flex justify-between items-center px-6 sm:px-8 py-2">
-        {/* Logo & Branding (Left) */}
-        <Link href="/customer" className="flex items-center space-x-2">
-          <Image
-            src="/images/logo.jpg"
-            alt="Balamuya Logo"
-            width={80}
-            height={80}
-            className="rounded-full"
-          />
-          <span className="text-xl font-semibold text-purple-800">Balamuya</span>
-        </Link>
+    <AppBar position="sticky" sx={{ bgcolor: "background.default", boxShadow: 1 }}>
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        {/* Logo & Branding */}
+        <Box display="flex" alignItems="center">
+          <Link href="/customer" passHref>
+            <Box display="flex" alignItems="center" sx={{ cursor: "pointer" }}>
+              <Image src="/images/logo.jpg" alt="Balamuya Logo" width={60} height={60} style={{ borderRadius: "50%" }} />
+              <Typography variant="h6" color="primary" sx={{ ml: 1, fontWeight: "bold" }}>
+                Balamuya
+              </Typography>
+            </Box>
+          </Link>
+        </Box>
 
-        {/* Center Menu */}
-        <nav className="hidden md:flex space-x-6 text-gray-700 font-medium">
-          <Link href="/" className="hover:text-purple-700 transition font-semibold">Home</Link>
-          <Link href="/about" className="hover:text-purple-700 transition font-semibold">About</Link>
-          <Link href="/contact" className="hover:text-purple-700 transition font-semibold">Contact</Link>
-        </nav>
-
-        {/* Right-side Actions */}
-        <div className="hidden md:flex space-x-4">
-        <Link
-            href="/auth/login"
-            className="px-4 py-2 rounded-lg bg-purple-700 text-white font-semibold hover:bg-puple-800 transition"
+        {/* Center Menu (Desktop) */}
+        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
+          <Button
+            component={Link}
+            href="/"
+            sx={{
+              color: "black",
+              fontSize: "1.1rem", // Default font size
+              transition: "all 0.3s ease",
+              "&:hover": {
+                bgcolor: "rgba(0, 0, 0, 0.1)", // Light background on hover
+              },
+            }}
           >
+            Home
+          </Button>
+          <Button
+            component={Link}
+            href="/about"
+            sx={{
+              color: "black",
+              fontSize: "1.1rem",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                bgcolor: "rgba(0, 0, 0, 0.1)",
+              },
+            }}
+          >
+            About
+          </Button>
+          <Button
+            component={Link}
+            href="/contact"
+            sx={{
+              color: "black",
+              fontSize: "1.1rem",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                fontSize: "1.1rem",
+                bgcolor: "rgba(0, 0, 0, 0.1)",
+              },
+            }}
+          >
+            Contact
+          </Button>
+        </Box>
+
+        {/* Right-side Actions (Desktop) */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {/* Login & Signup Buttons */}
+          <Button variant="contained" href="/auth/login" sx={{ bgcolor: "#6a1b9a", color: "white" }}>
             Login
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="px-4 py-2 rounded-lg border border-purple-700 text-purple-700 font-semibold hover:bg-purple-800 hover:text-white transition"
-          >
+          </Button>
+          <Button variant="outlined" href="/auth/signup" sx={{ borderColor: "#6a1b9a", color: "#6a1b9a" }}>
             Signup
-          </Link>
-        </div>
+          </Button>
+          <IconButton color="inherit" onClick={toggleTheme}>
+            {currentTheme === "light" ? <DarkMode/> : <LightMode/>} {/* Simple icon for light/dark mode */}
+          </IconButton>
+        </Box>
 
         {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-gray-700 text-2xl focus:outline-none"
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? <FaTimes /> : <FaBars />}
-        </button>
-      </div>
+        <IconButton edge="end" color="inherit" aria-label="menu" onClick={toggleMenu} sx={{ display: { md: "none" } }}>
+          <MenuIcon sx={{ color: "black" }} />
+        </IconButton>
+      </Toolbar>
 
       {/* Mobile Menu */}
-      <div
-        className={`${
-          isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
-        } md:hidden absolute top-16 left-0 w-full bg-white shadow-md transition-all duration-300 ease-in-out`}
-      >
-        <nav className="flex flex-col space-y-4 p-4 text-center">
-          <Link href="/" className="text-gray-700 font-medium hover:text-purple-700">Home</Link>
-          <Link href="/about" className="text-gray-700 font-medium hover:text-purple-700">About</Link>
-          <Link href="/contact" className="text-gray-700 font-medium hover:text-purple-700">Contact</Link>
-          <Link
-            href="/auth/login"
-            className="px-4 py-2 text-purple-700 font-semibold hover:text-purple-900 transition"
-          >
-            Login
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="px-4 py-2 rounded-lg bg-purple-700 text-white font-semibold hover:bg-purple-800 transition"
-          >
-            Signup
-          </Link>
-        </nav>
-      </div>
-    </header>
+      <Drawer anchor="top" open={isMenuOpen} onClose={toggleMenu}>
+        <Box sx={{ width: "100%", p: 2, display: "flex", justifyContent: "flex-end" }}>
+          <IconButton onClick={toggleMenu}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <List>
+          <ListItem component={Link} href="/" onClick={toggleMenu}>
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem component={Link} href="/about" onClick={toggleMenu}>
+            <ListItemText primary="About" />
+          </ListItem>
+          <ListItem component={Link} href="/contact" onClick={toggleMenu}>
+            <ListItemText primary="Contact" />
+          </ListItem>
+          <ListItem component={Link} href="/auth/login" onClick={toggleMenu}>
+            <ListItemText primary="Login" />
+          </ListItem>
+          <ListItem component={Link} href="/auth/signup" onClick={toggleMenu}>
+            <ListItemText primary="Signup" />
+          </ListItem>
+        </List>
+      </Drawer>
+    </AppBar>
   );
 }
