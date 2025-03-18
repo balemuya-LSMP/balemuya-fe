@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -9,8 +10,8 @@ import "swiper/css/autoplay";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import Footer from "./(features)/_components/footer";
 import Header from "./(features)/_components/header";
-import { FaDownload } from "react-icons/fa";
-
+import { Container, Box, Typography, Button, Card, CardContent, Avatar, Grid } from "@mui/material";
+import { Search, People, Lock, PhoneIphone } from "@mui/icons-material";
 
 export default function Landing() {
   const testimonials = [
@@ -41,107 +42,95 @@ export default function Landing() {
   ];
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <Box bgcolor="background.default" minHeight="100vh">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative bg-[url('/images/main.jpg')] bg-cover bg-center py-24 sm:py-32">
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        <div className="relative max-w-xl mx-auto text-center text-white px-4 sm:px-6">
-          <h1 className="text-2xl sm:text-4xl font-extrabold mb-4 sm:mb-6 leading-tight">
+      <Box
+        sx={{
+          backgroundImage: "url('/images/main.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          position: "relative",
+          py: 12,
+        }}
+      >
+        <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(0, 0, 0, 0.5)" }} />
+        <Container sx={{ position: "relative", textAlign: "center", color: "white" }}>
+          <Typography variant="h3" fontWeight="bold" gutterBottom>
             Connect Professionals with Customers
-          </h1>
-          <p className="text-base sm:text-lg mb-6 sm:mb-8">
-            Whether you&apos;re a skilled professional seeking clients or a
-            customer looking for reliable expertise nearby, we make it simple
-            for both.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
-            <button className="px-4 py-2 sm:px-6 sm:py-3 bg-purple-700 text-white rounded-md hover:bg-purple-800 transition">
-              Find Professionals
-            </button>
-            <button className="px-4 py-2 sm:px-6 sm:py-3 border text-white rounded-md hover:bg-purple-800 transition">
-              Offer Your Services
-            </button>
-          </div>
-          <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-300">
-            Simplifying connections for professionals and customers in your
-            local area.
-          </p>
-        </div>
-      </section>
+          </Typography>
+          <Typography variant="body1" mb={4}>
+            Whether you're a skilled professional seeking clients or a customer looking for reliable expertise nearby, we make it simple for both.
+          </Typography>
+          <Box display="flex" justifyContent="center" gap={2}>
+            <Button variant="contained" color="primary" size="large">Find Professionals</Button>
+            <Button variant="outlined" color="inherit" size="large">Offer Your Services</Button>
+          </Box>
+        </Container>
+      </Box>
 
-      {/* Services Section */}
-      <section className="py-8 sm:py-12 px-4 sm:px-8 bg-white">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8 text-center">
-          <div className="p-4 sm:p-6 bg-gray-50 rounded-lg shadow-md">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-              Find Experts
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600">
-              Browse a wide range of professionals in various fields to meet
-              your needs.
-            </p>
-          </div>
-          <div className="p-4 sm:p-6 bg-gray-50 rounded-lg shadow-md">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-              Post Opportunities
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600">
-              Share your work requirements and let professionals come to you.
-            </p>
-          </div>
-          <div className="p-4 sm:p-6 bg-gray-50 rounded-lg shadow-md">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-              Connect Seamlessly
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600">
-              Communicate and collaborate with ease on our platform.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* New Section: Features */}
+      <Container sx={{ py: 6 }}>
+        <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
+          Key Features
+        </Typography>
+        <Grid container spacing={4} textAlign="center">
+          {["Find Experts", "Post Opportunities", "Connect Seamlessly"].map((title, index) => (
+            <Grid item xs={12} sm={4} key={index}>
+              <Card sx={{ p: 3, textAlign: "center" }}>
+                <CardContent>
+                  <Typography variant="h6" fontWeight="bold" gutterBottom>{title}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {index === 0 ? "Browse a wide range of professionals to meet your needs."
+                      : index === 1 ? "Share your work requirements and let professionals come to you."
+                        : "Communicate and collaborate with ease on our platform."}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
 
-      {/* CTA Section */}
-      <section className="py-12 sm:py-16 bg-indigo-100">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
-            Looking for Professionals?
-          </h2>
-          <p className="text-sm sm:text-base text-gray-800 p-2 sm:p-4">
-            Find the right expert for your project or job and get started today.
-          </p>
-          <button className="px-4 py-2 sm:px-6 sm:py-3 bg-purple-700 text-white rounded hover:bg-purple-800">
-            Browse Professionals
-          </button>
-        </div>
-      </section>
-      <section className="py-12 sm:py-16 bg-gray-300">
-        <div className="max-w-7xl mx-auto text-center text-white">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-500">
-            Get Our Mobile App
-          </h2>
-          <p className="text-sm sm:text-base mb-6 text-gray-500">
-            Download the app and take your professional connections with you
-            anywhere.
-          </p>
-          <div className="flex justify-center gap-6">
-            <a
-              href="https://drive.google.com/file/d/1fmLA_Fi9L6b5K2jxtXOoxh5JeG4LNKSc/view?usp=drivesdk"
-              className="flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg shadow-md hover:from-purple-600 hover:to-purple-500 transition-all duration-300 transform hover:scale-105"
-            >
-              <FaDownload className="w-5 h-5 mr-3" />
-              Download on Our App
-            </a>
-          </div>
-        </div>
-      </section>
-      {/* Testimonials Section */}
-      <section className="w-full bg-gray-200 text-white py-12 sm:py-16">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">
-          What Our Users Say
-        </h2>
-        <div className="w-full max-w-3xl mx-auto px-4">
+      {/* New Section: User Benefits Cards */}
+      <Box bgcolor="#f9f9f9" py={6}>
+        <Container>
+          <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
+            Benefits of Using Our Platform
+          </Typography>
+          <Grid container spacing={4} justifyContent="center">
+            {[
+              { title: "Easy Search", icon: <Search sx={{ fontSize: 50 }} /> },
+              { title: "Wide Range of Experts", icon: <People sx={{ fontSize: 50 }} /> },
+              { title: "Secure Payments", icon: <Lock sx={{ fontSize: 50 }} /> },
+            ].map((benefit, index) => (
+              <Grid item xs={12} sm={4} key={index}>
+                <Card sx={{ display: "flex", flexDirection: "column", height: "100%", boxShadow: 3 }}>
+                  <CardContent sx={{ textAlign: "center", flexGrow: 1 }}>
+                    <Box sx={{ mb: 2 }}>
+                      {benefit.icon}
+                    </Box>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      {benefit.title}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {index === 0
+                        ? "Quickly search and filter professionals."
+                        : index === 1
+                          ? "Choose from a variety of professionals for your needs."
+                          : "Pay securely through trusted payment gateways."}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      <Box bgcolor="#f3f4f6" py={6} textAlign="center">
+        <Container>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>What Our Users Say</Typography>
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={20}
@@ -152,29 +141,43 @@ export default function Landing() {
           >
             {testimonials.map((testimonial, index) => (
               <SwiperSlide key={index}>
-                <div className="flex justify-center items-center">
-                  <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 max-w-sm text-center flex flex-col justify-center items-center">
-                    <img
-                      src={testimonial.image}
-                      alt={`${testimonial.name}'s avatar`}
-                      width={72}
-                      height={72}
-                      className="rounded-full mb-4 shadow-md"
-                    />
-                    <p className="text-sm sm:text-base text-gray-800 italic mb-4">{`"${testimonial.feedback}"`}</p>
-                    <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
-                      {testimonial.name}
-                    </h3>
-                  </div>
-                </div>
+                <Card sx={{ p: 3, maxWidth: 400, mx: "auto", textAlign: "center" }}>
+                  <Avatar src={testimonial.image} alt={testimonial.name} sx={{ width: 72, height: 72, mb: 2, mx: "auto" }} />
+                  <Typography variant="body1" fontStyle="italic" gutterBottom>
+                    "{testimonial.feedback}"
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold">
+                    {testimonial.name}
+                  </Typography>
+                </Card>
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
-      </section>
+        </Container>
+      </Box>
 
-      {/* Footer */}
+      <Box textAlign="center" py={6}>
+        <Container>
+          <Typography variant="h5" gutterBottom>
+            Ready to experience the power of our mobile app?
+          </Typography>
+          <Typography variant="body1" color="textSecondary" mb={3}>
+            Download our mobile app today and take your business on the go! Available for both iOS and Android.
+          </Typography>
+          <Box display="flex" justifyContent="center" gap={2} mb={4}>
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<PhoneIphone />}
+              size="large"
+              onClick={() => window.open("https://link-to-your-app-store", "_blank")} // Replace with your app store link
+            >
+              Download Now
+            </Button>
+          </Box>
+        </Container>
+      </Box>
       <Footer />
-    </div>
+    </Box>
   );
 }
