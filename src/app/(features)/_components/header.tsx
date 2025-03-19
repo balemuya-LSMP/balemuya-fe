@@ -2,10 +2,10 @@ import { useState } from "react";
 import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { LightMode, DarkMode } from "@mui/icons-material"; 
+import { LightMode, DarkMode } from "@mui/icons-material";
 import Link from "next/link";
 import Image from "next/image";
-import useThemeToggle from "@/hooks/useTheme";
+import { useThemeToggle } from "@/hooks/useTheme";
 
 export default function Landing() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,7 +36,6 @@ export default function Landing() {
             component={Link}
             href="/"
             sx={{
-              color: "black",
               fontSize: "1.1rem", // Default font size
               transition: "all 0.3s ease",
               "&:hover": {
@@ -50,7 +49,6 @@ export default function Landing() {
             component={Link}
             href="/about"
             sx={{
-              color: "black",
               fontSize: "1.1rem",
               transition: "all 0.3s ease",
               "&:hover": {
@@ -64,7 +62,6 @@ export default function Landing() {
             component={Link}
             href="/contact"
             sx={{
-              color: "black",
               fontSize: "1.1rem",
               transition: "all 0.3s ease",
               "&:hover": {
@@ -78,7 +75,7 @@ export default function Landing() {
         </Box>
 
         {/* Right-side Actions (Desktop) */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
           {/* Login & Signup Buttons */}
           <Button variant="contained" href="/auth/login" sx={{ bgcolor: "#6a1b9a", color: "white" }}>
             Login
@@ -86,8 +83,10 @@ export default function Landing() {
           <Button variant="outlined" href="/auth/signup" sx={{ borderColor: "#6a1b9a", color: "#6a1b9a" }}>
             Signup
           </Button>
-          <IconButton color="inherit" onClick={toggleTheme}>
-            {currentTheme === "light" ? <DarkMode/> : <LightMode/>} {/* Simple icon for light/dark mode */}
+          <IconButton color="inherit" onClick={toggleTheme} sx={{
+            color: currentTheme === "light" ? "#000000" : "#ffffff", // Set color based on theme
+          }}>
+            {currentTheme === "light" ? <DarkMode /> : <LightMode />}
           </IconButton>
         </Box>
 
