@@ -45,30 +45,25 @@ export default function Landing() {
     <Box bgcolor="background.default" minHeight="100vh">
       <Header />
 
-      <Box
-        sx={{
-          backgroundImage: "url('/images/main.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          position: "relative",
-          py: 12,
-        }}
-      >
-        <Box sx={{ position: "absolute", inset: 0, bgcolor: "rgba(0, 0, 0, 0.5)" }} />
-        <Container sx={{ position: "relative", textAlign: "center", color: "white" }}>
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", height: "80vh", color: "white", background: 'linear-gradient(135deg, #A084E8, #D0A2F7)' }}>
+        <Box sx={{ flex: 1, textAlign: "left", pr: 4, pl: { xs: 2, sm: 4 } }}>
           <Typography variant="h3" fontWeight="bold" gutterBottom>
             Connect Professionals with Customers
           </Typography>
           <Typography variant="body1" mb={4}>
             Whether you're a skilled professional seeking clients or a customer looking for reliable expertise nearby, we make it simple for both.
           </Typography>
-          <Box display="flex" justifyContent="center" gap={2}>
-            <Button variant="contained" color="primary" size="large">Find Professionals</Button>
-            <Button variant="outlined" color="inherit" size="large">Offer Your Services</Button>
+          <Box display="flex" gap={2}>
+            <Button variant="contained" color="primary" size="large">
+              Find Professionals
+            </Button>
+            <Button variant="outlined" color="inherit" size="large">
+              Offer Your Services
+            </Button>
           </Box>
-        </Container>
+        </Box>
+        <Box sx={{ width: "50%", height: "100%", backgroundImage: "url('/images/hero.jpeg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }} />
       </Box>
-
       {/* New Section: Features */}
       <Container sx={{ py: 6 }}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
@@ -93,7 +88,7 @@ export default function Landing() {
       </Container>
 
       {/* New Section: User Benefits Cards */}
-      <Box bgcolor="#f9f9f9" py={6}>
+      <Box py={6}>
         <Container>
           <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
             Benefits of Using Our Platform
@@ -128,7 +123,7 @@ export default function Landing() {
         </Container>
       </Box>
 
-      <Box bgcolor="#f3f4f6" py={6} textAlign="center">
+      <Box py={6} textAlign="center">
         <Container>
           <Typography variant="h4" fontWeight="bold" gutterBottom>What Our Users Say</Typography>
           <Swiper
@@ -156,7 +151,7 @@ export default function Landing() {
         </Container>
       </Box>
 
-      <Box textAlign="center" py={6}>
+      <Box textAlign="center" boxShadow={4} py={6}>
         <Container>
           <Typography variant="h5" gutterBottom>
             Ready to experience the power of our mobile app?
