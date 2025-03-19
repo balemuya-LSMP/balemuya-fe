@@ -41,11 +41,19 @@ export default function Footer() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#1f2937", paddingY: 2 }}>
+    <AppBar position="static" sx={{ backgroundColor: "#242424", py: 2 }}>
       <Container maxWidth="lg">
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Toolbar
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "space-between",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
           {/* Social Media Icons */}
-          <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mb: { xs: 2, sm: 0 } }}>
             <IconButton href="https://www.facebook.com/balemuya" target="_blank" color="inherit">
               <FaFacebook size={24} />
             </IconButton>
@@ -61,24 +69,30 @@ export default function Footer() {
           </Box>
 
           {/* Footer Text & Feedback Button */}
-          <Box textAlign="right">
-            <Typography variant="body1" color="gray.300">
+          <Box sx={{ textAlign: "center", mb: { xs: 2, sm: 0 } }}>
+            <Typography variant="body2" color="#7E22CE">
               © 2024 Balemuya. All rights reserved.
             </Typography>
-            <Typography variant="body2" color="gray.500">
-              Have questions? Contact us at{" "}
+            <Typography variant="body2" color="#7E22CE">
+              Contact us at{" "}
               <a href="mailto:support@balemuya.com" style={{ color: "#7E22CE", textDecoration: "none" }}>
                 support@balemuya.com
               </a>
             </Typography>
             <Typography variant="caption" color="gray.500">
-              Designed and developed with ❤️ by the Balemuya Team
+              Designed with ❤️ by the Balemuya Team
             </Typography>
+          </Box>
 
-            {/* Feedback Button */}
+          {/* Feedback Button */}
+          <Box sx={{ textAlign: "center" }}>
             <Button
               variant="contained"
-              sx={{ backgroundColor: "primary.main", mt: 2, ml: 2, "&:hover": { backgroundColor: "primary.main" } }}
+              sx={{
+                backgroundColor: "primary.main",
+                "&:hover": { backgroundColor: "primary.dark" },
+                width: { xs: "100%", sm: "auto" }, // Full width on mobile
+              }}
               onClick={() => setIsOpen(true)}
             >
               Give Feedback
@@ -91,7 +105,6 @@ export default function Footer() {
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Give Feedback</DialogTitle>
         <DialogContent>
-          {/* Message Input */}
           <TextField
             fullWidth
             multiline
@@ -103,15 +116,13 @@ export default function Footer() {
             sx={{ mt: 2 }}
           />
 
-          {/* Rating Section */}
-          <Box sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3, textAlign: "center" }}>
             <Typography variant="body2">Rate our app:</Typography>
             <Rating value={rating} onChange={(_, newValue) => setRating(newValue)} />
           </Box>
         </DialogContent>
 
-        {/* Action Buttons */}
-        <DialogActions>
+        <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
           <Button
             onClick={handleSubmit}
             sx={{
