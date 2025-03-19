@@ -1,75 +1,108 @@
-/* eslint-disable react/no-unescaped-entities */
 'use client';
-import Link from "next/link";
+/* eslint-disable react/no-unescaped-entities */
+import { Button, Typography, Box, Divider } from '@mui/material';
+import Link from 'next/link';
 import Header from "../(features)/_components/header";
 import Footer from "../(features)/_components/footer";
 
 export default function AboutUs() {
   return (
-    <><Header /><div className="min-h-screen bg-gradient-to-b from-purple-100 to-gray-100 flex flex-col items-center justify-center p-6">
-      <div className="max-w-4xl bg-white shadow-xl rounded-2xl p-10 text-center transform transition-all duration-300 hover:scale-105">
-        <h1 className="text-4xl font-extrabold text-purple-800 mb-5">
-          About <span className="text-purple-600">Balemuya</span>
-        </h1>
-        <p className="text-gray-700 text-lg leading-relaxed mb-8">
-          Balemuya is a local service marketplace that connects customers with
-          skilled professionals. Whether you need home repairs, beauty
-          services, tutoring, or other local services, Balemuya makes it easy to
-          find trusted professionals near you.
-        </p>
-        <div className="border-t border-gray-300 my-6"></div>
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-          Our Mission
-        </h2>
-        <p className="text-gray-700 text-lg leading-relaxed mb-8">
-          We aim to bridge the gap between service providers and customers by
-          offering a seamless and reliable platform. We empower professionals to
-          showcase their skills and grow their businesses while helping
-          customers access high-quality services effortlessly.
-        </p>
-        <div className="border-t border-gray-300 my-6"></div>
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-          Why Choose Us?
-        </h2>
-        <ul className="text-gray-700 text-lg mb-8 space-y-3 text-left mx-auto max-w-md">
-          <li className="flex items-center gap-2">
-            ✅ <span>Trusted and verified professionals</span>
-          </li>
-          <li className="flex items-center gap-2">
-            ✅ <span>Easy booking and secure transactions</span>
-          </li>
-          <li className="flex items-center gap-2">
-            ✅ <span>Wide range of services to choose from</span>
-          </li>
-          <li className="flex items-center gap-2">
-            ✅ <span>Customer reviews for transparency</span>
-          </li>
-        </ul>
-        <div className="border-t border-gray-300 my-6"></div>
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-          Join Us Today
-        </h2>
-        <p className="text-gray-700 text-lg leading-relaxed mb-8">
-          Whether you're a professional looking to grow your business or a
-          customer searching for top-notch local services, Balemuya is the
-          perfect place for you. Sign up today and experience hassle-free local
-          service booking.
-        </p>
-        <div className="flex justify-center gap-6">
-          <Link href="/auth/signup">
-            <span className="bg-purple-700 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-purple-800 transition duration-300 transform hover:scale-105 cursor-pointer shadow-md">
-              Get Started
-            </span>
-          </Link>
-          <Link href="/contact">
-            <span className="bg-gray-700 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-800 transition duration-300 transform hover:scale-105 cursor-pointer shadow-md">
-              Contact Us
-            </span>
-          </Link>
-        </div>
-      </div>
-    </div>
-    <Footer />
+    <>
+      <Header />
+      <Box
+        sx={{
+          minHeight: '100vh',
+          bgcolor: 'background.default',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 6,
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 'md', // Minimized width
+            backgroundColor: 'background.paper',
+            boxShadow: 4,
+            borderRadius: 2,
+            padding: 4,
+            textAlign: 'center',
+            transform: 'scale(1)',
+            transition: 'transform 0.3s',
+            '&:hover': {
+              transform: 'scale(1.05)',
+            },
+            width: '100%', // Ensuring it is 100% width on smaller screens
+            marginX: 'auto', // Centered
+          }}
+        >
+          <Typography variant="h3" sx={{ marginBottom: 2 }}>
+            About Balemuya
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 4 }}>
+            Balemuya is a local service marketplace that connects customers with
+            skilled professionals. Whether you need home repairs, beauty
+            services, tutoring, or other local services, Balemuya makes it easy to
+            find trusted professionals near you.
+          </Typography>
+
+          <Divider />
+
+          <Typography variant="h5" sx={{ marginBottom: 2 }}>
+            Our Mission
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 4 }}>
+            We aim to bridge the gap between service providers and customers by
+            offering a seamless and reliable platform. We empower professionals to
+            showcase their skills and grow their businesses while helping
+            customers access high-quality services effortlessly.
+          </Typography>
+
+          <Divider />
+
+          <Typography variant="h5" sx={{ marginBottom: 2 }}>
+            Why Choose Us?
+          </Typography>
+          <Box
+            sx={{
+              marginBottom: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              maxWidth: '100%', // Removed the max width to allow responsiveness
+              marginX: 'auto',
+            }}
+          >
+            <Typography variant="body1">✅ Trusted and verified professionals</Typography>
+            <Typography variant="body1">✅ Easy booking and secure transactions</Typography>
+            <Typography variant="body1">✅ Wide range of services to choose from</Typography>
+            <Typography variant="body1">✅ Customer reviews for transparency</Typography>
+          </Box>
+
+          <Divider />
+
+          <Typography variant="h5" sx={{ marginBottom: 2 }}>
+            Join Us Today
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 4 }}>
+            Whether you're a professional looking to grow your business or a
+            customer searching for top-notch local services, Balemuya is the
+            perfect place for you. Sign up today and experience hassle-free local
+            service booking.
+          </Typography>
+
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'center', gap: 4 }}>
+            <Link href="/auth/signup" passHref>
+              <Button variant="contained" sx={{ width: { xs: '100%', sm: 'auto' } }}>Get Started</Button>
+            </Link>
+            <Link href="/contact" passHref>
+              <Button variant="outlined" sx={{ width: { xs: '100%', sm: 'auto' } }}>Contact Us</Button>
+            </Link>
+          </Box>
+        </Box>
+      </Box>
+      <Footer />
     </>
   );
 }
