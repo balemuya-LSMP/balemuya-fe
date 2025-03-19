@@ -6,6 +6,7 @@ import {
   useGoogleLoginMutation,
   useLoginUserMutation,
 } from "@/store/api/auth.api";
+import Header from "@/app/(features)/_components/header";
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
@@ -13,6 +14,7 @@ import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
+import { TextField, Button, RadioGroup, FormControlLabel, Radio, IconButton, Typography, Container, Paper, Box } from "@mui/material";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -51,144 +53,125 @@ export default function Login() {
       const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=http://localhost:3000/auth/google-callback/&response_type=code&scope=email%20profile&state=${state}&access_type=offline&prompt=consent`;
 
       window.location.href = url;
-    }else{
+    } else {
       toast.error("Please select a user type (Customer or Professional) before signing in with Google.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 relative">
-      <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-md p-8 md:flex">
-        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-        <img
-          src="/images/logo.jpg"
-          alt="Logo"
-          width={60}
-          height={60}
-          className="cursor-pointer bg-transparent rounded-full shadow"
-        />
-        </div>
-        <div className="mt-12 md:w-1/2">
-          <h2 className="text-2xl text-gray-800 font-bold mb-4 text-center ">
-            Login
-          </h2>
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your email"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 px-3 text-gray-500 focus:outline-none"
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-purple-700 text-white py-2 px-4 rounded-md cursor-pointer hover:bg-purple-800 focus:outline-none focus:ring focus:ring-gray-500"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ClipLoader color="#ffffff" loading={isLoading} size={25} />
-              ) : (
-                "Login"
-              )}
-            </button>
-            <div className="flex gap-4 mt-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="userType"
-                  value="customer"
-                  checked={userType === "customer"}
-                  onChange={() => setUserType("customer")}
-                  className="form-radio text-purple-600"
-                />
-                <span className="ml-2">Customer</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="userType"
-                  value="professional"
-                  checked={userType === "professional"}
-                  onChange={() => setUserType("professional")}
-                  className="form-radio text-purple-600"
-                />
-                <span className="ml-2">Professional</span>
-              </label>
-            </div>
-          </form>
-          <button
-            onClick={handleGoogleSignIn}
-            className="w-full mt-4 flex items-center justify-center gap-3 bg-white text-gray-700 border border-gray-300 py-2 px-4 rounded-md cursor-pointer hover:bg-gray-100 focus:outline-none"
+    <>
+      <Header />
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Paper elevation={3} sx={{ p: 4, my: 6, position: "relative", overflow: "visible", maxWidth: "md", display: 'flex' }}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "-30px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 60,
+              height: 60,
+              backgroundColor: "white", // Optional, to match the background
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: 3, // Adds shadow effect
+            }}
           >
             <img
-              src="https://as1.ftcdn.net/v2/jpg/03/88/07/84/1000_F_388078454_mKtbdXYF9cyQovCCTsjqI0gbfu7gCcSp.jpg"
-              alt="Google Logo"
-              className="w-5 h-5"
+              src="/images/logo.jpg"
+              alt="Logo"
+              width={55}
+              height={55}
+              style={{ borderRadius: "50%" }}
             />
-            <span>Sign in with Google</span>
-          </button>
-          <div className="text-center mt-4">
-            <p className="text-sm text-gray-500">
-              Not Registered?{" "}
-              <Link
-                href="/auth/signup"
-                className="text-purple-600 hover:underline"
+          </Box>
+          {/* Left Section - Login Form */}
+          <Box sx={{ flex: 1 }}>
+            <Box sx={{ textAlign: 'center', marginBottom: 3 }}>
+              <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                Login
+              </Typography>
+            </Box>
+            <form onSubmit={handleSubmit}>
+              <Box sx={{ marginBottom: 2 }}>
+                <TextField
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  fullWidth
+                  variant="outlined"
+                  required
+                />
+              </Box>
+              <Box sx={{ marginBottom: 2 }}>
+                <TextField
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  fullWidth
+                  variant="outlined"
+                  required
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </IconButton>
+                    ),
+                  }}
+                />
+              </Box>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={isLoading}
+                sx={{ marginBottom: 2 }}
               >
-                Signup
-              </Link>
-            </p>
-          </div>
-        </div>
+                {isLoading ? <ClipLoader color="#ffffff" loading={isLoading} size={25} /> : "Login"}
+              </Button>
+              <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+                <RadioGroup row value={userType} onChange={(e) => setUserType(e.target.value)}>
+                  <FormControlLabel value="customer" control={<Radio />} label="Customer" />
+                  <FormControlLabel value="professional" control={<Radio />} label="Professional" />
+                </RadioGroup>
+              </Box>
+            </form>
+            <Button
+              onClick={handleGoogleSignIn}
+              variant="outlined"
+              fullWidth
+              sx={{ marginBottom: 2 }}
+            >
+              <img src="https://as1.ftcdn.net/v2/jpg/03/88/07/84/1000_F_388078454_mKtbdXYF9cyQovCCTsjqI0gbfu7gCcSp.jpg" alt="Google Logo" style={{ width: 20, marginRight: 10 }} />
+              Sign in with Google
+            </Button>
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="body2" color="text.secondary">
+                Not Registered?{" "}
+                <Link href="/auth/signup" style={{ textDecoration: 'underline', color: '#6200EE' }}>
+                  Signup
+                </Link>
+              </Typography>
+            </Box>
+          </Box>
 
-        {/* Right Section - Welcome Text */}
-        <div className="hidden md:block md:w-1/2 md:pl-8 mt-12">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">
-            Welcome to Balemuya
-          </h2>
-          <p className="text-gray-700 leading-relaxed">
-            Connecting professionals and customers effortlessly, Balemuya is
-            your go-to platform for finding skilled experts or offering your
-            services. Whether you&apos;re looking to hire professionals for
-            specific tasks or showcase your expertise, our app simplifies the
-            process with secure, reliable, and fast solutions.
-          </p>
-        </div>
-      </div>
+          {/* Right Section - Welcome Text */}
+          <Box sx={{ flex: 1, display: { xs: 'none', md: 'block' }, pl: 6, textAlign: 'left' }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary', marginBottom: 2 }}>
+              Welcome to Balemuya
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+              Connecting professionals and customers effortlessly, Balemuya is your go-to platform for finding skilled experts or offering your services. Whether you&apos;re looking to hire professionals for specific tasks or showcase your expertise, our app simplifies the process with secure, reliable, and fast solutions.
+            </Typography>
+          </Box>
+        </Paper>
+      </Box>
       <ToastContainer position="top-center" />
-    </div>
+    </>
   );
 }
