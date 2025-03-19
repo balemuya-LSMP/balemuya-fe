@@ -1,29 +1,26 @@
 "use client";
-
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { AuthProvider } from "@/contexts/authContext";
 import { WebSocketProvider } from "./WebSocketProvider";
-import useThemeToggle from "@/hooks/useTheme";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material";
 import { lightTheme, darkTheme } from "@/shared/theme";
-import { ThemeProvider } from "@mui/material";
-import { useEffect } from "react";
+import { ThemeProvider, useThemeToggle } from "@/hooks/useTheme"; // Import custom theme provider
 
-export default function ClientProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ClientProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider> {/* Custom Theme Provider */}
+      <InnerProvider>{children}</InnerProvider>
+    </ThemeProvider>
+  );
+}
+
+function InnerProvider({ children }: { children: React.ReactNode }) {
   const { currentTheme } = useThemeToggle();
-
   const theme = currentTheme === "light" ? lightTheme : darkTheme;
 
-  useEffect(() => {
-    
-  }, [currentTheme]);
-
   return (
-    <ThemeProvider theme={theme}>
+    <MuiThemeProvider theme={theme}>
       <Provider store={store}>
         <AuthProvider>
           <WebSocketProvider>
@@ -31,6 +28,6 @@ export default function ClientProvider({
           </WebSocketProvider>
         </AuthProvider>
       </Provider>
-    </ThemeProvider>
+    </MuiThemeProvider>
   );
 }
