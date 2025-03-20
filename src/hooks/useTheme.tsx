@@ -1,4 +1,3 @@
-// hooks/useTheme.tsx
 "use client";
 import { createContext, useState, useContext, useEffect } from "react";
 
@@ -10,13 +9,19 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentTheme, setCurrentTheme] = useState(() => {
-    return localStorage.getItem("themeMode") || "light";
-  });
+  const [currentTheme, setCurrentTheme] = useState<string>("light");
 
   useEffect(() => {
-    localStorage.setItem("themeMode", currentTheme);
-    document.documentElement.setAttribute("data-theme", currentTheme);
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("themeMode") ?? "light";
+      setCurrentTheme(savedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("themeMode", currentTheme);
+    }
   }, [currentTheme]);
 
   const toggleTheme = () => {
