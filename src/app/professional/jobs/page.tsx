@@ -12,7 +12,7 @@ import { GrStatusGood } from "react-icons/gr";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { CheckCircle, MessageSquare, Flag, XCircle } from "lucide-react";
 import { IoIosTime } from "react-icons/io";
-import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMutation, useGiveComplaintMutation, useCancelBookingMutation, useCompleteBookingMutation } from "@/store/api/services.api";
+import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMutation, useGiveComplaintMutation, useCancelBookingMutation, useCompleteBookingMutation, useServiceFilterMutation, useSearchServicesQuery } from "@/store/api/services.api";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
@@ -25,6 +25,8 @@ export default function JobsPage() {
   const [cancelBooking] = useCancelBookingMutation();
   const [completeBooking] = useCompleteBookingMutation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<string[]>([]);
+
 
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["pending", "rejected", "booked", "canceled"];
@@ -42,7 +44,17 @@ export default function JobsPage() {
 
   const { data: servicesData } = useGetServicesQuery(activeTab);
 
-  console.log(servicesData);
+  const { data: searchResults } = useSearchServicesQuery(searchQuery);
+  const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
+
+
+
+  const handleFilter = async (updatedFilter: string[]) => {
+    const newData = {
+      categories: updatedFilter,
+    }
+    await filterServices({ data: newData }).unwrap();
+  };
 
   useEffect(() => {
     getPosition();
@@ -96,9 +108,12 @@ export default function JobsPage() {
 
   return (
     <>
-      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={[]} setFilter={function (filter: string[]): void {
-        throw new Error("Function not implemented.");
-      } } />
+      <Header searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        filter={filter}
+        setFilter={setFilter}
+        handleFilter={handleFilter}
+      />
       <div className="bg-gray-50 min-h-screen">
         {/* Tabs Section */}
         <div className="container mx-auto px-6 py-6">
