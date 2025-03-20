@@ -116,13 +116,13 @@ export default function Footer() {
             sx={{ mt: 2 }}
           />
 
-          <Box sx={{ mt: 3, textAlign: "center" }}>
+          <Box sx={{ mt: 3, textAlign: "start" }}>
             <Typography variant="body2">Rate our app:</Typography>
             <Rating value={rating} onChange={(_, newValue) => setRating(newValue)} />
           </Box>
         </DialogContent>
 
-        <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
+        <DialogActions sx={{ justifyContent: "end", pb: 2, mr:2 }}>
           <Button
             onClick={handleSubmit}
             sx={{
