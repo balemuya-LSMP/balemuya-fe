@@ -71,7 +71,7 @@ export default function Login() {
               transform: "translateX(-50%)",
               width: 60,
               height: 60,
-              backgroundColor: "white", // Optional, to match the background
+              backgroundColor: "white", 
               borderRadius: "50%",
               display: "flex",
               alignItems: "center",
