@@ -151,8 +151,8 @@ export default function Landing() {
         </Container>
       </Box>
 
-      <Box textAlign="center" boxShadow={4} py={6}>
-        <Container>
+      <Box textAlign="center" py={6} sx={{bgcolor: "background.paper"}}>
+        <Container maxWidth="md" sx={{ bgcolor: "background.paper", p: 4, borderRadius: 2, boxShadow: 3 }}>
           <Typography variant="h5" gutterBottom>
             Ready to experience the power of our mobile app?
           </Typography>
