@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 'use client';
 /* eslint-disable @next/next/no-img-element */
@@ -7,6 +8,7 @@ import { useSubscribeServiceMutation } from "@/store/api/userProfile.api";
 import { toast } from "react-toastify";
 import Header from "../_components/header";
 import Footer from "@/app/(features)/_components/footer";
+import { Box, Button, Card, CircularProgress, FormControl, InputLabel, MenuItem, Select, Typography, Grid } from "@mui/material";
 
 export default function ProfessionalCard() {
   type PlanType = "Silver" | "Gold" | "Diamond";
@@ -50,90 +52,105 @@ export default function ProfessionalCard() {
 
   return (
     <>
-      <Header />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-4">
-        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-8 w-full max-w-6xl">
-          {/* Left Card */}
-          <div className="w-full lg:w-1/3 bg-white shadow-lg rounded-xl p-6 space-y-6">
-            <h3 className="text-xl font-bold text-gray-800 text-center">Why Choose Us?</h3>
-            {[{ icon: ShieldCheck, title: "Secure Payments", desc: "All transactions are encrypted and safe.", color: "text-blue-600" },
-            { icon: Star, title: "Premium Content", desc: "Access exclusive professional resources.", color: "text-yellow-500" },
-            { icon: UserCheck, title: "Career Growth", desc: "Boost your career with expert guidance.", color: "text-green-600" },
-            { icon: TrendingUp, title: "Skill Improvement", desc: "Stay ahead with the latest industry trends.", color: "text-purple-600" },
-            { icon: Briefcase, title: "Professional Networking", desc: "Connect with industry experts and peers.", color: "text-red-600" }
+      <Header searchQuery={""} setSearchQuery={function (query: string): void {
+        throw new Error("Function not implemented.");
+      }} filter={[]} setFilter={function (filter: string[]): void {
+        throw new Error("Function not implemented.");
+      }} />
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", backgroundColor: "background.default", padding: 4 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: "100%", maxWidth: "lg" }}>
+
+          {/* Why Choose Us Card */}
+          <Card sx={{ boxShadow: 1, borderRadius: 2, padding: 4, width: "100%" }}>
+            <Typography variant="h5" align="center" gutterBottom>Why Choose Us?</Typography>
+            {[
+              { icon: ShieldCheck, title: "Secure Payments", desc: "All transactions are encrypted and safe.", color: "primary" },
+              { icon: Star, title: "Premium Content", desc: "Access exclusive professional resources.", color: "warning" },
+              { icon: UserCheck, title: "Career Growth", desc: "Boost your career with expert guidance.", color: "success" },
+              { icon: TrendingUp, title: "Skill Improvement", desc: "Stay ahead with the latest industry trends.", color: "secondary" },
+              { icon: Briefcase, title: "Professional Networking", desc: "Connect with industry experts and peers.", color: "error" }
             ].map(({ icon: Icon, title, desc, color }) => (
-              <div key={title} className="flex items-start gap-4">
-                <Icon className={`${color} w-7 h-7`} />
-                <div>
-                  <h4 className="font-medium text-gray-700">{title}</h4>
-                  <p className="text-gray-600 text-sm">{desc}</p>
-                </div>
-              </div>
+              <Box key={title} sx={{ display: "flex", alignItems: "flex-start", gap: 2, marginBottom: 2 }}>
+                <Icon style={{ color: `${color}.main`, width: 30, height: 30 }} />
+                <Box>
+                  <Typography variant="body1" fontWeight={600}>{title}</Typography>
+                  <Typography variant="body2">{desc}</Typography>
+                </Box>
+              </Box>
             ))}
-          </div>
+          </Card>
 
-          {/* Subscription Card */}
-          <div className="w-full lg:w-1/3 bg-white shadow-lg rounded-xl p-6">
-            <h1 className="text-center text-2xl font-bold text-gray-800 mb-6">Choose Your Plan</h1>
-            <div className="grid grid-cols-3 gap-2 mb-6">
-              {["Silver", "Gold", "Diamond"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab as PlanType)}
-                  className={`py-2 rounded-md font-medium transition-all text-center ${activeTab === tab ? "bg-purple-700 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+
+          <Box sx={{ display: "flex", flexDirection: "row",justifyContent:"center", alignItems: "center", gap: 4, width: "100%", maxWidth: "lg" }}>
+            {/* Subscription Card */}
+            <Card sx={{ width: "100%", maxWidth: 400, padding: 4 }}>
+              <Typography variant="h5" align="center" gutterBottom>Choose Your Plan</Typography>
+              <Grid container spacing={2} justifyContent="center" marginBottom={3}>
+                {["Silver", "Gold", "Diamond"].map((tab) => (
+                  <Grid item key={tab}>
+                    <Button
+                      variant={activeTab === tab ? "contained" : "outlined"}
+                      color="primary"
+                      onClick={() => setActiveTab(tab as PlanType)}
+                      fullWidth
+                    >
+                      {tab}
+                    </Button>
+                  </Grid>
+                ))}
+              </Grid>
+              <FormControl fullWidth>
+                <InputLabel>Duration</InputLabel>
+                <Select
+                  value={selectedDuration}
+                  onChange={(e) => setSelectedDuration(Number(e.target.value))}
+                  label="Duration"
                 >
-                  {tab}
-                </button>
-              ))}
-            </div>
-            <label className="block text-gray-700 font-medium mb-2">Duration:</label>
-            <select
-              value={selectedDuration}
-              onChange={(e) => setSelectedDuration(Number(e.target.value))}
-              className="w-full px-4 py-2 border rounded-md bg-white text-gray-700 shadow-sm"
-            >
-              {activePlan.durations.map(({ label, value }) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </select>
-            <div className="text-center text-lg font-semibold text-gray-800 mt-4">
-              <span>Total Amount: </span>
-              <span className="text-purple-700">{totalAmount} Birr</span>
-            </div>
-            <button
-              onClick={handleSubscribe}
-              disabled={isLoading}
-              className="mt-6 w-full py-2 bg-purple-700 text-white rounded-md font-medium shadow-md hover:bg-purple-800 disabled:bg-gray-500"
-            >
-              {isLoading ? "Processing..." : "Subscribe Now"}
-            </button>
-            <div className="mt-4 text-center text-gray-600 text-sm">
-              <CheckCircle className="inline-block w-5 h-5 text-green-500 mr-2" />
-              Secure Payment
-            </div>
-          </div>
+                  {activePlan.durations.map(({ label, value }) => (
+                    <MenuItem key={value} value={value}>
+                      {label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Typography variant="h6" align="center" marginTop={2}>Total Amount: <span style={{ color: "#673ab7" }}>{totalAmount} Birr</span></Typography>
+              <Button
+                onClick={handleSubscribe}
+                disabled={isLoading}
+                fullWidth
+                variant="contained"
+                color="secondary"
+                sx={{ marginTop: 3 }}
+              >
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : "Subscribe Now"}
+              </Button>
+              <Typography variant="body2" align="center" marginTop={2}>
+                <CheckCircle style={{ fontSize: 18, color: "green", marginRight: 8 }} /> Secure Payment
+              </Typography>
+            </Card>
 
-          {/* Steps Card */}
-          <div className="w-full lg:w-1/3 bg-white shadow-lg rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800">Subscription Steps</h3>
-            <div className="mt-4 space-y-4">
-              {[{ icon: ListOrdered, title: "Select a plan and duration", desc: "Choose the subscription plan that best suits your needs.", color: "text-blue-600" },
-              { icon: User, title: "Create an account", desc: "Sign up or log in to proceed.", color: "text-indigo-600" },
-              { icon: CreditCard, title: "Make payment securely", desc: "Complete your payment through our secure gateway.", color: "text-green-600" },
-              { icon: Mail, title: "Get confirmation", desc: "Receive confirmation email with plan details.", color: "text-yellow-600" }
-              ].map(({ icon: Icon, title, desc, color }) => (
-                <div key={title} className="flex items-start gap-3">
-                  <Icon className={`${color} w-6 h-6`} />
-                  <div>
-                    <p className="text-gray-700 font-medium">{title}</p>
-                    <p className="text-sm text-gray-500">{desc}</p>
-                  </div>
-                </div>
+            {/* Subscription Steps Card */}
+            <Card sx={{ width: "100%", maxWidth: 400, padding: 4 }}>
+              <Typography variant="h6" gutterBottom align="center">Subscription Steps</Typography>
+              {[
+                { icon: ListOrdered, title: "Select a plan and duration", desc: "Choose the subscription plan that best suits your needs." },
+                { icon: User, title: "Create an account", desc: "Sign up or log in to proceed." },
+                { icon: CreditCard, title: "Make payment securely", desc: "Complete your payment through our secure gateway." },
+                { icon: Mail, title: "Get confirmation", desc: "Receive confirmation email with plan details." }
+              ].map(({ icon: Icon, title, desc }) => (
+                <Box key={title} sx={{ display: "flex", alignItems: "flex-start", gap: 2, marginBottom: 2 }}>
+                  <Icon style={{ width: 24, height: 24, color: "primary.main" }} />
+                  <Box>
+                    <Typography variant="body1" fontWeight={600}>{title}</Typography>
+                    <Typography variant="body2">{desc}</Typography>
+                  </Box>
+                </Box>
               ))}
-            </div>
-          </div>
-        </div>
-      </div>
+            </Card>
+          </Box>
+        </Box>
+      </Box>
+
       <Footer />
     </>
   );
