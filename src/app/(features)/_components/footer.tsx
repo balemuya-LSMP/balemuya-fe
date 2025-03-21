@@ -91,7 +91,7 @@ export default function Footer() {
               sx={{
                 backgroundColor: "primary.main",
                 "&:hover": { backgroundColor: "primary.dark" },
-                width: { xs: "100%", sm: "auto" }, // Full width on mobile
+                width: { xs: "100%", sm: "auto" }, 
               }}
               onClick={() => setIsOpen(true)}
             >
