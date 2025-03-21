@@ -16,6 +16,7 @@ import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMuta
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
+import { Box, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton } from "@mui/material";
 
 export default function JobsPage() {
   const { position, getPosition } = useGeolocation();
@@ -27,32 +28,28 @@ export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
 
-
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["pending", "rejected", "booked", "canceled"];
 
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [selectedWorkId, setSelectedWorkId] = useState("")
+  const [selectedWorkId, setSelectedWorkId] = useState("");
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
 
-  const [bookId, setBookId] = useState("")
+  const [bookId, setBookId] = useState("");
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [complaint, setComplaint] = useState("");
 
   const { data: servicesData } = useGetServicesQuery(activeTab);
-
   const { data: searchResults } = useSearchServicesQuery(searchQuery);
   const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
-
-
 
   const handleFilter = async (updatedFilter: string[]) => {
     const newData = {
       categories: updatedFilter,
-    }
+    };
     await filterServices({ data: newData }).unwrap();
   };
 
@@ -60,11 +57,10 @@ export default function JobsPage() {
     getPosition();
   }, []);
 
-  const userLat = position?.lat ?? 11.60000000;
-  const userLng = position?.lng ?? 37.38333330;
+  const userLat = position?.lat ?? 11.6;
+  const userLng = position?.lng ?? 37.3833333;
 
   const services = servicesData?.data || [];
-
 
   const handleApply = async (id: string) => {
     await createApplication({ service_id: id, message: message }).unwrap();
@@ -74,21 +70,20 @@ export default function JobsPage() {
     const reviewData = {
       booking: bookId,
       rating: rating,
-      comment: review
-    }
+      comment: review,
+    };
     await reviewService({ data: reviewData }).unwrap();
     toast.success("Review submitted successfully");
     setRating(0);
     setReview("");
-
     setReviewModalOpen(false);
   };
 
   const handleComplaint = async () => {
     const complaintData = {
       booking: bookId,
-      message: complaint
-    }
+      message: complaint,
+    };
     await giveComplaint({ data: complaintData }).unwrap();
     toast.success("Complaint submitted successfully");
     setComplaint("");
@@ -98,292 +93,273 @@ export default function JobsPage() {
   const handleCancel = async (id: string) => {
     await cancelBooking(id).unwrap();
     toast.success("Booking canceled successfully");
-  }
+  };
 
   const handleComplete = async (id: string) => {
     await completeBooking(id).unwrap();
     toast.success("Booking completed successfully");
-  }
-
+  };
 
   return (
     <>
-      <Header searchQuery={searchQuery}
+      <Header
+        searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         filter={filter}
         setFilter={setFilter}
         handleFilter={handleFilter}
       />
-      <div className="bg-gray-50 min-h-screen">
+      <Box sx={{ backgroundColor: "background.default", minHeight: "100vh" }}>
         {/* Tabs Section */}
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex justify-center space-x-4 mb-4">
+        <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: 3 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 3 }}>
             {["", ...validStatuses].map((tab) => (
-              <button
+              <Button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 text-sm font-medium transition-colors duration-300 ${activeTab === tab
-                  ? "text-purple-700 border-b-2 border-purple-700"
-                  : "text-gray-700 hover:text-purple-700"
-                  }`}
+                sx={{
+                  px: 3,
+                  py: 1,
+                  color: activeTab === tab ? "purple.700" : "gray.700",
+                  borderBottom: activeTab === tab ? "2px solid" : "none",
+                  borderColor: "purple.700",
+                  "&:hover": {
+                    color: "purple.700",
+                  },
+                }}
               >
                 {tab === "" ? "New Jobs" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
+              </Button>
             ))}
-          </div>
-          <hr className="border-t-2 border-gray-200" />
+          </Box>
+          <hr style={{ borderTop: "2px solid #e2e8f0" }} />
 
           {/* Jobs Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+          <Grid container spacing={3} sx={{ mt: 3 }}>
             {services?.map((job: any) => (
-              <div
-                key={job.id}
-                className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex flex-col justify-between space-y-4"
-              >
-                <div className="flex-1">
-                  <h4 className="text-2xl font-semibold text-gray-800 mb-4">{job.title ?? job?.service?.title}</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center text-gray-500">
-                      <GrStatusGood className="text-purple-700 text-lg mr-2" />
-                      <span className="text-sm px-2 rounded bg-purple-400">
-                        {job?.status && job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-                      </span>
-                    </div>
-                    <div className="flex items-center text-gray-500">
-                      <AiOutlineExclamationCircle className="text-purple-700 text-lg mr-2" />
-                      <span className="text-sm">{job.urgency ?? job.service.urgency}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-500">
-                      <div className="flex items-center text-sm">
-                        <IoIosTime className="text-purple-700 text-lg mr-2" />
-                        <span>{timeDifference(new Date(), new Date(job?.created_at ?? job?.service?.created_at))}</span>
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <FaLocationDot className="text-purple-700 text-lg mr-2" />
-                        <span>{getDistanceFromLatLon(userLat, userLng, job.location?.latitude ?? job?.service?.location?.latitude, job?.location?.longitude ?? job?.service?.location?.longitude)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mt-4">{job?.description ?? job?.service?.description}</p>
-                </div>
-
-                <div className="flex justify-end items-center">
-
-                  {
-                    job?.status == "active" && (
-                      <button className="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800 transition mt-6"
-                        onClick={() => {
-                          setSelectedWorkId(job?.id)
-                          setModalOpen(true)
-                        }}>
-                        Apply
-                      </button>
-                    )},
-                  {job?.service?.status === "booked" && (
-                    <div className="flex justify-between items-center border-t pt-4 mt-6 gap-4">
-                      {/* Review Button */}
-                      <button
-                        className="text-purple-700 hover:text-purple-900 transition"
-                        onClick={() => {
-                          setBookId(job.id);
-                          setReviewModalOpen(true);
-                        }}
-                      >
-                        <MessageSquare size={24} />
-                      </button>
-
-                      {/* Report Button */}
-                      <button
-                        className="text-red-500 hover:text-red-700 transition"
-                        onClick={() => {
-                          setBookId(job.id);
-                          setReportModalOpen(true);
-                        }}
-                      >
-                        <Flag size={24} />
-                      </button>
-
-                      {/* Cancel Button */}
-                      <button
-                        className="text-gray-600 hover:text-gray-800 transition"
-                        onClick={() => handleCancel(job.id)}
-                      >
-                        <XCircle size={24} />
-                      </button>
-
-                      {/* Complete Button */}
-                      <button
-                        className="text-green-600 hover:text-green-800 transition"
-                        onClick={() => handleComplete(job.id)}
-                      >
-                        <CheckCircle size={24} />
-                      </button>
-                    </div>
-                  )}
-
-                </div>
-                {job.customer && (
-                  <div className="flex items-center mt-4 pt-4 border-t border-gray-200">
-                    <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm">
-                      <Link href={`/professional/customer/${job.customer?.user?.id ?? job?.customer?.customer_id}`}>
-                        <img
-                          src={job.customer.user?.profile_image_url ?? job.customer.customer_profile_image}
-                          alt={job.customer.customer_name}
-                          width={48}
-                          height={48}
-                          className="rounded-full"
-                        />
-                      </Link>
-                    </div>
-                    <div className="ml-3">
-                      <h5 className="text-sm font-medium text-gray-800">{job.customer?.user?.first_name ?? job.customer.customer_name}</h5>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-        {modalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-96 relative">
-              {/* Close Button (Top Right) */}
-              <button
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
-                onClick={() => setModalOpen(false)}
-              >
-                &times;
-              </button>
-
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Apply for Job</h3>
-              <p className="text-gray-600 mb-4">Write a message to the customer</p>
-
-              <textarea
-                className="w-full h-22 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 transition-all"
-                placeholder="Write a message..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              ></textarea>
-
-              {/* Button Container */}
-              <div className="flex justify-end space-x-3 mt-5">
-                <button
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-all"
-                  onClick={() => {
-                    if (selectedWorkId !== null) {
-                      handleApply(selectedWorkId);
-                      setModalOpen(false);
-                    }
+              <Grid item xs={12} sm={6} lg={4} key={job.id}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    gap: 2,
+                    "&:hover": {
+                      boxShadow: 3,
+                    },
                   }}
                 >
-                  Submit
-                </button>
-                <button
-                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-all"
-                  onClick={() => setModalOpen(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        {reviewModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-96 relative">
-              {/* Close Button (Top Right) */}
-              <button
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
-                onClick={() => setReviewModalOpen(false)}
-              >
-                &times;
-              </button>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", color: "text.primary" }}>
+                    {job.title ?? job?.service?.title}
+                  </Typography>
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", color: "text.secondary" }}>
+                      <GrStatusGood style={{ color: "purple.700" }} />
+                      <Typography variant="body2" sx={{ px: 1, bgcolor: "purple.100", borderRadius: 1 }}>
+                        {job?.status && job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center", color: "text.secondary" }}>
+                      <AiOutlineExclamationCircle style={{ color: "purple.700" }} />
+                      <Typography variant="body2" sx={{ px: 1, bgcolor: "purple.100", borderRadius: 1 }}>{job.urgency ?? job.service.urgency}</Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", color: "text.secondary" }}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <IoIosTime style={{ color: "purple.700" }} />
+                        <Typography variant="body2" sx={{ px: 1, bgcolor: "purple.100", borderRadius: 1 }}>
+                          {timeDifference(new Date(), new Date(job?.created_at ?? job?.service?.created_at))}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <FaLocationDot style={{ color: "purple.700" }} />
+                        <Typography variant="body2" sx={{ px: 1, bgcolor: "purple.100", borderRadius: 1 }}>
+                          {getDistanceFromLatLon(
+                            userLat,
+                            userLng,
+                            job.location?.latitude ?? job?.service?.location?.latitude,
+                            job?.location?.longitude ?? job?.service?.location?.longitude
+                          )}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                  <Typography variant="body1" sx={{ color: "text.secondary", mt: 2 }}>
+                    {job?.description ?? job?.service?.description}
+                  </Typography>
 
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Review Service</h3>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+                    {job?.status === "active" && (
+                      <Button
+                        variant="contained"
+                        sx={{ bgcolor: "purple.700", "&:hover": { bgcolor: "purple.800" } }}
+                        onClick={() => {
+                          setSelectedWorkId(job?.id);
+                          setModalOpen(true);
+                        }}
+                      >
+                        Apply
+                      </Button>
+                    )}
+                    {job?.service?.status === "booked" && (
+                      <Box sx={{ display: "flex", gap: 2, borderTop: 1, borderColor: "divider", pt: 2, mt: 3 }}>
+                        <IconButton onClick={() => { setBookId(job.id); setReviewModalOpen(true); }}>
+                          <MessageSquare style={{ color: "purple.700" }} />
+                        </IconButton>
+                        <IconButton onClick={() => { setBookId(job.id); setReportModalOpen(true); }}>
+                          <Flag style={{ color: "red.500" }} />
+                        </IconButton>
+                        <IconButton onClick={() => handleCancel(job.id)}>
+                          <XCircle style={{ color: "gray.600" }} />
+                        </IconButton>
+                        <IconButton onClick={() => handleComplete(job.id)}>
+                          <CheckCircle style={{ color: "gray.600" }} />
+                        </IconButton>
+                      </Box>
+                    )}
+                  </Box>
 
-              {/* Review Input */}
-              <input
-                className="w-full h-22 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 transition-all"
-                placeholder="Write a review..."
-                value={review}
-                onChange={(e) => setReview(e.target.value)}
-              />
+                  {job.customer && (
+                    <Box sx={{ display: "flex", alignItems: "center", mt: 3, pt: 3, borderTop: 1, borderColor: "divider" }}>
+                      <Avatar
+                        src={job.customer.user?.profile_image_url ?? job.customer.customer_profile_image}
+                        alt={job.customer.customer_name}
+                        sx={{ width: 48, height: 48 }}
+                      />
+                      <Typography variant="body1" sx={{ ml: 2, fontWeight: "medium" }}>
+                        {job.customer?.user?.first_name ?? job.customer.customer_name}
+                      </Typography>
+                    </Box>
+                  )}
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
 
-              {/* Rating Stars */}
-              <div className="flex space-x-2 my-4">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    className={`cursor-pointer text-xl ${rating >= star ? 'text-yellow-500' : 'text-gray-300'}`}
-                    onClick={() => setRating(star)}
-                  >
-                    ★
-                  </span>
-                ))}
-              </div>
+        {/* Apply Modal */}
+        <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+              width: 400,
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Apply for Job
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              placeholder="Write a message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+              <Button variant="contained" onClick={() => handleApply(selectedWorkId)}>
+                Submit
+              </Button>
+              <Button variant="outlined" onClick={() => setModalOpen(false)}>
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
 
-              {/* Button Container */}
-              <div className="flex justify-end space-x-3 mt-5">
-                <button
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-all"
-                  onClick={handleReview}
-                >
-                  Submit
-                </button>
-                <button
-                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-all"
-                  onClick={() => setReviewModalOpen(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        {
-          reportModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-96 relative">
-                {/* Close Button (Top Right) */}
-                <button
-                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
-                  onClick={() => setReportModalOpen(false)}
-                >
-                  &times;
-                </button>
+        {/* Review Modal */}
+        <Modal open={reviewModalOpen} onClose={() => setReviewModalOpen(false)}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+              width: 400,
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Review Service
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              placeholder="Write a review..."
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+            <Box sx={{ display: "flex", gap: 1, mb: 3 }}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <IconButton key={star} onClick={() => setRating(star)}>
+                  <Typography sx={{ color: rating >= star ? "yellow.500" : "gray.300" }}>★</Typography>
+                </IconButton>
+              ))}
+            </Box>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+              <Button variant="contained" onClick={handleReview}>
+                Submit
+              </Button>
+              <Button variant="outlined" onClick={() => setReviewModalOpen(false)}>
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
 
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Report Compliant</h3>
+        {/* Report Modal */}
+        <Modal open={reportModalOpen} onClose={() => setReportModalOpen(false)}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+              width: 400,
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Report Complaint
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              placeholder="Write a report..."
+              value={complaint}
+              onChange={(e) => setComplaint(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+              <Button variant="contained" onClick={handleComplaint}>
+                Submit
+              </Button>
+              <Button variant="outlined" onClick={() => setReportModalOpen(false)}>
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
 
-                {/* Report Input */}
-                <input
-                  className="w-full h-22 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 transition-all"
-                  placeholder="Write a report..."
-                  value={complaint}
-                  onChange={(e) => setComplaint(e.target.value)}
-                />
-
-                {/* Button Container */}
-                <div className="flex justify-end space-x-3 mt-5">
-                  <button
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-all"
-                    onClick={handleComplaint}
-                  >
-                    Submit
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-all"
-                    onClick={() => setReportModalOpen(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-
-          )
-        }
         <ToastContainer position="top-center" />
-      </div>
+      </Box>
       <Footer />
     </>
   );
