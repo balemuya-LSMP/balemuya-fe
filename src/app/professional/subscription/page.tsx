@@ -83,7 +83,7 @@ export default function ProfessionalCard() {
 
           <Box sx={{ display: "flex", flexDirection: "row",justifyContent:"center", alignItems: "center", gap: 4, width: "100%", maxWidth: "lg" }}>
             {/* Subscription Card */}
-            <Card sx={{ width: "100%", maxWidth: 400, padding: 4 }}>
+            <Card sx={{ width: "100%", maxWidth: 600, padding: 4 }}>
               <Typography variant="h5" align="center" gutterBottom>Choose Your Plan</Typography>
               <Grid container spacing={2} justifyContent="center" marginBottom={3}>
                 {["Silver", "Gold", "Diamond"].map((tab) => (
@@ -119,7 +119,7 @@ export default function ProfessionalCard() {
                 disabled={isLoading}
                 fullWidth
                 variant="contained"
-                color="secondary"
+                color="primary"
                 sx={{ marginTop: 3 }}
               >
                 {isLoading ? <CircularProgress size={24} color="inherit" /> : "Subscribe Now"}
@@ -130,7 +130,7 @@ export default function ProfessionalCard() {
             </Card>
 
             {/* Subscription Steps Card */}
-            <Card sx={{ width: "100%", maxWidth: 400, padding: 4 }}>
+            <Card sx={{ width: "100%", maxWidth: 600, padding: 4 }}>
               <Typography variant="h6" gutterBottom align="center">Subscription Steps</Typography>
               {[
                 { icon: ListOrdered, title: "Select a plan and duration", desc: "Choose the subscription plan that best suits your needs." },
