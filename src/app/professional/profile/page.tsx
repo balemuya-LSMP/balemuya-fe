@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import { FiCheckCircle, FiEdit, FiTrash } from "react-icons/fi";
 import { MdAdd, MdDelete, MdEdit, MdMail } from "react-icons/md";
+import { Box, Paper } from "@mui/material";
 import {
   UserModal,
   EducationModal,
@@ -187,10 +188,19 @@ export default function Profile() {
   }
 
   return (
-    <div className="container mx-auto py-12 px-4 bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto md:flex md:items-start md:space-x-8">
+    <Box
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "100vh",
+      backgroundColor: "background.default",
+      padding: 4,
+    }}>
+      <Paper elevation={3} sx={{ padding: 4, maxWidth: '900px', width: '100%' }}>
         {/* Profile Details */}
-        <div className="flex-1 text-center md:text-left">
+        <Box className="flex-1 text-center md:text-left">
           <div className="relative">
             <button
               className="absolute top-2 right-1 bg-gray-100 hover:bg-gray-200 rounded-full p-2 shadow-md"
@@ -671,9 +681,9 @@ export default function Profile() {
               </button>
             )}
           </div>
-        </div>
-      </div>
+        </Box>
+      </Paper>
       <ToastContainer position="top-center" />
-    </div>
+    </Box>
   );
 }
