@@ -1,0 +1,44 @@
+{
+  "header": {
+    "logoText": "Balamuya",
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "signup": "Signup",
+    "language": "Language",
+    "toggleTheme": "Toggle Theme"
+  },
+  "Landing": {
+    "title": "Connect Professionals with Customers",
+    "description": "Whether you're a skilled professional seeking clients or a customer looking for reliable expertise nearby, we make it simple for both.",
+    "findProfessionals": "Find Professionals",
+    "offerServices": "Offer Your Services",
+    "keyFeatures": "Key Features",
+    "features": [
+      "Find Experts",
+      "Post Opportunities",
+      "Connect Seamlessly"
+    ],
+    "featuresDesc": [
+      "Browse a wide range of professionals to meet your needs.",
+      "Share your work requirements and let professionals come to you.",
+      "Communicate and collaborate with ease on our platform."
+    ],
+    "benefitsTitle": "Benefits of Using Our Platform",
+    "benefits": [
+      "Easy Search",
+      "Wide Range of Experts",
+      "Secure Payments"
+    ],
+    "benefitsDesc": [
+      "Quickly search and filter professionals.",
+      "Choose from a variety of professionals for your needs.",
+      "Pay securely through trusted payment gateways."
+    ],
+    "testimonialsTitle": "What Our Users Say",
+    "appTitle": "Ready to experience the power of our mobile app?",
+    "appDesc": "Download our mobile app today and take your business on the go! Available for both iOS and Android.",
+    "downloadBtn": "Download Now"
+  }
+}
