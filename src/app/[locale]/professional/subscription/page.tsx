@@ -81,7 +81,7 @@ export default function ProfessionalCard() {
           </Card>
 
 
-          <Box sx={{ display: "flex", flexDirection: "row",justifyContent:"center", alignItems: "center", gap: 4, width: "100%", maxWidth: "lg" }}>
+          <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 4, width: "100%", maxWidth: "lg" }}>
             {/* Subscription Card */}
             <Card sx={{ width: "100%", maxWidth: 600, padding: 4 }}>
               <Typography variant="h5" align="center" gutterBottom>Choose Your Plan</Typography>
