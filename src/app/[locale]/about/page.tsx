@@ -1,11 +1,15 @@
 'use client';
 /* eslint-disable react/no-unescaped-entities */
 import { Button, Typography, Box, Divider } from '@mui/material';
-import Link from 'next/link';
+import {Link} from "@/i18n/navigation";
 import Header from "../(features)/_components/header";
 import Footer from "../(features)/_components/footer";
-
+import { useTranslations } from 'next-intl';
 export default function AboutUs() {
+
+  const t = useTranslations("about");
+
+
   return (
     <>
       <Header />
@@ -38,31 +42,25 @@ export default function AboutUs() {
           }}
         >
           <Typography variant="h3" sx={{ marginBottom: 2 }}>
-            About Balemuya
+            {t("title")}
           </Typography>
           <Typography variant="body1" sx={{ marginBottom: 4 }}>
-            Balemuya is a local service marketplace that connects customers with
-            skilled professionals. Whether you need home repairs, beauty
-            services, tutoring, or other local services, Balemuya makes it easy to
-            find trusted professionals near you.
+            {t("intro")}
           </Typography>
 
           <Divider />
 
           <Typography variant="h5" sx={{ marginBottom: 2 }}>
-            Our Mission
+            {t("missionTitle")}
           </Typography>
           <Typography variant="body1" sx={{ marginBottom: 4 }}>
-            We aim to bridge the gap between service providers and customers by
-            offering a seamless and reliable platform. We empower professionals to
-            showcase their skills and grow their businesses while helping
-            customers access high-quality services effortlessly.
+            {t("mission")}
           </Typography>
 
           <Divider />
 
           <Typography variant="h5" sx={{ marginBottom: 2 }}>
-            Why Choose Us?
+            {t("whyChooseUsTitle")}
           </Typography>
           <Box
             sx={{
@@ -74,30 +72,27 @@ export default function AboutUs() {
               marginX: 'auto',
             }}
           >
-            <Typography variant="body1">✅ Trusted and verified professionals</Typography>
-            <Typography variant="body1">✅ Easy booking and secure transactions</Typography>
-            <Typography variant="body1">✅ Wide range of services to choose from</Typography>
-            <Typography variant="body1">✅ Customer reviews for transparency</Typography>
+            <Typography variant="body1">{t("reasons.1")}</Typography>
+            <Typography variant="body1">{t("reasons.2")}</Typography>
+            <Typography variant="body1">{t("reasons.3")}</Typography>
+            <Typography variant="body1">{t("reasons.4")}</Typography>
           </Box>
 
           <Divider />
 
           <Typography variant="h5" sx={{ marginBottom: 2 }}>
-            Join Us Today
+            {t("joinTitle")}
           </Typography>
           <Typography variant="body1" sx={{ marginBottom: 4 }}>
-            Whether you're a professional looking to grow your business or a
-            customer searching for top-notch local services, Balemuya is the
-            perfect place for you. Sign up today and experience hassle-free local
-            service booking.
+            {t("joinText")}
           </Typography>
 
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'center', gap: 4 }}>
             <Link href="/auth/signup" passHref>
-              <Button variant="contained" sx={{ width: { xs: '100%', sm: 'auto' } }}>Get Started</Button>
+              <Button variant="contained" sx={{ width: { xs: '100%', sm: 'auto' } }}>{t("getStarted")}</Button>
             </Link>
             <Link href="/contact" passHref>
-              <Button variant="outlined" sx={{ width: { xs: '100%', sm: 'auto' } }}>Contact Us</Button>
+              <Button variant="outlined" sx={{ width: { xs: '100%', sm: 'auto' } }}>{t("contactUs")}</Button>
             </Link>
           </Box>
         </Box>
