@@ -19,6 +19,7 @@ import {
   Rating,
   Box,
 } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 export default function Footer() {
   const [giveFeedback] = useGiveFeedbackMutation();
@@ -26,17 +27,20 @@ export default function Footer() {
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState<number | null>(0);
 
+  const t = useTranslations("footer");
+
   const handleSubmit = async () => {
     const newData = { message, rating };
 
     try {
       await giveFeedback({ data: newData }).unwrap();
-      toast("Feedback submitted successfully");
+      toast(t("feedbackSuccess"));
       setIsOpen(false);
       setMessage("");
       setRating(0);
     } catch (error) {
       console.error(error);
+      toast.error(t("feedbackError"));
     }
   };
 
@@ -71,16 +75,16 @@ export default function Footer() {
           {/* Footer Text & Feedback Button */}
           <Box sx={{ textAlign: "center", mb: { xs: 2, sm: 0 } }}>
             <Typography variant="body2" color="#7E22CE">
-              © 2024 Balemuya. All rights reserved.
+              {t("rights")}
             </Typography>
             <Typography variant="body2" color="#7E22CE">
-              Contact us at{" "}
+              {t("contact")}{" "}
               <a href="mailto:support@balemuya.com" style={{ color: "#7E22CE", textDecoration: "none" }}>
                 support@balemuya.com
               </a>
             </Typography>
             <Typography variant="caption" color="gray.500">
-              Designed with ❤️ by the Balemuya Team
+             {t("designedBy")}
             </Typography>
           </Box>
 
@@ -95,7 +99,7 @@ export default function Footer() {
               }}
               onClick={() => setIsOpen(true)}
             >
-              Give Feedback
+              {t("feedbackButton")}
             </Button>
           </Box>
         </Toolbar>
@@ -103,13 +107,13 @@ export default function Footer() {
 
       {/* Feedback Dialog (Modal) */}
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Give Feedback</DialogTitle>
+        <DialogTitle>{t("feedbackTitle")}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
             multiline
             rows={4}
-            label="Write your feedback..."
+            label= {t("feedbackLabel")}
             variant="outlined"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -117,7 +121,7 @@ export default function Footer() {
           />
 
           <Box sx={{ mt: 3, textAlign: "start" }}>
-            <Typography variant="body2">Rate our app:</Typography>
+            <Typography variant="body2">{t("ratingLabel")}</Typography>
             <Rating value={rating} onChange={(_, newValue) => setRating(newValue)} />
           </Box>
         </DialogContent>
@@ -131,10 +135,10 @@ export default function Footer() {
               "&:hover": { backgroundColor: "primary.dark" },
             }}
           >
-            Submit
+            {t("submit")}
           </Button>
           <Button onClick={() => setIsOpen(false)} color="secondary" variant="outlined">
-            Cancel
+            {t("cancel")}
           </Button>
         </DialogActions>
       </Dialog>
