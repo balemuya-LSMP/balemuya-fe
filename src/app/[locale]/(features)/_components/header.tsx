@@ -6,22 +6,28 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import TranslateIcon from "@mui/icons-material/Translate";
 import { LightMode, DarkMode } from "@mui/icons-material";
-import { Link } from "@/i18n/navigation";
+import { Link,usePathname, getPathname } from "@/i18n/navigation";
 import Image from "next/image";
 import { useThemeToggle } from "@/hooks/useTheme";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
-export default function Landing() {
+
+
+export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { toggleTheme, currentTheme } = useThemeToggle();
   const params = useParams();
   const router = useRouter();
+  const pathname = usePathname(); 
+  const t = useTranslations("header");
 
   const locale = params.locale;
 
   const changeLanguage = (newLocale: string) => {
     if (newLocale !== locale) {
-      router.push(`/${newLocale}`);
+      const newPath = getPathname({ href: pathname, locale: newLocale });
+      router.replace(newPath);
     }
   };
 
@@ -39,7 +45,7 @@ export default function Landing() {
             <Box display="flex" alignItems="center" sx={{ cursor: "pointer" }}>
               <Image src="/images/logo.jpg" alt="Balamuya Logo" width={60} height={60} style={{ borderRadius: "50%" }} />
               <Typography variant="h6" color="primary" sx={{ ml: 1, fontWeight: "bold" }}>
-                Balamuya
+                {t("logoText")}
               </Typography>
             </Box>
           </Link>
@@ -58,7 +64,7 @@ export default function Landing() {
               },
             }}
           >
-            Home
+            {t("home")}
           </Button>
           <Button
             component={Link}
@@ -71,7 +77,7 @@ export default function Landing() {
               },
             }}
           >
-            About
+            {t("about")}
           </Button>
           <Button
             component={Link}
@@ -85,7 +91,7 @@ export default function Landing() {
               },
             }}
           >
-            Contact
+            {t("contact")}
           </Button>
         </Box>
 
@@ -93,10 +99,10 @@ export default function Landing() {
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
           {/* Login & Signup Buttons */}
           <Button component={Link} href="/auth/login" variant="contained" sx={{ bgcolor: "#6a1b9a", color: "white" }}>
-            Login
+            {t("login")}
           </Button>
           <Button component={Link} variant="outlined" href="/auth/signup" sx={{ borderColor: "#6a1b9a", color: "#6a1b9a" }}>
-            Signup
+            {t("signup")}
           </Button>
           <IconButton color="inherit" onClick={toggleTheme} sx={{
             color: currentTheme === "light" ? "#000000" : "#ffffff", // Set color based on theme
@@ -125,19 +131,19 @@ export default function Landing() {
         </Box>
         <List>
           <ListItem component={Link} href="/" onClick={toggleMenu}>
-            <ListItemText primary="Home" />
+            <ListItemText primary={t("home")} />
           </ListItem>
           <ListItem component={Link} href="/about" onClick={toggleMenu}>
-            <ListItemText primary="About" />
+            <ListItemText primary={t("about")} />
           </ListItem>
           <ListItem component={Link} href="/contact" onClick={toggleMenu}>
-            <ListItemText primary="Contact" />
+            <ListItemText primary={t("contact")} />
           </ListItem>
           <ListItem component={Link} href="/auth/login" onClick={toggleMenu}>
-            <ListItemText primary="Login" />
+            <ListItemText primary={t("login")} />
           </ListItem>
           <ListItem component={Link} href="/auth/signup" onClick={toggleMenu}>
-            <ListItemText primary="Signup" />
+            <ListItemText primary={t("signup")} />
           </ListItem>
         </List>
       </Drawer>
