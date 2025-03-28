@@ -40,5 +40,53 @@
     "appTitle": "Ready to experience the power of our mobile app?",
     "appDesc": "Download our mobile app today and take your business on the go! Available for both iOS and Android.",
     "downloadBtn": "Download Now"
-  }
+  },
+  "about": {
+    "title": "About Balemuya",
+    "intro": "Balemuya is a local service marketplace that connects customers with skilled professionals. Whether you need home repairs, beauty services, tutoring, or other local services, Balemuya makes it easy to find trusted professionals near you.",
+    
+    "missionTitle": "Our Mission",
+    "mission": "We aim to bridge the gap between service providers and customers by offering a seamless and reliable platform. We empower professionals to showcase their skills and grow their businesses while helping customers access high-quality services effortlessly.",
+    
+    "whyChooseUsTitle": "Why Choose Us?",
+    "reasons": {
+      "1": "✅ Trusted and verified professionals",
+      "2": "✅ Easy booking and secure transactions",
+      "3": "✅ Wide range of services to choose from",
+      "4": "✅ Customer reviews for transparency"
+    },
+  
+    "joinTitle": "Join Us Today",
+    "joinText": "Whether you're a professional looking to grow your business or a customer searching for top-notch local services, Balemuya is the perfect place for you. Sign up today and experience hassle-free local service booking.",
+    
+    "getStarted": "Get Started",
+    "contactUs": "Contact Us"
+  },
+  
+  "footer": {
+    "rights": "© 2024 Balemuya. All rights reserved.",
+    "contact": "Contact us at",
+    "email": "support@balemuya.com",
+    "designedBy": "Designed with ❤️ by the Balemuya Team",
+    "feedbackButton": "Give Feedback",
+    "feedbackTitle": "Give Feedback",
+    "feedbackLabel": "Write your feedback...",
+    "ratingLabel": "Rate our app:",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "feedbackSuccess": "Feedback submitted successfully!",
+    "feedbackError": "Something went wrong!"
+  },
+    "contactUs": {
+      "title": "Contact Us",
+      "description": "Have a question or need assistance? Fill out the form below and we'll get back to you soon.",
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "messageLabel": "Message",
+      "sendMessageButton": "Send Message",
+      "location": "📍 Location: Addis Ababa, Ethiopia",
+      "phone": "📞 Phone: +251 911 123 456",
+      "email": "📧 Email: support@balemuya.com",
+      "messageSentAlert": "Message Sent! We will get back to you soon."
+    } 
 }
