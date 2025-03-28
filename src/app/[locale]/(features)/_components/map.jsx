@@ -59,7 +59,6 @@ const MapComponent = ({ userLocations }) => {
     getPosition();
   }, [getPosition]);
 
-  console.log("position", position);
 
   const currentLocation = position ? [position.lat, position.lng] : [defaultPosition.lat, defaultPosition.lng];
 
