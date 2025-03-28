@@ -77,7 +77,7 @@
     "feedbackSuccess": "Feedback submitted successfully!",
     "feedbackError": "Something went wrong!"
   },
-    "contactUs": {
+    "contact": {
       "title": "Contact Us",
       "description": "Have a question or need assistance? Fill out the form below and we'll get back to you soon.",
       "nameLabel": "Name",
