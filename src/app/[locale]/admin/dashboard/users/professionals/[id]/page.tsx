@@ -20,10 +20,10 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useBlockUserMutation, useGetUserQuery, useVerifyUserMutation } from "@/store/api/user.api";
 import { useDeleteUserMutation } from "@/store/api/user.api";
-import Loader from "@/app/(features)/_components/loader";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "@/app/[locale]/(features)/_components/loader";
 
 export default function UserDetails() {
   const router = useRouter();
