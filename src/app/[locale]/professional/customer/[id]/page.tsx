@@ -3,18 +3,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import MapComponent from "@/app/(features)/_components/map";
 import Image from "next/image";
 import { FaLocationDot } from "react-icons/fa6";
 import { useParams } from "next/navigation";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useGetCustomerByIdQuery } from "@/store/api/user.api";
 import { useRequestProfessionalServiceMutation } from "@/store/api/services.api";
-import Loader from "@/app/(features)/_components/loader";
 import { useEffect, useState } from "react";
 import { getDistanceFromLatLon } from "@/shared/utils";
-import StarRating from "@/app/(features)/_components/StarRating";
 import { toast, ToastContainer } from "react-toastify";
+import Loader from "@/app/[locale]/(features)/_components/loader";
+import StarRating from "@/app/[locale]/(features)/_components/StarRating";
+import MapComponent from "@/app/[locale]/(features)/_components/map";
 
 const job = {
   id: 1,
