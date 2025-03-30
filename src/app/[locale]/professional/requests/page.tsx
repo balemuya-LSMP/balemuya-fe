@@ -4,8 +4,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import Footer from "@/app/(features)/_components/footer";
+import {Link} from "@/i18n/navigation";
 import Header from "../_components/header";
 import { FaLocationDot } from "react-icons/fa6";
 import { GrStatusGood } from "react-icons/gr";
@@ -14,6 +13,7 @@ import { useGetServicesQuery, useGetRequestedServicesQuery } from "@/store/api/s
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
+import Footer from "../../(features)/_components/footer";
 
 
 export default function JobsPage() {
