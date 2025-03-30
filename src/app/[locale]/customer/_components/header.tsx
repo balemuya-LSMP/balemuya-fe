@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @next/next/no-img-element */
-'use client';
 import { useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
@@ -26,9 +24,10 @@ import {
   Paper,
   Container,
   Button,
+  Divider,
 } from "@mui/material";
 
-import { FiLogOut, FiUser } from "react-icons/fi";
+import { FiLogOut, FiUser, FiSettings } from "react-icons/fi";
 import { FaBell, FaSearch, FaBars } from "react-icons/fa";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { ToastContainer, toast } from "react-toastify";
@@ -50,6 +49,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isSmallMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const unreadCount = notificationData?.notifications?.filter((notif: any) => !notif.is_read).length ?? 0;
 
@@ -87,76 +87,154 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
 
   return (
     <>
-      <AppBar position="sticky" color="default" elevation={2}>
+      <AppBar 
+        position="sticky" 
+        color="default" 
+        elevation={0}
+        sx={{ 
+          backgroundColor: theme.palette.background.paper,
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          py: 1
+        }}
+      >
         <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
+          <Toolbar disableGutters sx={{ justifyContent: "space-between", gap: 2 }}>
             {/* Logo - Desktop */}
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <Link href="/customer" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                <img src="/images/logo.jpg" alt="Logo" style={{ width: 60, height: 60, borderRadius: '50%' }} />
-                <Typography variant="h6" color="primary" sx={{ ml: 1, fontWeight: 600 }}>
+                <Avatar 
+                  src="/images/logo.jpg" 
+                  alt="Logo" 
+                  sx={{ 
+                    width: 48, 
+                    height: 48,
+                    mr: 1.5
+                  }} 
+                />
+                <Typography 
+                  variant="h6" 
+                  color="primary" 
+                  sx={{ 
+                    fontWeight: 700,
+                    letterSpacing: 0.5,
+                    fontSize: '1.25rem'
+                  }}
+                >
                   Balamuya
                 </Typography>
               </Link>
             </Box>
 
-            {/* Mobile menu */}
-            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            {/* Mobile menu button */}
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
               <IconButton
                 size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
+                aria-label="menu"
                 onClick={handleOpenNavMenu}
                 color="inherit"
+                sx={{ color: 'text.primary' }}
               >
                 <FaBars />
               </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: 'block', md: 'none' },
+              
+              {/* Mobile Logo */}
+              <Link 
+                href="/customer" 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  textDecoration: 'none',
+                  marginLeft: '12px'
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page.name} onClick={handleCloseNavMenu} component={Link} href={page.href}>
-                    <Typography textAlign="center">{page.name}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-
-            {/* Logo - Mobile */}
-            <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexGrow: 1 }}>
-              <Link href="/customer" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                <img src="/images/logo.jpg" alt="Logo" style={{ width: 40, height: 40, borderRadius: '50%' }} />
-                <Typography variant="h6" color="primary" sx={{ ml: 1, fontWeight: 600 }}>
-                  Balamuya
+                <Avatar 
+                  src="/images/logo.jpg" 
+                  alt="Logo" 
+                  sx={{ 
+                    width: 36, 
+                    height: 36,
+                    mr: 1
+                  }} 
+                />
+                <Typography 
+                  variant="h6" 
+                  color="primary" 
+                  sx={{ 
+                    fontWeight: 700,
+                    fontSize: '1.1rem'
+                  }}
+                >
+                  {!isSmallMobile && 'Balamuya'}
                 </Typography>
               </Link>
             </Box>
 
+            {/* Mobile Menu */}
+            <Menu
+              id="mobile-menu"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+              PaperProps={{
+                sx: {
+                  minWidth: 200,
+                  boxShadow: theme.shadows[3],
+                  mt: 1
+                }
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem 
+                  key={page.name} 
+                  onClick={handleCloseNavMenu} 
+                  component={Link} 
+                  href={page.href}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover
+                    }
+                  }}
+                >
+                  <Typography>{page.name}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+
             {/* Navigation Links - Desktop */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+            <Box sx={{ 
+              flexGrow: 1, 
+              display: { xs: 'none', md: 'flex' }, 
+              justifyContent: 'center',
+              gap: 1
+            }}>
               {pages.map((page) => (
                 <Button
                   key={page.name}
                   component={Link}
                   href={page.href}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'text.primary', display: 'block', '&:hover': { color: 'primary.main' } }}
+                  sx={{ 
+                    color: 'text.primary',
+                    fontWeight: 500,
+                    fontSize: '0.9rem',
+                    textTransform: 'none',
+                    px: 2,
+                    '&:hover': {
+                      color: 'primary.main',
+                      backgroundColor: 'transparent'
+                    }
+                  }}
                 >
                   {page.name}
                 </Button>
@@ -164,52 +242,118 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
             </Box>
 
             {/* Search & Actions */}
-            <Box display="flex" alignItems="center" gap={2}>
-              <Paper
-                component="form"
+            <Box display="flex" alignItems="center" gap={1}>
+              {!isSmallMobile && (
+                <Paper
+                  component="form"
+                  sx={{
+                    p: '2px 8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: isMobile ? 180 : 240,
+                    borderRadius: 4,
+                    boxShadow: 'none',
+                    border: `1px solid ${theme.palette.divider}`,
+                    backgroundColor: theme.palette.background.paper,
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      borderColor: theme.palette.primary.main
+                    }
+                  }}
+                >
+                  <InputBase
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    fullWidth
+                    sx={{ 
+                      ml: 1, 
+                      flex: 1,
+                      fontSize: '0.9rem'
+                    }}
+                    endAdornment={
+                      <IconButton 
+                        type="button" 
+                        sx={{ 
+                          p: '6px', 
+                          color: 'text.secondary',
+                          '&:hover': {
+                            color: 'primary.main'
+                          }
+                        }}
+                      >
+                        <FaSearch size={14} />
+                      </IconButton>
+                    }
+                  />
+                </Paper>
+              )}
+
+              <IconButton 
+                onClick={() => setIsOpen(true)} 
+                size="medium"
                 sx={{
-                  p: '2px 8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  width: isMobile ? 180 : 300,
-                  borderRadius: 3,
-                  boxShadow: 'none',
-                  border: '1px solid #ccc',
-                  backgroundColor: theme.palette.mode === 'dark' ? '#2c2c2c' : '#fff',
+                  color: 'text.primary',
+                  '&:hover': {
+                    color: 'primary.main'
+                  }
                 }}
               >
-                <InputBase
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  fullWidth
-                  sx={{ ml: 1, flex: 1 }}
-                  endAdornment={
-                    <IconButton type="button" sx={{ p: '6px', color: 'gray' }}>
-                      <FaSearch />
-                    </IconButton>
-                  }
-                />
-              </Paper>
-
-              <IconButton onClick={() => setIsOpen(true)} size="large">
-                <Badge badgeContent={unreadCount} color="error">
-                  <FaBell />
+                <Badge 
+                  badgeContent={unreadCount} 
+                  color="error"
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      right: 3,
+                      top: 3,
+                      fontSize: '0.6rem'
+                    }
+                  }}
+                >
+                  <FaBell size={16} />
                 </Badge>
               </IconButton>
 
+              {/* Theme Toggle */}
+              <IconButton 
+                onClick={toggleTheme}
+                sx={{
+                  color: 'text.primary',
+                  '&:hover': {
+                    color: 'primary.main'
+                  }
+                }}
+              >
+                {currentTheme === "light" ? (
+                  <DarkMode fontSize="small" />
+                ) : (
+                  <LightMode fontSize="small" />
+                )}
+              </IconButton>
+
               {/* Profile Avatar */}
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton 
+                onClick={handleOpenUserMenu} 
+                sx={{ 
+                  p: 0,
+                  ml: 0.5
+                }}
+              >
                 <Avatar
                   alt="User"
                   src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    border: `1px solid ${theme.palette.divider}`
+                  }}
                 />
               </IconButton>
 
               {/* User Menu */}
               <Menu
                 sx={{ mt: '45px' }}
-                id="menu-appbar"
+                id="user-menu"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
                   vertical: 'top',
@@ -222,15 +366,61 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
+                PaperProps={{
+                  sx: {
+                    minWidth: 200,
+                    boxShadow: theme.shadows[3],
+                    mt: 1.5,
+                    py: 0.5,
+                    '& .MuiMenuItem-root': {
+                      fontSize: '0.875rem',
+                      py: 1.2
+                    }
+                  }
+                }}
               >
-                <MenuItem onClick={handleCloseUserMenu} component={Link} href="/customer/profile">
-                  <FiUser style={{ marginRight: 8 }} /> Profile
+                <MenuItem 
+                  onClick={handleCloseUserMenu} 
+                  component={Link} 
+                  href="/customer/profile"
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover
+                    }
+                  }}
+                >
+                  <FiUser style={{ marginRight: 12, fontSize: '1rem' }} /> 
+                  Profile
                 </MenuItem>
-                <MenuItem onClick={() => { toggleTheme(); handleCloseUserMenu(); }}>
-                  {currentTheme === "light" ? <DarkMode sx={{ mr: 1 }} /> : <LightMode sx={{ mr: 1 }} />} Theme
+                <MenuItem 
+                  onClick={handleCloseUserMenu} 
+                  component={Link} 
+                  href="/customer/settings"
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover
+                    }
+                  }}
+                >
+                  <FiSettings style={{ marginRight: 12, fontSize: '1rem' }} /> 
+                  Settings
                 </MenuItem>
-                <MenuItem onClick={() => { handleLogout(); handleCloseUserMenu(); }}>
-                  <FiLogOut style={{ marginRight: 8 }} /> Logout
+                <Divider sx={{ my: 0.5 }} />
+                <MenuItem 
+                  onClick={() => { 
+                    handleLogout(); 
+                    handleCloseUserMenu(); 
+                  }}
+                  sx={{
+                    color: theme.palette.error.main,
+                    '&:hover': {
+                      backgroundColor: theme.palette.error.light,
+                      color: theme.palette.error.contrastText
+                    }
+                  }}
+                >
+                  <FiLogOut style={{ marginRight: 12, fontSize: '1rem' }} /> 
+                  Logout
                 </MenuItem>
               </Menu>
             </Box>
