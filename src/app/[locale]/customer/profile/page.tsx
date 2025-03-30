@@ -11,11 +11,11 @@ import {
   useAddAddressesMutation,
   useUpdateAddressesMutation,
 } from "@/store/api/userProfile.api";
-import Modal from "@/app/admin/dashboard/_components/modal";
 import { FaUser, FaUpload } from "react-icons/fa";
 import { MdEdit, MdEmail, MdLocationOn, MdPhone } from "react-icons/md";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import Loader from "@/app/(features)/_components/loader";
+import Loader from "../../(features)/_components/loader";
+import Modal from "../../admin/dashboard/_components/modal";
 
 
 const UserProfile = () => {
