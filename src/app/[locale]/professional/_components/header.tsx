@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -11,7 +11,23 @@ import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import { useGetNotificationsQuery, useGetCategoriesQuery } from "@/store/api/services.api";
 import { useAuth } from "@/contexts/authContext";
 import NotificationsPanel from "./NotificationsPanel";
-import { AppBar, Drawer, Box, Menu, MenuItem, TextField, Typography, Checkbox, ListItemText, Badge, Avatar, IconButton } from "@mui/material";
+import { 
+  AppBar, 
+  Toolbar, 
+  Container,
+  Drawer, 
+  Box, 
+  Menu, 
+  MenuItem, 
+  TextField, 
+  Typography, 
+  Checkbox, 
+  ListItemText, 
+  Badge, 
+  Avatar, 
+  IconButton,
+  Button
+} from "@mui/material";
 import { useThemeToggle } from "@/hooks/useTheme";
 import { DarkMode, LightMode } from "@mui/icons-material";
 
@@ -29,13 +45,36 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
   const { data: userProfile, isLoading } = useUserProfileQuery({});
   const { data: categories } = useGetCategoriesQuery();
   const { data: notificationData } = useGetNotificationsQuery();
-  const [dropdownOpen, setDropdownOpen] = useState<HTMLElement | null>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { logout } = useAuth();
   const { toggleTheme, currentTheme } = useThemeToggle();
   const unreadCount = notificationData?.notifications?.filter((notif: any) => !notif.is_read).length ?? 0;
-  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const pages = [
+    { name: 'Home', path: '/professional' },
+    { name: 'Subscription', path: '/professional/subscription' },
+    { name: 'Job', path: '/professional/jobs' },
+    { name: 'Requests', path: '/professional/requests' }
+  ];
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -55,158 +94,260 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: "background.default", boxShadow: 1 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: { xs: 2, sm: 4 }, py: 2 }}>
-        {/* Logo and Mobile Menu Icon */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <IconButton sx={{ display: { xs: "block", sm: "none" } }} onClick={() => setMobileOpen(true)}>
-            <FaBars size={24} color="gray" />
-          </IconButton>
-          <Link href="/professional" passHref>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          {/* Desktop Logo */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+            <Link href="/professional" passHref>
               <img
                 src="/images/logo.jpg"
                 alt="Logo"
-                width={60}
-                height={60}
+                width={50}
+                height={50}
                 style={{ cursor: "pointer", backgroundColor: "transparent", borderRadius: "50%" }}
               />
-              <Typography variant="h6" sx={{ fontWeight: "bold", color: "purple.800", display: { xs: "none", sm: "block" } }}>
-                Balamuya
-              </Typography>
-            </Box>
-          </Link>
-        </Box>
-
-        {/* Desktop Navigation Links */}
-        <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 4 }}>
-          <Link href="/professional" passHref>
-            <Typography variant="body1" sx={{ color: "text.primary", "&:hover": { color: "purple.700" } }}>
-              Home
-            </Typography>
-          </Link>
-          <Link href="/professional/subscription" passHref>
-            <Typography variant="body1" sx={{ color: "text.primary", "&:hover": { color: "purple.700" } }}>
-              Subscription
-            </Typography>
-          </Link>
-          <Link href="/professional/jobs" passHref>
-            <Typography variant="body1" sx={{ color: "text.primary", "&:hover": { color: "purple.700" } }}>
-              Job
-            </Typography>
-          </Link>
-          <Link href="/professional/requests" passHref>
-            <Typography variant="body1" sx={{ color: "text.primary", "&:hover": { color: "purple.700" } }}>
-              Requests
-            </Typography>
-          </Link>
-        </Box>
-
-        {/* Search, Filter, Notification, and Profile Section */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {/* Search Bar */}
-          <Box sx={{ position: "relative", display: { xs: "none", sm: "block" } }}>
-            <TextField
-              variant="outlined"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              sx={{ width: { xs: 150, sm: 250 } }}
-            />
-            <IconButton sx={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)" }}>
-              <FaSearch size={20} color="gray" />
-            </IconButton>
+            </Link>
           </Box>
-
-          {/* Filter Icon */}
-          <Box sx={{ position: "relative" }}>
-            <IconButton onClick={() => setShowFilter(!showFilter)}>
-              <FaFilter size={20} color="gray" />
-            </IconButton>
-            {showFilter && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 35,
-                  right: 0,
-                  backgroundColor: "background.paper",
-                  boxShadow: 2,
-                  borderRadius: 1,
-                  padding: 2,
-                  zIndex: 10,
-                  width: 250,
-                }}
-              >
-                {categories?.map((category: any, index: any) => (
-                  <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Checkbox
-                      checked={filter.includes(category.name)}
-                      onChange={() => handleCategoryChange(category.name)}
-                      color="primary"
-                    />
-                    <ListItemText primary={category.name} />
-                  </Box>
-                ))}
-              </Box>
-            )}
-          </Box>
-
-          {/* Notifications Icon */}
-          <Badge
-            badgeContent={unreadCount}
-            color="error"
-            sx={{ "& .MuiBadge-dot": { width: 12, height: 12, borderRadius: "50%" } }}
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/professional"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              color: 'purple.800',
+              textDecoration: 'none',
+            }}
           >
-            <IconButton onClick={() => setIsOpen(true)}>
-              <FaBell size={20} color="gray" />
-            </IconButton>
-          </Badge>
+            Balamuya
+          </Typography>
 
-          {/* User Profile */}
-          <Box sx={{ position: "relative" }}>
-            <Avatar
-              alt="User"
-              src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
-              sx={{ width: 40, height: 40, cursor: "pointer" }}
-              onClick={(event) => setDropdownOpen(event.currentTarget)}
-            />
-            <Menu
-              anchorEl={dropdownOpen}
-              open={Boolean(dropdownOpen)}
-              onClose={() => setDropdownOpen(null)}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
+          {/* Mobile Menu */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="primary"
             >
-              <MenuItem sx={{ display: "flex", alignItems: "center", gap: 1 }} onClick={() => router.push("/professional/profile")}>
-                <FiUser size={18} />
-                Profile
-              </MenuItem>
-              <MenuItem sx={{ display: "flex", alignItems: "center", gap: 1 }} onClick={toggleTheme}>
-                {currentTheme === "light" ? <DarkMode /> : <LightMode />} Theme
-              </MenuItem>
-              <MenuItem sx={{ display: "flex", alignItems: "center", gap: 1 }} onClick={handleLogout}>
-                <FiLogOut size={18} />
-                Logout
-              </MenuItem>
+              <FaBars />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page.name} onClick={() => {
+                  handleCloseNavMenu();
+                  router.push(page.path);
+                }}>
+                  <Typography textAlign="center">{page.name}</Typography>
+                </MenuItem>
+              ))}
             </Menu>
           </Box>
+
+          {/* Mobile Logo */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
+            <Link href="/professional" passHref>
+              <img
+                src="/images/logo.jpg"
+                alt="Logo"
+                width={40}
+                height={40}
+                style={{ cursor: "pointer", backgroundColor: "transparent", borderRadius: "50%" }}
+              />
+            </Link>
+          </Box>
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="/professional"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              color: 'purple.800',
+              textDecoration: 'none',
+            }}
+          >
+            Balamuya
+          </Typography>
+
+          {/* Desktop Navigation */}
+          <Box sx={{ flexGrow: 1, justifyContent:'center', display: { xs: 'none', md: 'flex' }, ml: 2 }}>
+            {pages.map((page) => (
+              <Button
+                key={page.name}
+                onClick={() => {
+                  handleCloseNavMenu();
+                  router.push(page.path);
+                }}
+                sx={{ my: 2, color: 'text.primary', display: 'block', '&:hover': { color: 'purple.700' } }}
+              >
+                {page.name}
+              </Button>
+            ))}
+          </Box>
+
+          {/* Search and Actions */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
+            {/* Search - Desktop */}
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, position: 'relative' }}>
+              <TextField
+                variant="outlined"
+                size="small"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                sx={{ width: { sm: 150, md: 200 } }}
+              />
+              <IconButton sx={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}>
+                <FaSearch size={16} color="gray" />
+              </IconButton>
+            </Box>
+
+            {/* Filter */}
+            <Box sx={{ position: 'relative' }}>
+              <IconButton onClick={() => setShowFilter(!showFilter)} size="small">
+                <FaFilter size={18} color="gray" />
+              </IconButton>
+              {showFilter && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 40,
+                    right: 0,
+                    backgroundColor: 'background.paper',
+                    boxShadow: 2,
+                    borderRadius: 1,
+                    p: 2,
+                    zIndex: 10,
+                    width: 250,
+                  }}
+                >
+                  {categories?.map((category: any, index: any) => (
+                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Checkbox
+                        checked={filter.includes(category.name)}
+                        onChange={() => handleCategoryChange(category.name)}
+                        color="primary"
+                        size="small"
+                      />
+                      <ListItemText primary={category.name} />
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+
+            {/* Notifications */}
+            <Badge
+              badgeContent={unreadCount}
+              color="error"
+              sx={{ '& .MuiBadge-badge': { width: 16, height: 16, borderRadius: '50%' } }}
+            >
+              <IconButton onClick={() => setIsOpen(true)} size="small">
+                <FaBell size={18} color="gray" />
+              </IconButton>
+            </Badge>
+
+            {/* User Profile */}
+            <Box>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar
+                  alt="User"
+                  src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
+                  sx={{ width: 36, height: 36 }}
+                />
+              </IconButton>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem onClick={() => {
+                  handleCloseUserMenu();
+                  router.push("/professional/profile");
+                }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <FiUser size={16} />
+                    <Typography>Profile</Typography>
+                  </Box>
+                </MenuItem>
+                <MenuItem onClick={() => {
+                  handleCloseUserMenu();
+                  toggleTheme();
+                }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {currentTheme === 'light' ? <DarkMode fontSize="small" /> : <LightMode fontSize="small" />}
+                    <Typography>Theme</Typography>
+                  </Box>
+                </MenuItem>
+                <MenuItem onClick={() => {
+                  handleCloseUserMenu();
+                  handleLogout();
+                }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <FiLogOut size={16} />
+                    <Typography>Logout</Typography>
+                  </Box>
+                </MenuItem>
+              </Menu>
+            </Box>
+          </Box>
+        </Toolbar>
+      </Container>
+
+      {/* Mobile Search - Only shown on small screens */}
+      <Box sx={{ px: 2, pb: 2, display: { xs: 'block', sm: 'none' } }}>
+        <Box sx={{ position: 'relative' }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <IconButton sx={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}>
+            <FaSearch size={16} color="gray" />
+          </IconButton>
         </Box>
       </Box>
-
-      {/* Mobile Navigation Drawer */}
-      <Drawer anchor="left" open={mobileOpen} onClose={() => setMobileOpen(false)}>
-        <Box sx={{ width: 250, padding: 2 }}>
-          {[
-            { label: "Home", path: "/professional" },
-            { label: "Subscription", path: "/professional/subscription" },
-            { label: "Job", path: "/professional/jobs" },
-            { label: "Requests", path: "/professional/requests" }
-          ].map((item) => (
-            <MenuItem key={item.label} onClick={() => { router.push(item.path); setMobileOpen(false); }}>
-              {item.label}
-            </MenuItem>
-          ))}
-        </Box>
-      </Drawer>
 
       {/* Notifications Panel */}
       <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
