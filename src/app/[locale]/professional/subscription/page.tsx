@@ -7,13 +7,18 @@ import { ListOrdered, CheckCircle, CreditCard, ShieldCheck, Star, UserCheck, Tre
 import { useSubscribeServiceMutation } from "@/store/api/userProfile.api";
 import { toast } from "react-toastify";
 import Header from "../_components/header";
-import Footer from "@/app/(features)/_components/footer";
+import { useParams } from "next/navigation";
 import { Box, Button, Card, CircularProgress, FormControl, InputLabel, MenuItem, Select, Typography, Grid } from "@mui/material";
+import Footer from "../../(features)/_components/footer";
 
 export default function ProfessionalCard() {
   type PlanType = "Silver" | "Gold" | "Diamond";
   const [activeTab, setActiveTab] = useState<PlanType>("Silver");
   const [selectedDuration, setSelectedDuration] = useState<number>(1);
+  const params = useParams();
+  const locale  = params.locale;
+  
+  console.log(locale);
 
   // Mutation hook
   const [subscribeService, { isLoading }] = useSubscribeServiceMutation();
@@ -26,12 +31,11 @@ export default function ProfessionalCard() {
         plan_type: activeTab.toLowerCase(),
         duration: selectedDuration,
         amount: totalAmount,
-        return_url: "http://localhost:3000/professional/check",
+        return_url: `http://localhost:3000/${locale}/professional/check`,
       }).unwrap();
 
       if (response?.data?.payment_url) {
         window.location.href = response.data.payment_url;
-        toast.success("You Subscribed Successfully");
       } else {
         throw new Error("Payment URL not found in response");
       }
