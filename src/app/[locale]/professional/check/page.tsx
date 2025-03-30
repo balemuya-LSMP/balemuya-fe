@@ -8,7 +8,7 @@ import { Loader, AlertCircle } from "lucide-react";
 import { FaUser, FaArrowLeft, FaEnvelope, FaHome, FaIdBadge, FaCalendarAlt, FaMoneyBillWave, FaCheckCircle, FaTimesCircle, FaCreditCard, FaDownload } from "react-icons/fa";
 import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { useState } from "react";
-import Link from "next/link";
+import {Link} from "@/i18n/navigation";
 
 // PDF Styles
 const styles = StyleSheet.create({
