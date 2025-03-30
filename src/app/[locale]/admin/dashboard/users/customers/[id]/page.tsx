@@ -2,10 +2,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter} from "@/i18n/navigation";
+import { useParams } from "next/navigation";
 import { useBlockUserMutation, useGetUserQuery } from "@/store/api/user.api";
 
-import Loader from "@/app/(features)/_components/loader";
 import {
   FaUser,
   FaEnvelope,
@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useDeleteUserMutation } from "@/store/api/user.api";
+import Loader from "@/app/[locale]/(features)/_components/loader";
 
 export default function CustomerDetails() {
   const router = useRouter();
