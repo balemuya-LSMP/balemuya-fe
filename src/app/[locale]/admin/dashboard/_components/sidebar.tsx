@@ -9,11 +9,10 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
-import Link from "next/link";
+import {Link, useRouter} from "@/i18n/navigation";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { HiUserGroup, HiUser } from "react-icons/hi";
 import { useAuth } from "@/contexts/authContext";
-import { useRouter } from "next/navigation";
 
 interface SidebarProps {
   isOpen: boolean;
