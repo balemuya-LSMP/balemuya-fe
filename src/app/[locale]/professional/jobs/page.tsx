@@ -15,7 +15,7 @@ import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMuta
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
-import { Box, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton } from "@mui/material";
+import { Box,Rating, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton } from "@mui/material";
 import Footer from "../../(features)/_components/footer";
 
 export default function JobsPage() {
@@ -38,7 +38,7 @@ export default function JobsPage() {
   const [reportModalOpen, setReportModalOpen] = useState(false);
 
   const [bookId, setBookId] = useState("");
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState<number | null>(0);
   const [review, setReview] = useState("");
   const [complaint, setComplaint] = useState("");
 
@@ -312,11 +312,7 @@ export default function JobsPage() {
               sx={{ mb: 3 }}
             />
             <Box sx={{ display: "flex", gap: 1, mb: 3 }}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <IconButton key={star} onClick={() => setRating(star)}>
-                  <Typography sx={{ color: rating >= star ? "yellow.500" : "gray.300" }}>★</Typography>
-                </IconButton>
-              ))}
+              <Rating value={rating} onChange={(_, newValue) => setRating(newValue)} />
             </Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
               <Button variant="contained" onClick={handleReview}>
