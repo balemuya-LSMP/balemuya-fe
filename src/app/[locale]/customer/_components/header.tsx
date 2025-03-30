@@ -1,143 +1,246 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState } from "react";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
-
 import { useAuth } from "@/contexts/authContext";
-import { useRouter } from "next/navigation";
-import { FiLogOut, FiUser } from "react-icons/fi";
 import { useGetNotificationsQuery } from "@/store/api/services.api";
-import { FaBell, FaSearch } from "react-icons/fa";
-import NotificationsPanel from "@/app/professional/_components/NotificationsPanel";
+import NotificationsPanel from "../../professional/_components/NotificationsPanel";
+import { useThemeToggle } from "@/hooks/useTheme";
+
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
+  InputBase,
+  Badge,
+  useMediaQuery,
+  useTheme,
+  Avatar,
+  Paper,
+  Container,
+  Button,
+} from "@mui/material";
+
+import { FiLogOut, FiUser } from "react-icons/fi";
+import { FaBell, FaSearch, FaBars } from "react-icons/fa";
+import { DarkMode, LightMode } from "@mui/icons-material";
 import { ToastContainer, toast } from "react-toastify";
+
 interface HeaderProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 }
 
-
 export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { logout } = useAuth();
   const { data: userProfile } = useUserProfileQuery({});
   const { data: notificationData } = useGetNotificationsQuery();
-  const [isOpen, setIsOpen] = useState(false);
+  const { toggleTheme, currentTheme } = useThemeToggle();
 
-
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const unreadCount = notificationData?.notifications?.filter((notif: any) => !notif.is_read).length ?? 0;
 
+  const pages = [
+    { name: 'Home', href: '/customer' },
+    { name: 'Professionals', href: '/customer/professionals' },
+    { name: 'Work Post', href: '/customer/work' }
+  ];
 
   const handleLogout = async () => {
     try {
       await logout();
-
       toast.success("Logout successful");
-      router.push("/auth/login")
-
+      router.push("/auth/login");
     } catch (error) {
-      console.error("Logout failed:", error);
       toast.error("Logout failed");
-
     }
-  }
+  };
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   return (
-    <header className="bg-white shadow sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-        {/* Logo image*/}
+    <>
+      <AppBar position="sticky" color="default" elevation={2}>
+        <Container maxWidth="xl">
+          <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
+            {/* Logo - Desktop */}
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+              <Link href="/customer" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <img src="/images/logo.jpg" alt="Logo" style={{ width: 60, height: 60, borderRadius: '50%' }} />
+                <Typography variant="h6" color="primary" sx={{ ml: 1, fontWeight: 600 }}>
+                  Balamuya
+                </Typography>
+              </Link>
+            </Box>
 
-        <Link href="/customer" className="flex items-center space-x-2">
+            {/* Mobile menu */}
+            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <FaBars />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page.name} onClick={handleCloseNavMenu} component={Link} href={page.href}>
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
 
-          <img
-            src="/images/logo.jpg"
-            alt="Logo"
-            width={80}
-            height={80}
-            className="cursor-pointer bg-transparent"
-          />
-          <span className="text-xl font-semibold text-purple-800">Balamuya</span>
-        </Link>
+            {/* Logo - Mobile */}
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', flexGrow: 1 }}>
+              <Link href="/customer" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <img src="/images/logo.jpg" alt="Logo" style={{ width: 40, height: 40, borderRadius: '50%' }} />
+                <Typography variant="h6" color="primary" sx={{ ml: 1, fontWeight: 600 }}>
+                  Balamuya
+                </Typography>
+              </Link>
+            </Box>
 
+            {/* Navigation Links - Desktop */}
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+              {pages.map((page) => (
+                <Button
+                  key={page.name}
+                  component={Link}
+                  href={page.href}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'text.primary', display: 'block', '&:hover': { color: 'primary.main' } }}
+                >
+                  {page.name}
+                </Button>
+              ))}
+            </Box>
 
-        <nav className="flex space-x-6">
-          <Link href="/customer" className="text-gray-700 hover:text-purple-700">
-            Home
-          </Link>
-          <Link href="/customer/professionals" className="text-gray-700 hover:text-purple-700">
-            Professionals
-          </Link>
-          <Link href="/customer/work" className="text-gray-700 hover:text-purple-700">
-            Work Post
-          </Link>
-        </nav>
-        <div className="flex items-center space-x-6">
-          <div className="relative flex items-center">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="px-4 py-2 w-72 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-600"
-            />
-            <FaSearch className="absolute right-3 text-gray-500 hover:text-purple-700 cursor-pointer" />
-          </div>
-          <button onClick={() => setIsOpen(true)} className="relative">
-            <FaBell className="text-xl text-gray-700 hover:text-purple-700 cursor-pointer" />
-            {unreadCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                {unreadCount}
-              </span>
-            )}
-          </button>
+            {/* Search & Actions */}
+            <Box display="flex" alignItems="center" gap={2}>
+              <Paper
+                component="form"
+                sx={{
+                  p: '2px 8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: isMobile ? 180 : 300,
+                  borderRadius: 3,
+                  boxShadow: 'none',
+                  border: '1px solid #ccc',
+                  backgroundColor: theme.palette.mode === 'dark' ? '#2c2c2c' : '#fff',
+                }}
+              >
+                <InputBase
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  fullWidth
+                  sx={{ ml: 1, flex: 1 }}
+                  endAdornment={
+                    <IconButton type="button" sx={{ p: '6px', color: 'gray' }}>
+                      <FaSearch />
+                    </IconButton>
+                  }
+                />
+              </Paper>
 
+              <IconButton onClick={() => setIsOpen(true)} size="large">
+                <Badge badgeContent={unreadCount} color="error">
+                  <FaBell />
+                </Badge>
+              </IconButton>
 
-          {/* Profile Section with Dropdown */}
-          <div className="relative">
-            <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
-              <img
-                src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
-                alt="User"
-                width={40}
-                height={40}
-                className="w-10 h-10 rounded-full border border-gray-300 cursor-pointer object-cover"
-              />
-            </button>
+              {/* Profile Avatar */}
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar
+                  alt="User"
+                  src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
+                />
+              </IconButton>
 
-            {/* Dropdown Menu */}
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-52 bg-white border rounded-lg shadow-lg overflow-hidden transition-all duration-200">
-                <ul className="py-2">
-                  <li>
-                    <Link
-                      href="/customer/profile"
-                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition-all"
-                    >
-                      <FiUser className="mr-3 text-lg text-purple-700" />
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleLogout} // Replace with logout logic
-                      className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-all"
-                    >
-                      <FiLogOut className="mr-3 text-lg text-red-600" />
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-        <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      </div>
+              {/* User Menu */}
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem onClick={handleCloseUserMenu} component={Link} href="/customer/profile">
+                  <FiUser style={{ marginRight: 8 }} /> Profile
+                </MenuItem>
+                <MenuItem onClick={() => { toggleTheme(); handleCloseUserMenu(); }}>
+                  {currentTheme === "light" ? <DarkMode sx={{ mr: 1 }} /> : <LightMode sx={{ mr: 1 }} />} Theme
+                </MenuItem>
+                <MenuItem onClick={() => { handleLogout(); handleCloseUserMenu(); }}>
+                  <FiLogOut style={{ marginRight: 8 }} /> Logout
+                </MenuItem>
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      {/* Notification Panel */}
+      <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <ToastContainer position="top-center" />
-    </header>
+    </>
   );
 }
