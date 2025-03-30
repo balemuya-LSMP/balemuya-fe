@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import Footer from "@/app/(features)/_components/footer";
 import Header from "../_components/header";
 import {
     useGetCategoriesQuery,
@@ -20,11 +19,13 @@ import { GrStatusGood } from "react-icons/gr";
 import { CheckCircle, MessageSquare, Flag, XCircle } from "lucide-react";
 import { FaLocationDot, FaBusinessTime } from "react-icons/fa6";
 import { MdAdd } from "react-icons/md";
-import Loader from "@/app/(features)/_components/loader";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { format, set } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
+import Footer from "../../(features)/_components/footer";
+import Loader from "../../(features)/_components/loader";
+import { Box, Tab, Tabs, Button, Card, CardActions, Divider, IconButton, Paper, Typography, Tooltip } from "@mui/material";
 
 export default function WorkPage() {
     const { position, getPosition } = useGeolocation();
@@ -145,26 +146,64 @@ export default function WorkPage() {
         <>
             <Header searchQuery={""} setSearchQuery={function (query: string): void {
                 throw new Error("Function not implemented.");
-            } } />
-            <div className="bg-gray-100 min-h-screen">
-                <div className="container mx-auto px-6 py-6">
+            }} />
+            <Box
+                sx={{
+                    bgcolor: "background.default",
+                    minHeight: "100vh",
+                }} >
+                <Box
+                    sx={{
+                        mx: "auto",
+                        px: 6,
+                        py: 6,
+                    }}
+                >
                     {" "}
-                    <div className="flex justify-center space-x-4 mb-4">
-                        {["", ...validStatuses].map((tab) => (
-                            <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-6 py-2 text-sm font-medium transition-colors duration-300 ${activeTab === tab
-                                        ? "text-purple-700 border-b-2 border-purple-700"
-                                        : "text-gray-700 hover:text-purple-700"
-                                    }`}
-                            >
-                                {tab === ""
-                                    ? "All Post"
-                                    : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                            </button>
-                        ))}
-                    </div>
+                    <Box sx={{ width: '100%', mb: 4 }}>
+                        <Tabs
+                            value={activeTab}
+                            onChange={(event, newValue) => setActiveTab(newValue)}
+                            centered
+                            sx={{
+                                '& .MuiTabs-indicator': {
+                                    backgroundColor: 'purple.700',
+                                    height: 2,
+                                },
+                            }}
+                        >
+                            <Tab
+                                value=""
+                                label="All Posts"
+                                sx={{
+                                    textTransform: 'none',
+                                    fontSize: '0.875rem',
+                                    fontWeight: 500,
+                                    gap: 2,
+                                    color: activeTab === '' ? 'purple.700' : 'grey.700',
+                                    '&:hover': {
+                                        color: 'purple.700',
+                                    },
+                                }}
+                            />
+                            {validStatuses.map((tab) => (
+                                <Tab
+                                    key={tab}
+                                    value={tab}
+                                    label={tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                    sx={{
+                                        textTransform: 'none',
+                                        fontSize: '0.875rem',
+                                        fontWeight: 600,
+                                        color: activeTab === tab ? 'purple.700' : 'grey.700',
+                                        '&:hover': {
+                                            color: 'purple.700',
+                                        },
+                                    }}
+                                />
+                            ))}
+                        </Tabs>
+                    </Box>
                     <hr className="border-t-2 border-gray-200" />
                     <button
                         onClick={() => setShowPostModal(true)}
@@ -178,101 +217,132 @@ export default function WorkPage() {
                             <p className="text-lg">No available service in this status.</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+                                gap: 8,
+                                mt: 6,
+                            }}
+                        >
                             {customerServices?.map((work: any) => (
-                                <div
+                                <Card
                                     key={work.id}
-                                    className="bg-white p-7 rounded-xl shadow-xl border border-gray-300 
-                    hover:border-purple-600 hover:shadow-2xl hover:scale-105 transition-transform 
-                    cursor-pointer"
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: 2,
+                                        p: 4,
+                                        borderRadius: 2,
+                                        boxShadow: 3,
+                                        bgcolor: "background.paper",
+                                    }}
                                 >
-                                    <h4 className="text-2xl font-bold text-gray-900 mb-4 hover:text-purple-600 transition-all">
+                                    <Typography
+                                        variant="h5"
+                                        fontWeight="bold"
+                                        color="text.primary"
+                                        sx={{ mb: 2, cursor: "pointer", transition: "color 0.3s", '&:hover': { color: 'purple' } }}
+                                    >
                                         {work?.title ?? work?.service?.title}
-                                    </h4>
-                                    <div className="flex items-center gap-3 text-gray-700 text-lg mb-3">
-                                        <GrStatusGood className="text-purple-600" />
-                                        <span className="font-medium">
+                                    </Typography>
+
+                                    <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
+                                        <GrStatusGood color="purple" />
+                                        <Typography variant="body1" fontWeight="medium">
                                             {work?.status ?? work?.service?.status}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-3 text-gray-700 text-lg mb-3">
-                                        <GrStatusGood className="text-purple-600" />
-                                        <span className="font-medium">
+                                        </Typography>
+                                    </Box>
+
+                                    <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
+                                        <GrStatusGood color="purple" />
+                                        <Typography variant="body1" fontWeight="medium">
                                             {work?.urgency ?? work?.service?.urgency}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center gap-3 text-gray-700 text-lg mb-3">
-                                        <FaBusinessTime className="text-purple-600" />
-                                        <span>
-                                            {format(
-                                                new Date(
-                                                    work?.work_due_date ?? work?.service?.work_due_date
-                                                ),
-                                                "MMM dd, yyyy"
-                                            )}
-                                        </span>
-                                    </div>
-                                    <p className="text-gray-700 text-lg mb-5 line-clamp-2">
+                                        </Typography>
+                                    </Box>
+
+                                    <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
+                                        <FaBusinessTime color="purple" />
+                                        <Typography variant="body1">
+                                            {format(new Date(work?.work_due_date ?? work?.service?.work_due_date), "MMM dd, yyyy")}
+                                        </Typography>
+                                    </Box>
+
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3, display: "-webkit-box", WebkitBoxOrient: "vertical", overflow: "hidden", WebkitLineClamp: 2 }}>
                                         {work?.description ?? work?.service?.description}
-                                    </p><div className="flex justify-between items-center border-t pt-4 mt-6">
+                                    </Typography>
+
+                                    <Divider sx={{ my: 2 }} />
+
+                                    <CardActions sx={{ justifyContent: "space-between", pt: 2 }}>
                                         {work?.status === "active" && (
-                                            <button
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
                                                 onClick={() => router.push(`/customer/work/${work.id}`)}
-                                                className="flex-1 bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 transition-all font-semibold"
+                                                sx={{ flex: 1 }}
                                             >
                                                 View Details
-                                            </button>
+                                            </Button>
                                         )}
 
                                         {work?.service?.status === "booked" && (
-                                            <div className="flex w-full justify-around gap-4">
-                                                {/* Review Button */}
-                                                <button
-                                                    className="text-purple-700 hover:text-purple-900 transition"
-                                                    onClick={() => {
-                                                        setBookId(work.id);
-                                                        setReviewModalOpen(true);
-                                                    }}
-                                                >
-                                                    <MessageSquare size={24} />
-                                                </button>
+                                            <Box display="flex" justifyContent="space-around" gap={2} width="100%">
 
-                                                {/* Report Button */}
-                                                <button
-                                                    className="text-red-500 hover:text-red-700 transition"
-                                                    onClick={() => {
-                                                        setBookId(work.id);
-                                                        setReportModalOpen(true);
-                                                    }}
-                                                >
-                                                    <Flag size={24} />
-                                                </button>
+                                                <Tooltip title="Review">
 
-                                                {/* Cancel Button */}
-                                                <button
-                                                    className="text-gray-600 hover:text-gray-800 transition"
-                                                    onClick={() => handleCancel(work.id)}
-                                                >
-                                                    <XCircle size={24} />
-                                                </button>
+                                                    <IconButton
+                                                        color="secondary"
+                                                        onClick={() => {
+                                                            setBookId(work.id);
+                                                            setReviewModalOpen(true);
+                                                        }}
+                                                    >
+                                                        <MessageSquare size={24} />
+                                                    </IconButton>
+                                                </Tooltip>
 
-                                                {/* Complete Button */}
-                                                <button
-                                                    className="text-green-600 hover:text-green-800 transition"
-                                                  onClick={() => handleComplete(work.id)}
-                                                >
-                                                    <CheckCircle size={24} />
-                                                </button>
-                                            </div>
+                                                <Tooltip title="Report">
+                                                    <IconButton
+                                                        color="error"
+                                                        onClick={() => {
+                                                            setBookId(work.id);
+                                                            setReportModalOpen(true);
+                                                        }}
+                                                    >
+                                                        <Flag size={24} />
+                                                    </IconButton>
+                                                </Tooltip>
+
+                                                <Tooltip title="Cancel">
+                                                    <IconButton
+                                                        color="default"
+                                                        onClick={() => handleCancel(work.id)}
+                                                    >
+                                                        <XCircle size={24} />
+                                                    </IconButton>
+                                                </Tooltip>
+
+
+                                                <Tooltip title="Complete">
+                                                    <IconButton
+                                                        color="success"
+                                                        onClick={() => handleComplete(work.id)}
+                                                    >
+                                                        <CheckCircle size={24} />
+                                                    </IconButton>
+
+                                                </Tooltip>
+
+                                            </Box>
                                         )}
-                                    </div>
-
-                                </div>
+                                    </CardActions>
+                                </Card>
                             ))}
-                        </div>
+                        </Box>
                     )}
-                </div>
-            </div>
+                </Box>
+            </Box>
             <Footer />
 
             {/* Modal to create post */}
