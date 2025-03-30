@@ -4,10 +4,10 @@
 'use client';
 
 import React from "react";
-import Link from "next/link";
+import {Link} from "@/i18n/navigation";
 import { FaEye } from "react-icons/fa";
 import { useListRequestsQuery } from "@/store/api/user.api";
-import Loader from "@/app/(features)/_components/loader";
+import Loader from "@/app/[locale]/(features)/_components/loader";
 
 const PendingRequests = () => {
     const { data, isLoading, error } = useListRequestsQuery({});
