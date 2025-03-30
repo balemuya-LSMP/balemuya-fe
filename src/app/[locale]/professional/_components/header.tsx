@@ -4,13 +4,12 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import { FaBell, FaFilter, FaSearch, FaBars } from "react-icons/fa";
 import { FiUser, FiLogOut } from "react-icons/fi";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import { useGetNotificationsQuery, useGetCategoriesQuery } from "@/store/api/services.api";
 import { useAuth } from "@/contexts/authContext";
-import { useRouter } from "next/navigation";
 import NotificationsPanel from "./NotificationsPanel";
 import { AppBar, Drawer, Box, Menu, MenuItem, TextField, Typography, Checkbox, ListItemText, Badge, Avatar, IconButton } from "@mui/material";
 import { useThemeToggle } from "@/hooks/useTheme";
@@ -50,7 +49,7 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
     setFilter(updatedFilter);
 
     if (handleFilter) {
-      handleFilter(updatedFilter); // Pass updated filter
+      handleFilter(updatedFilter);
     }
   };
 
@@ -181,12 +180,12 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
                 <FiUser size={18} />
                 Profile
               </MenuItem>
+              <MenuItem sx={{ display: "flex", alignItems: "center", gap: 1 }} onClick={toggleTheme}>
+                {currentTheme === "light" ? <DarkMode /> : <LightMode />} Theme
+              </MenuItem>
               <MenuItem sx={{ display: "flex", alignItems: "center", gap: 1 }} onClick={handleLogout}>
                 <FiLogOut size={18} />
                 Logout
-              </MenuItem>
-              <MenuItem sx={{ display: "flex", alignItems: "center", gap: 1 }} onClick={toggleTheme}>
-                {currentTheme === "light" ? <DarkMode /> : <LightMode />} Theme
               </MenuItem>
             </Menu>
           </Box>
