@@ -4,9 +4,8 @@
 import { useListProfessionalsQuery } from "@/store/api/user.api";
 import { FaEye, FaFilter, FaSearch, FaUserCheck } from "react-icons/fa";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Loader from "@/app/(features)/_components/loader";
+import {Link, useRouter} from "@/i18n/navigation";
+import Loader from "@/app/[locale]/(features)/_components/loader";
 
 export default function Users() {
   const router = useRouter();
