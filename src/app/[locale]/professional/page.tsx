@@ -54,7 +54,7 @@ export default function Home() {
       setModalOpen(false);
     } catch (err) {
       console.log(err);
-      toast.error("Please update your subscription plan to apply for this job");
+      toast.error("Failed to send application");
     }
   };
 
