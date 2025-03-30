@@ -8,7 +8,7 @@ import { useRouter } from "@/i18n/navigation";
 import Header from "../_components/header";
 import { useFilterProfessionalsQuery } from "@/store/api/user.api";
 import { useGetCategoriesQuery } from "@/store/api/services.api";
-import StarRating from "../../(features)/_components/StarRating";
+import StarRating from "../../(features)/_components/starRating";
 
 export default function Professionals() {
   const router = useRouter();
@@ -43,7 +43,7 @@ export default function Professionals() {
     <>
       <Header searchQuery={""} setSearchQuery={function (query: string): void {
         throw new Error("Function not implemented.");
-      } } />
+      }} />
       <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
         {/* Sidebar - Filters */}
         <aside className="md:w-1/4 w-full bg-white shadow-lg p-4 rounded-lg h-fit">
