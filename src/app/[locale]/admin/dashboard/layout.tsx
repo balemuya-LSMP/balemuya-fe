@@ -5,10 +5,11 @@
 import React, { useState, ReactNode } from "react";
 import Sidebar from "./_components/sidebar";
 import { FaBars, FaBell } from "react-icons/fa";
-import Link from "next/link";
+import {Link} from "@/i18n/navigation";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import { useGetNotificationsQuery } from "@/store/api/services.api";
-import NotificationsPanel from "@/app/professional/_components/NotificationsPanel";
+import NotificationsPanel from "../../professional/_components/NotificationsPanel";
+
 
 interface LayoutProps {
   children: ReactNode;
