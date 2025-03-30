@@ -4,7 +4,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {Link} from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import Header from "../_components/header";
 import { FaLocationDot } from "react-icons/fa6";
 import { GrStatusGood } from "react-icons/gr";
@@ -15,111 +15,168 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
 import Footer from "../../(features)/_components/footer";
 
+// MUI Imports
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  Chip,
+  Container,
+  Divider,
+  Grid,
+  Typography,
+  Tabs,
+  Tab,
+  Avatar
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledTab = styled(Tab)(({ theme }) => ({
+  textTransform: 'none',
+  fontWeight: theme.typography.fontWeightMedium,
+  fontSize: theme.typography.pxToRem(15),
+  marginRight: theme.spacing(1),
+  color: theme.palette.text.secondary,
+  '&.Mui-selected': {
+    color: theme.palette.primary.main,
+  },
+}));
 
 export default function JobsPage() {
   const { position, getPosition } = useGeolocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
-
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["accepted", "canceled", "rejected"];
 
-
-
-
   const { data: serviceRequests } = useGetRequestedServicesQuery(activeTab);
-
-
 
   useEffect(() => {
     getPosition();
   }, []);
 
+
+  console.log(serviceRequests);
+  
   const userLat = position?.lat ?? 11.60000000;
   const userLng = position?.lng ?? 37.38333330;
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setActiveTab(newValue);
+  };
 
   return (
     <>
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={filter} setFilter={setFilter} />
-      <div className="bg-gray-50 min-h-screen">
+      <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>
         {/* Tabs Section */}
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex justify-center space-x-4 mb-4">
-            {["", ...validStatuses].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-6 py-2 text-sm font-medium transition-colors duration-300 ${activeTab === tab
-                  ? "text-purple-700 border-b-2 border-purple-700"
-                  : "text-gray-700 hover:text-purple-700"
-                  }`}
-              >
-                {tab === "" ? "New Request" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
-          <hr className="border-t-2 border-gray-200" />
-          {
-            serviceRequests?.length === 0 && (
-              <div className="flex items-center justify-center h-96">
-                <p className="text-gray-500 text-lg">No jobs found</p>
-              </div>
-            )
-          }
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <Tabs
+              value={activeTab}
+              onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="job status tabs"
+            >
+              {["", ...validStatuses].map((tab) => (
+                <StyledTab
+                  key={tab}
+                  label={tab === "" ? "New Request" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  value={tab}
+                />
+              ))}
+            </Tabs>
+          </Box>
+          <Divider />
+          
+          {serviceRequests?.length === 0 && (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '384px' }}>
+              <Typography variant="h6" color="text.secondary">
+                No jobs found
+              </Typography>
+            </Box>
+          )}
 
           {/* Jobs Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+          <Grid container spacing={3} sx={{ mt: 2 }}>
             {serviceRequests?.map((request: any) => (
-              <div
-                key={request.id}
-                className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex flex-col justify-between space-y-4"
-              >
-                <div className="flex-1">
-                  <p className="text-2xl font-semibold text-gray-800 mb-4">{request?.detail}</p>
-                  <div className="space-y-3">
-                    <div className="flex items-center text-gray-500">
-                      <GrStatusGood className="text-purple-700 text-lg mr-2" />
-                      <span className="text-sm px-2 rounded bg-purple-400">
-                        {request?.status && request.status.charAt(0).toUpperCase() + request?.status.slice(1)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-500">
-                      <div className="flex items-center text-sm">
-                        <IoIosTime className="text-purple-700 text-lg mr-2" />
-                        <span>{timeDifference(new Date(), new Date(request?.created_at))}</span>
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <FaLocationDot className="text-purple-700 text-lg mr-2" />
-                        <span>{getDistanceFromLatLon(userLat, userLng, request.customer?.user?.address?.latitude, request.customer?.user?.address?.longitude)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* poster info */}
-                  <div className="flex items-center mt-4 pt-4 border-t border-gray-200">
-                    <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm">
+              <Grid item xs={12} sm={6} lg={4} key={request.id}>
+                <Card sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'box-shadow 0.3s',
+                  '&:hover': {
+                    boxShadow: 4
+                  }
+                }}>
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="p" gutterBottom>
+                      {request?.detail}
+                    </Typography>
+                    
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 2 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <GrStatusGood style={{ color: '#7b1fa2', marginRight: 8 }} />
+                        <Chip
+                          label={request?.status && request.status.charAt(0).toUpperCase() + request?.status.slice(1)}
+                          size="small"
+                          sx={{ backgroundColor: 'secondary.light', color: 'common.white' }}
+                        />
+                      </Box>
+                      
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <IoIosTime style={{ color: '#7b1fa2', marginRight: 8 }} />
+                          <Typography variant="body2" color="text.secondary">
+                            {timeDifference(new Date(), new Date(request?.created_at))}
+                          </Typography>
+                        </Box>
+                        
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <FaLocationDot style={{ color: '#7b1fa2', marginRight: 8 }} />
+                          <Typography variant="body2" color="text.secondary">
+                            {getDistanceFromLatLon(
+                              userLat, 
+                              userLng, 
+                              request.customer?.user?.address?.latitude, 
+                              request.customer?.user?.address?.longitude
+                            )}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                    
+                    {/* Poster info */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', pt: 2, mt: 2, borderTop: 1, borderColor: 'divider' }}>
                       <Link href={`/professional/customer/${request.customer?.user?.id}`}>
-                        <img
+                        <Avatar
                           src={request.customer.user?.profile_image_url}
                           alt={request.customer.user?.first_name}
-                          width={48}
-                          height={48}
-                          className="rounded-full"
+                          sx={{ width: 48, height: 48 }}
                         />
                       </Link>
-                    </div>
-                    <div className="ml-3">
-                      <h5 className="text-sm font-medium text-gray-800">{request.customer?.user?.first_name}</h5>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-end items-center">
-                </div>
-              </div>
+                      <Box sx={{ ml: 1.5 }}>
+                        <Typography variant="subtitle2">
+                          {request.customer?.user?.first_name}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                  
+                  <CardActions sx={{ justifyContent: 'flex-end' }}>
+                    {/* Add any action buttons here if needed */}
+                  </CardActions>
+                </Card>
+              </Grid>
             ))}
-          </div>
-        </div>
+          </Grid>
+        </Container>
         <ToastContainer position="top-center" />
-      </div>
+      </Box>
       <Footer />
     </>
   );
