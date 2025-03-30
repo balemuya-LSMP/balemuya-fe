@@ -4,8 +4,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import Footer from "@/app/(features)/_components/footer";
+import { Link } from "@/i18n/navigation";
 import Header from "../_components/header";
 import { FaLocationDot } from "react-icons/fa6";
 import { GrStatusGood } from "react-icons/gr";
@@ -17,6 +16,7 @@ import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
 import { Box, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton } from "@mui/material";
+import Footer from "../../(features)/_components/footer";
 
 export default function JobsPage() {
   const { position, getPosition } = useGeolocation();
@@ -63,7 +63,16 @@ export default function JobsPage() {
   const services = servicesData?.data || [];
 
   const handleApply = async (id: string) => {
-    await createApplication({ service_id: id, message: message }).unwrap();
+
+    try {
+      await createApplication({ service_id: id, message: message }).unwrap();
+      toast.success("Application submitted successfully");
+      setModalOpen(false);
+    } catch (error) {
+      toast.error("An error occurred. Please try again later");
+      console.error(error);
+    }
+
   };
 
   const handleReview = async () => {
