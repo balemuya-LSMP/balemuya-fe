@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import Header from "../_components/header";
 import { useFilterProfessionalsQuery } from "@/store/api/user.api";
 import { useGetCategoriesQuery } from "@/store/api/services.api";
-import StarRating from "@/app/(features)/_components/StarRating";
+import StarRating from "../../(features)/_components/StarRating";
 
 export default function Professionals() {
   const router = useRouter();
@@ -40,7 +41,9 @@ export default function Professionals() {
 
   return (
     <>
-      <Header />
+      <Header searchQuery={""} setSearchQuery={function (query: string): void {
+        throw new Error("Function not implemented.");
+      } } />
       <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
         {/* Sidebar - Filters */}
         <aside className="md:w-1/4 w-full bg-white shadow-lg p-4 rounded-lg h-fit">
