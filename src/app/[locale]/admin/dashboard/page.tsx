@@ -20,7 +20,7 @@ import {
 } from "chart.js";
 
 import { useGetGeneralStatsQuery } from "@/store/api/user.api";
-import Loader from "@/app/(features)/_components/loader";
+import Loader from "../../(features)/_components/loader";
 
 ChartJS.register(
   CategoryScale,
