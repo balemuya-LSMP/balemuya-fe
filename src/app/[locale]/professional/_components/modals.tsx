@@ -18,7 +18,7 @@ import {
 } from "@/store/api/userProfile.api";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { FaUpload } from "react-icons/fa";
-import Loader from "@/app/(features)/_components/loader";
+import Loader from "../../(features)/_components/loader";
 
 interface ModalProps {
   isOpen: boolean;
@@ -39,11 +39,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
   if (isLoading) {
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
+    return <Loader/>
   }
 
   if (error) {
