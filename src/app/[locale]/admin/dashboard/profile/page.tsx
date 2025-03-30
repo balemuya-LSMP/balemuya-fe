@@ -7,8 +7,8 @@ import {
   useUpdateProfileMutation,
   useUserProfileQuery,
 } from "@/store/api/userProfile.api";
-import Modal from "@/app/admin/dashboard/_components/modal";
 import { MdEdit, MdEmail, MdPhone } from "react-icons/md";
+import Modal from "../_components/modal";
 
 const UserProfile = () => {
   const userProfile = useUserProfileQuery({});
