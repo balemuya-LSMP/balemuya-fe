@@ -3,7 +3,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Loader from "@/app/(features)/_components/loader";
 import { useDeleteCertificatesMutation, useDeleteEducationsMutation, useDeletePortifoliosMutation, useRemoveAddressesMutation, useRequestVerficationMutation, useUserProfileQuery, useAddCategoriesMutation, useRemoveCategoriesMutation } from "@/store/api/userProfile.api";
 import { useGetCategoriesQuery } from "@/store/api/services.api";
 import { use, useState } from "react";
@@ -30,6 +29,7 @@ import {
   AddressModal,
 } from "../_components/modals";
 import { toast, ToastContainer } from "react-toastify";
+import Loader from "../../(features)/_components/loader";
 
 export default function Profile() {
   const { data: userPofile, isLoading, error } = useUserProfileQuery({});
