@@ -8,7 +8,7 @@ import { useRouter } from "@/i18n/navigation";
 import Header from "../_components/header";
 import { useFilterProfessionalsQuery } from "@/store/api/user.api";
 import { useGetCategoriesQuery } from "@/store/api/services.api";
-import StarRating from "../../(features)/_components/starRating";
+import StarRating from "../../(features)/_components/StarRating";
 
 export default function Professionals() {
   const router = useRouter();
