@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+'use client';
 import { useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
