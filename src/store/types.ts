@@ -25,15 +25,18 @@ export interface loginState {
   password: string;
 }
 
+export interface UserData {
+  id: string;
+  email: string;
+  user_type: string;
+  entity_type: string;
+  access: string;
+  refresh: string;
+}
+
 export interface loginResponse {
   message: string;
-  user: {
-    id: string;
-    access: string;
-    refresh: string;
-    email: string;
-    user_type: string;
-  };
+  user: UserData;
 }
 
 export interface Address {
