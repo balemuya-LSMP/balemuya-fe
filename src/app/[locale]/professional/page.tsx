@@ -598,18 +598,7 @@ export default function Home() {
             sx={{ mb: 3 }}
           />
           <Box display="flex" justifyContent="flex-end" gap={2}>
-            <Button
-              variant="outlined"
-              onClick={() => setModalOpen(false)}
-              sx={{
-                px: 3,
-                fontWeight: 600,
-                borderRadius: 2
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
+          <Button
               variant="contained"
               color="primary"
               onClick={() => {
@@ -624,7 +613,18 @@ export default function Home() {
                 borderRadius: 2
               }}
             >
-              Submit Application
+              Submit
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setModalOpen(false)}
+              sx={{
+                px: 3,
+                fontWeight: 600,
+                borderRadius: 2
+              }}
+            >
+              Cancel
             </Button>
           </Box>
         </Box>
