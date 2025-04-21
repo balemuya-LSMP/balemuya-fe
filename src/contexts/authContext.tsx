@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLogoutUserMutation } from '@/store/api/auth.api';
 import { loginResponse, UserData } from '@/store/types';
 import React, { createContext, useContext, useState, useEffect } from 'react';
@@ -8,6 +9,7 @@ interface AuthContextType {
   refreshToken: string | null;
   login: (loginData: loginResponse) => void;
   logout: () => Promise<void>;
+  isInitialized: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,33 +22,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [logoutUser] = useLogoutUserMutation();
 
+  // Initialize auth state from storage
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const storedAccess = localStorage.getItem('access');
-    const storedRefresh = localStorage.getItem('refresh');
+    const initializeAuth = () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        const storedAccess = localStorage.getItem('accessToken');
+        const storedRefresh = localStorage.getItem('refreshToken');
 
-    if (storedUser) setUser(JSON.parse(storedUser));
-    if (storedAccess) setAccessToken(storedAccess);
-    if (storedRefresh) setRefreshToken(storedRefresh);
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
+        }
+        if (storedAccess) {
+          setAccessToken(storedAccess);
+        }
+        if (storedRefresh) {
+          setRefreshToken(storedRefresh);
+        }
+      } catch (error) {
+        console.error('Failed to initialize auth:', error);
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+      } finally {
+        setIsInitialized(true);
+      }
+    };
+
+    initializeAuth();
   }, []);
 
   const login = (loginData: loginResponse) => {
-    const { user } = loginData;
-    const {access, refresh } = loginData.user;
-
-    setUser(user);
-    setAccessToken(access);
-    setRefreshToken(refresh);
-
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('access', access);
-    localStorage.setItem('refresh', refresh);
-
-    document.cookie = `access=${access}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
-    document.cookie = `user=${JSON.stringify(user)}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
+    try {
+      const { user } = loginData;
+      const { access, refresh, ...userInfo } = user;
+  
+      setUser(userInfo as any); 
+      setAccessToken(access);
+      setRefreshToken(refresh);
+  
+      localStorage.setItem('user', JSON.stringify(userInfo));
+      localStorage.setItem('accessToken', access);
+      localStorage.setItem('refreshToken', refresh);
+  
+      document.cookie = `accessToken=${access}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
+      document.cookie = `user=${JSON.stringify(userInfo)}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   };
+  
 
   const logout = async () => {
     try {
@@ -61,13 +90,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setRefreshToken(null);
 
       localStorage.removeItem('user');
-      localStorage.removeItem('access');
-      localStorage.removeItem('refresh');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
 
-      document.cookie = 'access=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-
-      window.location.href = '/auth/login';
     }
   };
 
@@ -77,7 +104,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       accessToken,
       refreshToken,
       login,
-      logout
+      logout,
+      isInitialized
     }}>
       {children}
     </AuthContext.Provider>
