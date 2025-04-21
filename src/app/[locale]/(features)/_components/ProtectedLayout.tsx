@@ -10,16 +10,22 @@ export default function ProtectedLayout({
   children: React.ReactNode;
   allowedRoles?: string[];
 }) {
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth(); 
   const router = useRouter();
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     if (!user) {
       router.push('/auth/login');
     } else if (allowedRoles.length > 0 && !allowedRoles.includes(user.user_type)) {
       router.push('/unauthorized');
     }
-  }, [user, allowedRoles, router]);
+  }, [user, allowedRoles, router, isInitialized]);
+
+  if (!isInitialized) {
+    return null;
+  }
 
   if (!user || (allowedRoles.length > 0 && !allowedRoles.includes(user.user_type))) {
     return null; 
