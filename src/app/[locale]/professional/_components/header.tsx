@@ -52,7 +52,6 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
   const { logout } = useAuth();
   const { toggleTheme, currentTheme } = useThemeToggle();
   const unreadCount = notificationData?.notifications?.filter((notif: any) => !notif.is_read).length ?? 0;
-
   const pages = [
     { name: 'Home', path: '/professional' },
     { name: 'Subscription', path: '/professional/subscription' },
