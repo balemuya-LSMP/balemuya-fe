@@ -1,12 +1,10 @@
 export interface User {
   email: string;
   password: string;
-  first_name: string;
-  middle_name: string;
-  last_name: string;
+  user_name: string;
   phone_number: string;
-  gender: string;
   user_type: string;
+  entity_type: string;
   confirmPassword: string;
 }
 export interface UserResponse {
