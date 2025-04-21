@@ -10,8 +10,7 @@ import { useRegisterUserMutation } from "@/store/api/auth.api";
 import { User } from "@/store/types";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -89,9 +88,7 @@ export default function Register() {
               Register
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <TextField fullWidth label="First Name" {...register("first_name")} error={!!errors.first_name} helperText={errors.first_name?.message} margin="normal" />
-              <TextField fullWidth label="Middle Name" {...register("middle_name")} error={!!errors.middle_name} helperText={errors.middle_name?.message} margin="normal" />
-              <TextField fullWidth label="Last Name" {...register("last_name")} error={!!errors.last_name} helperText={errors.last_name?.message} margin="normal" />
+              <TextField fullWidth label="User Name" {...register("user_name")} error={!!errors.user_name} helperText={errors.user_name?.message} margin="normal" />
               <TextField fullWidth label="Email" type="email" {...register("email")} error={!!errors.email} helperText={errors.email?.message} margin="normal" />
               <PhoneInput international defaultCountry="ET" value={watch("phone_number")} onChange={(value) => setValue("phone_number", value ?? "")} className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600" />
               <FormControl component="fieldset" fullWidth margin="normal">
@@ -104,12 +101,15 @@ export default function Register() {
                 </Select>
 
               </FormControl>
-              <FormControl component="fieldset" margin="normal">
-                <Typography>Gender</Typography>
-                <RadioGroup row {...register("gender")}>
-                  <FormControlLabel value="male" control={<Radio />} label="Male" />
-                  <FormControlLabel value="female" control={<Radio />} label="Female" />
-                </RadioGroup>
+              <FormControl component="fieldset" fullWidth margin="normal">
+                <InputLabel>Register As</InputLabel>
+                <Select {...register("entity_type")}
+                  value={watch("entity_type") ?? ""}
+                  onChange={(e) => setValue("entity_type", e.target.value)} >
+                  <MenuItem value="individual">Individual</MenuItem>
+                  <MenuItem value="organization">Organization</MenuItem>
+                </Select>
+
               </FormControl>
               <TextField fullWidth label="Password" type={showPassword ? "text" : "password"} {...register("password")} error={!!errors.password} helperText={errors.password?.message} margin="normal" InputProps={{
                 endAdornment: (
