@@ -82,6 +82,8 @@
         "submit": "አስገባ",
         "cancel": "ሰርዝ",
         "feedbackSuccess": "አስተያየትዎ በተሳካ ሁኔታ ተልኳል!",
-        "feedbackError": "የተሳሳተ ነገር ተከስቷል!"
+        "feedbackError": "የተሳሳተ ነገር ተከስቷል!",
+        "connectWithUs": "ከእኛ ጋር ይገናኙ",
+        "allRightsReserved": "ሁሉም መብቶች ይጠብቃል።"
     }
 }

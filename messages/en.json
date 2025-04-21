@@ -75,7 +75,9 @@
     "submit": "Submit",
     "cancel": "Cancel",
     "feedbackSuccess": "Feedback submitted successfully!",
-    "feedbackError": "Something went wrong!"
+    "feedbackError": "Something went wrong!",
+    "connectWithUs": "Connect With Us",
+    "allRightsReserved": "All rights reserved."
   },
     "contact": {
       "title": "Contact Us",
