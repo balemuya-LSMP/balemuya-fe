@@ -32,39 +32,44 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
   const [updateProfile] = useUpdateProfileMutation();
 
   const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
+  const [orgName, setOrgName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
   if (isLoading) {
-    return <Loader/>
+    return <Loader />
   }
 
   if (error) {
     return <div>Error: {JSON.stringify(error)}</div>;
   }
 
+
   const user = userData?.user?.user;
+
+  console.log("User data:", user);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedData = {
-      first_name: firstName || user?.first_name,
-      middle_name: middleName || user?.middle_name,
-      last_name: lastName || user?.last_name,
-      phone_number: phoneNumber || user?.phone_number,
-      bio: bio || user?.bio,
-      profile_image: profilePicture || null,
+      first_name: firstName ?? user?.first_name ?? '',
+      last_name: lastName ?? user?.last_name ?? '',
+      org_name: orgName ?? user?.org_name ?? '',
+      phone_number: phoneNumber ?? user?.phone_number ?? '',
+      bio: bio ?? user?.bio ?? '',
+      profile_image: profilePicture ?? null,
     };
 
     const formData = new FormData();
     formData.append("first_name", updatedData.first_name);
-    formData.append("middle_name", updatedData.middle_name);
     formData.append("last_name", updatedData.last_name);
+    formData.append("org_name", updatedData.org_name);
     formData.append("phone_number", updatedData.phone_number);
     formData.append("bio", updatedData.bio);
+
 
     if (updatedData.profile_image) {
       formData.append("profile_image", updatedData.profile_image);
@@ -86,36 +91,40 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
           Update User Details
         </h1>
         <form onSubmit={handleSubmit}>
-          <label className="block mb-2">
-            First Name:
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder={user?.first_name || "Enter first name"}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-            />
-          </label>
-          <label className="block mb-2">
-            Middle Name:
-            <input
-              type="text"
-              value={middleName}
-              onChange={(e) => setMiddleName(e.target.value)}
-              placeholder={user?.middle_name || "Enter middle name"}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-            />
-          </label>
-          <label className="block mb-2">
-            Last Name:
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder={user?.last_name || "Enter last name"}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-            />
-          </label>
+          {user.entity_type === "organization" ? (
+            <label className="block mb-2">
+              Organization Name:
+              <input
+                type="text"
+                value={orgName}
+                onChange={(e) => setOrgName(e.target.value)}
+                placeholder={user?.org_name || "Enter organization name"}
+                className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+              />
+            </label>
+          ) : (
+            <>
+              <label className="block mb-2">
+                First Name:
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder={user?.first_name || "Enter first name"}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                />
+              </label>
+              <label className="block mb-2">
+                Last Name:
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder={user?.last_name || "Enter last name"}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                />
+              </label>
+            </>)}
           <label className="block mb-2">
             Phone Number:
             <input
