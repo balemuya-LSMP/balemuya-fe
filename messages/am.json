@@ -74,7 +74,7 @@
         "rights": "© 2024 ባለሙያ። መብት እንደተጠበቀ ይጠብቃል።",
         "contact": "እኛን ለማግኘት",
         "email": "support@balemuya.com",
-        "designedBy": "በፍቅር ❤️ የተሰራ በባለሙያ ቡድን",
+        "designedBy": "በባለሙያ ቡድን የተሰራ",
         "feedbackButton": "አስተያየት ስጥ",
         "feedbackTitle": "አስተያየት ስጥ",
         "feedbackLabel": "አስተያየትዎን ያብሩ...",
@@ -85,5 +85,70 @@
         "feedbackError": "የተሳሳተ ነገር ተከስቷል!",
         "connectWithUs": "ከእኛ ጋር ይገናኙ",
         "allRightsReserved": "ሁሉም መብቶች ይጠብቃል።"
+    },
+    "professionalHome": {
+        "hero": {
+            "title": "በኢትዮጵያ ውስጥ ሙያ ያላቸውን አገልግሎት አቅራቢዎችን ያግኙና ቅጥያ ያድርጉ",
+            "subtitle": "በብልጽግና ያበረታች ሙያ ያላቸውን ሰዎች ከእነሱ ጥቅም ሊውሉ ከሚችሉ አገልግሎት ተፈላጊዎች ጋር እንዲያገኙ እንረዳዋለን",
+            "browseButton": "አገልግሎቶችን ይመልከቱ"
+        },
+        "stats": {
+            "professionals": "ሙያ ያላቸው ሰዎች",
+            "completedJobs": "ተጠናቀቁ የሥራ ልዩነቶች",
+            "satisfactionRate": "የተሟላ እርካታ",
+            "support": "ድጋፍ"
+        },
+        "whyChoose": {
+            "title": "ለምን ባለሙያ ይመርጡ?",
+            "description": "ሙያተኞችንና አገልግሎት ተፈላጊዎችን እንዲገናኙ ከፍተኛ መድረክ እንሰጣለን",
+            "features": {
+                "location": {
+                    "title": "በቦታ መሰረት ያለ ፍለጋ",
+                    "description": "በሰፊ የጂኦሎኬሽን ቴክኖሎጂ ቀላል የቦታ መሰረት ፍለጋ ያድርጉ"
+                },
+                "registration": {
+                    "title": "አገልግሎት ምዝገባ",
+                    "description": "ሙያተኞች ራሳቸውን ለማሳየት ቀላል የምዝገባ ሂደት"
+                },
+                "payment": {
+                    "title": "ደህንነታማ ክፍያዎች",
+                    "description": "ሁሉንም ግብይት የሚሸፍንና ታማኝ የክፍያ ስርዓት"
+                },
+                "apply": {
+                    "title": "ለሥራ ያመልክቱ",
+                    "description": "ሙያተኞች ቀላል ሂደት በመከተል ለሥራዎች ማመልከት ይችላሉ"
+                }
+            }
+        },
+        "jobs": {
+            "title": "የቅርብ ጊዜ የሥራ ማስታወቂያዎች",
+            "subtitle": "ለእርስዎ እኩል የሆነ የሥራ አገልግሎት ዕድል ያግኙ"
+        },
+        "toast": {
+            "applicationSuccess": "መተግበሪያዎ በተሳካ ሁኔታ ተላከ",
+            "applicationError": "መተግበሪያን ማስገባት አልተሳካም"
+        },
+        "howItWorks": {
+            "title": "እንዴት ነው የሚሰራው",
+            "subtitle": "በቀላሉ የሚከተሉ እርምጃዎችን በመከተል ይጀምሩ",
+            "steps": {
+                "register": {
+                    "title": "ይመዝገቡ",
+                    "description": "እንደ ሙያ ያላቸው ወይም እንደ ደንበኛ መለያዎን ይፍጠሩ"
+                },
+                "completeProfile": {
+                    "title": "መጠን ያለ መገለጫ",
+                    "description": "ዝርዝሮችዎን፣ ክህሎቶችንና ልምድዎን ያክሉ"
+                },
+                "getVerified": {
+                    "title": "ማረጋገጫ ያግኙ",
+                    "description": "ለዝቅተኛ ቦታ ዕድሎች መብትዎን ያረጋግጡ"
+                },
+                "startWorking": {
+                    "title": "ሥራ ይጀምሩ",
+                    "description": "ለሥራ ያመልክቱ ወይም ሙያተኞችን ቅጥያ ያድርጉ"
+                }
+            }
+        }
     }
 }

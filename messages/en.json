@@ -44,10 +44,8 @@
   "about": {
     "title": "About Balemuya",
     "intro": "Balemuya is a local service marketplace that connects customers with skilled professionals. Whether you need home repairs, beauty services, tutoring, or other local services, Balemuya makes it easy to find trusted professionals near you.",
-    
     "missionTitle": "Our Mission",
     "mission": "We aim to bridge the gap between service providers and customers by offering a seamless and reliable platform. We empower professionals to showcase their skills and grow their businesses while helping customers access high-quality services effortlessly.",
-    
     "whyChooseUsTitle": "Why Choose Us?",
     "reasons": {
       "1": "✅ Trusted and verified professionals",
@@ -55,19 +53,16 @@
       "3": "✅ Wide range of services to choose from",
       "4": "✅ Customer reviews for transparency"
     },
-  
     "joinTitle": "Join Us Today",
     "joinText": "Whether you're a professional looking to grow your business or a customer searching for top-notch local services, Balemuya is the perfect place for you. Sign up today and experience hassle-free local service booking.",
-    
     "getStarted": "Get Started",
     "contactUs": "Contact Us"
   },
-  
   "footer": {
     "rights": "© 2024 Balemuya. All rights reserved.",
     "contact": "Contact us at",
     "email": "support@balemuya.com",
-    "designedBy": "Designed with ❤️ by the Balemuya Team",
+    "designedBy": "Designed by the Balemuya Team",
     "feedbackButton": "Give Feedback",
     "feedbackTitle": "Give Feedback",
     "feedbackLabel": "Write your feedback...",
@@ -79,16 +74,81 @@
     "connectWithUs": "Connect With Us",
     "allRightsReserved": "All rights reserved."
   },
-    "contact": {
-      "title": "Contact Us",
-      "description": "Have a question or need assistance? Fill out the form below and we'll get back to you soon.",
-      "nameLabel": "Name",
-      "emailLabel": "Email",
-      "messageLabel": "Message",
-      "sendMessageButton": "Send Message",
-      "location": "📍 Location: Addis Ababa, Ethiopia",
-      "phone": "📞 Phone: +251 911 123 456",
-      "email": "📧 Email: support@balemuya.com",
-      "messageSentAlert": "Message Sent! We will get back to you soon."
-    } 
+  "contact": {
+    "title": "Contact Us",
+    "description": "Have a question or need assistance? Fill out the form below and we'll get back to you soon.",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "messageLabel": "Message",
+    "sendMessageButton": "Send Message",
+    "location": "📍 Location: Addis Ababa, Ethiopia",
+    "phone": "📞 Phone: +251 911 123 456",
+    "email": "📧 Email: support@balemuya.com",
+    "messageSentAlert": "Message Sent! We will get back to you soon."
+  },
+  "professionalHome": {
+    "hero": {
+      "title": "Find & Hire Professional Services in Ethiopia",
+      "subtitle": "Connecting skilled professionals with clients who need their services",
+      "browseButton": "Browse Services"
+    },
+    "stats": {
+      "professionals": "Professionals",
+      "completedJobs": "Completed Jobs",
+      "satisfactionRate": "Satisfaction Rate",
+      "support": "Support"
+    },
+    "whyChoose": {
+      "title": "Why Choose Balemuya",
+      "description": "We provide the best platform for professionals and clients to connect",
+      "features": {
+        "location": {
+          "title": "Location-Based Search",
+          "description": "Find professionals near you with our advanced geolocation technology"
+        },
+        "registration": {
+          "title": "Service Registration",
+          "description": "Easy registration process for professionals to showcase their skills"
+        },
+        "payment": {
+          "title": "Secure Payments",
+          "description": "Safe and reliable payment system for all transactions"
+        },
+        "apply": {
+          "title": "Apply for Work",
+          "description": "Professionals can easily apply for available jobs"
+        }
+      }
+    },
+    "jobs": {
+      "title": "Latest Job Postings",
+      "subtitle": "Find the perfect job opportunity that matches your skills"
+    },
+    "toast": {
+      "applicationSuccess": "Application Sent Successfully",
+      "applicationError": "Failed to send application"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Get started in just a few simple steps",
+      "steps": {
+        "register": {
+          "title": "Register",
+          "description": "Create your account as a professional or client"
+        },
+        "completeProfile": {
+          "title": "Complete Profile",
+          "description": "Add your details, skills, and experience"
+        },
+        "getVerified": {
+          "title": "Get Verified",
+          "description": "Verify your credentials for better opportunities"
+        },
+        "startWorking": {
+          "title": "Start Working",
+          "description": "Apply for jobs or hire professionals"
+        }
+      }
+    }
+  }
 }
