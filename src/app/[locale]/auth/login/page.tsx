@@ -75,7 +75,7 @@ export default function Login() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: 3, // Adds shadow effect
+              boxShadow: 3, 
             }}
           >
             <img
