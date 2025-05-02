@@ -12,7 +12,9 @@ import Header from "./(features)/_components/header";
 import { Container, Box, Typography, Button, Card, CardContent, Avatar, Grid } from "@mui/material";
 import { Search, People, Lock, PhoneIphone } from "@mui/icons-material";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 export default function Landing() {
+  const router = useRouter();
 
   const t = useTranslations("Landing");
 
@@ -56,10 +58,14 @@ export default function Landing() {
             {t("description")}
           </Typography>
           <Box display="flex" gap={2}>
-            <Button variant="contained" color="primary" size="large">
+            <Button
+              onClick={() => router.push("/auth/login")}
+              variant="contained" color="primary" size="large">
               {t("findProfessionals")}
             </Button>
-            <Button variant="outlined" color="inherit" size="large">
+            <Button
+              onClick={() => router.push("/auth/signup")}
+              variant="outlined" color="inherit" size="large">
               {t("offerServices")}
             </Button>
           </Box>
@@ -159,7 +165,7 @@ export default function Landing() {
             {t("appTitle")}
           </Typography>
           <Typography variant="body1" color="textSecondary" mb={3}>
-             {t("appDesc")}
+            {t("appDesc")}
           </Typography>
           <Box display="flex" justifyContent="center" gap={2} mb={4}>
             <Button
