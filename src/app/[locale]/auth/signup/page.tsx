@@ -59,7 +59,7 @@ export default function Register() {
           justifyContent: "center",
         }}>
         <Container component="main" maxWidth="sm">
-          <Paper elevation={3} sx={{ p: 4, my: 6, position: "relative", overflow: "visible" }}>
+          <Paper elevation={3} sx={{ p: 4, borderRadius:3, my: 6, position: "relative", overflow: "visible" }}>
             <Box
               sx={{
                 position: "absolute",
@@ -88,12 +88,16 @@ export default function Register() {
               Register
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <TextField fullWidth label="User Name" {...register("user_name")} error={!!errors.user_name} helperText={errors.user_name?.message} margin="normal" />
+              <TextField fullWidth label="User Name" {...register("user_name")} error={!!errors.user_name} helperText={errors.user_name?.message} margin="normal" variant="outlined"
+              />
               <TextField fullWidth label="Email" type="email" {...register("email")} error={!!errors.email} helperText={errors.email?.message} margin="normal" />
-              <PhoneInput international defaultCountry="ET" value={watch("phone_number")} onChange={(value) => setValue("phone_number", value ?? "")} className="mt-1 block w-full px-4 py-2 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-gray-600 focus:border-gray-600" />
+              <PhoneInput international defaultCountry="ET" value={watch("phone_number")} onChange={(value) => setValue("phone_number", value ?? "")} className="mt-1 block w-full px-4 py-4 border border-gray-400 text-gray-600 rounded-md shadow-sm focus:outline-none" />
               <FormControl component="fieldset" fullWidth margin="normal">
-                <InputLabel>Role</InputLabel>
+                <InputLabel id="user_role_type">Role</InputLabel>
                 <Select {...register("user_type")}
+                  labelId="user_role_type"
+                  label="Role"
+                  variant="outlined"
                   value={watch("user_type") ?? ""}
                   onChange={(e) => setValue("user_type", e.target.value)} >
                   <MenuItem value="customer">Customer</MenuItem>
@@ -102,8 +106,11 @@ export default function Register() {
 
               </FormControl>
               <FormControl component="fieldset" fullWidth margin="normal">
-                <InputLabel>Register As</InputLabel>
+                <InputLabel id="user_type_label">Register As</InputLabel>
                 <Select {...register("entity_type")}
+                  labelId="user_type_label"
+                  label="Register As"
+                  variant="outlined"
                   value={watch("entity_type") ?? ""}
                   onChange={(e) => setValue("entity_type", e.target.value)} >
                   <MenuItem value="individual">Individual</MenuItem>
@@ -125,7 +132,21 @@ export default function Register() {
                   </IconButton>
                 ),
               }} />
-              <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }} disabled={isLoading}>
+               <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                sx={{
+                  mt: 3,
+                  py: 1.5,
+                  fontWeight: "bold",
+                  borderRadius: 3,
+                  textTransform: "none",
+                  fontSize: "1rem",
+                }}
+                disabled={isLoading}
+              >
                 {isLoading ? <ClipLoader size={20} color="#fff" /> : "Register"}
               </Button>
               <Typography variant="body2" align="center" mt={2}>
@@ -135,7 +156,7 @@ export default function Register() {
           </Paper>
         </Container>
       </Box>
-      <ToastContainer />
+      <ToastContainer position="top-center" />
     </>
   );
 }
