@@ -25,7 +25,6 @@ export const userProfileApi = createApi({
       query: () => "/profile/",
       providesTags: ["UserProfile"],
     }),
-
     updateProfile: builder.mutation<
       UserResponse,
       { updated: Record<string, any> }
