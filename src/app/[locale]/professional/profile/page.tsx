@@ -56,7 +56,6 @@ export default function Profile() {
   const [isCategoryModalOpen, setCategoryModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
 
-
   if (isLoading) {
     return <Loader />;
   }
@@ -69,36 +68,42 @@ export default function Profile() {
     );
   }
 
-  const {
-    id,
-    user: {
-      id: userId,
-      first_name,
-      middle_name,
-      last_name,
-      gender,
-      email,
-      phone_number,
-      user_type,
-      is_active,
-      is_blocked,
-      created_at,
-      profile_image_url,
-      address = {},
-    } = {},
-    is_verified,
-    num_of_request,
-    skills = [],
-    categories = [],
-    educations = [],
-    portfolios = [],
-    certificates = [],
-    kebele_id_front_image_url,
-    kebele_id_back_image_url,
-    rating,
-    bio,
-  } = userPofile?.user || {};
+  console.log(userPofile);
 
+  const {
+    user: {
+      user: {
+        id,
+        profile_image_url,
+        email,
+        entity_type,
+        phone_number,
+        user_type,
+        bio,
+        is_active,
+        is_blocked,
+        org_name,
+        created_at,
+        address = null,
+        first_name,
+        last_name
+      } = {},
+      gender,
+      kebele_id_front_image_url,
+      kebele_id_back_image_url,
+      skills = [],
+      rating,
+      num_of_request,
+      is_verified,
+      categories =[],
+      educations = [],
+      portfolios = [],
+      certificates = []
+    } = {}
+  } = userPofile || {};
+
+  console.log(userPofile);
+  
   const handeSubmitRequestVerification = async () => {
     try {
       await requestVerification();
@@ -217,7 +222,7 @@ export default function Profile() {
                 />
               </div>
               <h1 className="text-2xl font-bold text-gray-800 mt-2 md:ml-10">
-                {first_name} {middle_name}
+                {entity_type === "organization"? org_name : `${first_name} ${last_name}`}
               </h1>
               <p className="text-gray-600 text-sm mt-2 md:ml-10">{bio}</p>
               <div className="flex flex-col justify-start items-center gap-3 p-4 rounded-lg shadow-md bg-white">
