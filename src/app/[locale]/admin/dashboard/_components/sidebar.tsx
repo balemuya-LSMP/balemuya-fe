@@ -101,9 +101,9 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           </ul>
           <button
             onClick={handleLogout}
-            className="mt-auto bg-purple-500 text-white py-2 rounded flex items-center justify-center"
+            className="mt-auto mb-0 bg-purple-500 text-white py-2 rounded flex items-center justify-center"
           >
-            <FaSignOutAlt className="mr-2" />
+            <FaSignOutAlt className="mr-2 " />
             Logout
           </button>
         </div> 
