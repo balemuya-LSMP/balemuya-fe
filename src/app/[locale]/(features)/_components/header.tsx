@@ -98,10 +98,10 @@ export default function Header() {
         {/* Right-side Actions (Desktop) */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
           {/* Login & Signup Buttons */}
-          <Button component={Link} href="/auth/login" variant="contained" sx={{ bgcolor: "#6a1b9a", color: "white" }}>
+          <Button component={Link} href="/auth/login" variant="contained" sx={{ bgcolor: "#6a1b9a", borderRadius:2, color: "white" }}>
             {t("login")}
           </Button>
-          <Button component={Link} variant="outlined" href="/auth/signup" sx={{ borderColor: "#6a1b9a", color: "#6a1b9a" }}>
+          <Button component={Link} variant="outlined" href="/auth/signup" sx={{ borderColor: "#6a1b9a", borderRadius:2, color: "#6a1b9a" }}>
             {t("signup")}
           </Button>
           <IconButton color="inherit" onClick={toggleTheme} sx={{
