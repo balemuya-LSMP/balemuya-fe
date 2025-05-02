@@ -16,7 +16,9 @@ import Header from "./_components/header";
 import { useGetServicePostsQuery, useCreateApplicationMutation, useSearchServicesQuery, useServiceFilterMutation } from "@/store/api/services.api";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import Loader from "../(features)/_components/loader";
+import { useRouter } from "@/i18n/routing";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { toast, ToastContainer } from "react-toastify";
 import {
@@ -38,6 +40,8 @@ import {
 import { purple } from "@mui/material/colors";
 
 export default function Home() {
+  const t = useTranslations("professionalHome");
+  const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { data: workPosts, error, isLoading } = useGetServicePostsQuery({});
@@ -122,7 +126,7 @@ export default function Home() {
                 textShadow: '0 2px 4px rgba(0,0,0,0.3)'
               }}
             >
-              Find & Hire Professional Services in Ethiopia
+              {t("hero.title")}
             </Typography>
             <Typography
               variant={isMobile ? "h6" : "h5"}
@@ -133,12 +137,14 @@ export default function Home() {
                 textShadow: '0 1px 2px rgba(0,0,0,0.3)'
               }}
             >
-              Connecting skilled professionals with clients who need their services
+              {t("hero.subtitle")}
             </Typography>
             <Button
+              onClick={()=> router.push("/professional/jobs")}
               variant="contained"
               color="primary"
               size="large"
+
               sx={{
                 px: 4,
                 py: 1.5,
@@ -151,7 +157,7 @@ export default function Home() {
                 }
               }}
             >
-              Browse Services
+              {t("hero.browseButton")}
             </Button>
           </Box>
         </Container>
@@ -162,10 +168,10 @@ export default function Home() {
         <Container maxWidth="lg">
           <Grid container spacing={3} justifyContent="center">
             {[
-              { number: '500+', label: 'Professionals' },
-              { number: '1,000+', label: 'Completed Jobs' },
-              { number: '95%', label: 'Satisfaction Rate' },
-              { number: '24/7', label: 'Support' }
+              { number: '500+', label: t("stats.professionals") },
+              { number: '1,000+', label: t("stats.completedJobs") },
+              { number: '95%', label: t("stats.satisfactionRate") },
+              { number: '24/7', label: t("stats.support") }
             ].map((stat, index) => (
               <Grid item xs={6} sm={3} key={index}>
                 <Paper elevation={0} sx={{
@@ -198,7 +204,7 @@ export default function Home() {
               gutterBottom
               sx={{ color: 'text.primary' }}
             >
-              Why Choose Balemuya
+              {t("whyChoose.title")}
             </Typography>
             <Typography
               variant="h6"
@@ -206,7 +212,7 @@ export default function Home() {
               color="text.secondary"
               sx={{ maxWidth: 700, mx: 'auto' }}
             >
-              We provide the best platform for professionals and clients to connect
+              {t("whyChoose.description")}
             </Typography>
           </Box>
 
@@ -214,23 +220,23 @@ export default function Home() {
             {[
               {
                 icon: <FaMapMarkerAlt size={32} />,
-                title: "Location-Based Search",
-                description: "Find professionals near you with our advanced geolocation technology"
+                title: t("whyChoose.features.location.title"),
+                description: t("whyChoose.features.location.description")
               },
               {
                 icon: <FiClipboard size={32} />,
-                title: "Service Registration",
-                description: "Easy registration process for professionals to showcase their skills"
+                title: t("whyChoose.features.registration.title"),
+                description: t("whyChoose.features.registration.description")
               },
               {
                 icon: <MdPayment size={32} />,
-                title: "Secure Payments",
-                description: "Safe and reliable payment system for all transactions"
+                title: t("whyChoose.features.payment.title"),
+                description: t("whyChoose.features.payment.description")
               },
               {
                 icon: <HiOutlineBriefcase size={32} />,
-                title: "Apply for Work",
-                description: "Professionals can easily apply for available jobs"
+                title: t("whyChoose.features.apply.title"),
+                description: t("whyChoose.features.apply.description")
               },
             ].map(({ icon, title, description }, idx) => (
               <Grid item xs={12} sm={6} md={3} key={idx}>
@@ -281,10 +287,10 @@ export default function Home() {
         <Container maxWidth="lg">
           <Box textAlign="center" mb={8}>
             <Typography variant="h3" component="h2" fontWeight={700} gutterBottom>
-              Latest Job Postings
+              {t("jobs.title")}
             </Typography>
             <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 700, mx: 'auto' }}>
-              Find the perfect job opportunity that matches your skills
+              {t("jobs.subtitle")}
             </Typography>
           </Box>
 
@@ -419,10 +425,10 @@ export default function Home() {
         <Container maxWidth="lg">
           <Box textAlign="center" mb={8}>
             <Typography variant="h3" component="h2" fontWeight={700} gutterBottom>
-              How It Works
+              {t("howItWorks.title")}
             </Typography>
             <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 700, mx: 'auto' }}>
-              Get started in just a few simple steps
+              {t("howItWorks.subtitle")}
             </Typography>
           </Box>
 
@@ -430,23 +436,23 @@ export default function Home() {
             {[
               {
                 icon: <MdPersonAdd size={28} />,
-                title: "Register",
-                description: "Create your account as a professional or client"
+                title: t("howItWorks.steps.register.title"),
+                description: t("howItWorks.steps.register.description")
               },
               {
                 icon: <FaUser size={28} />,
-                title: "Complete Profile",
-                description: "Add your details, skills, and experience"
+                title: t("howItWorks.steps.completeProfile.title"),
+                description: t("howItWorks.steps.completeProfile.description")
               },
               {
                 icon: <MdVerifiedUser size={28} />,
-                title: "Get Verified",
-                description: "Verify your credentials for better opportunities"
+                title: t("howItWorks.steps.getVerified.title"),
+                description: t("howItWorks.steps.getVerified.description")
               },
               {
                 icon: <FaRegFileAlt size={28} />,
-                title: "Start Working",
-                description: "Apply for jobs or hire professionals"
+                title: t("howItWorks.steps.startWorking.title"),
+                description: t("howItWorks.steps.startWorking.description")
               },
             ].map(({ icon, title, description }, idx) => (
               <Grid item xs={12} sm={6} md={3} key={idx}>
@@ -511,62 +517,7 @@ export default function Home() {
             ))}
           </Grid>
         </Container>
-      </Box>
-
-      {/* CTA Section */}
-      <Box sx={{ py: 12, backgroundColor: 'background.default', color: 'common.white' }}>
-        <Container maxWidth="md" sx={{ textAlign: 'center' }}>
-          <Typography variant="h3" component="h2" fontWeight={700} gutterBottom>
-            Ready to Get Started?
-          </Typography>
-          <Typography variant="h6" component="p" sx={{ mb: 4, opacity: 0.9 }}>
-            Join thousands of professionals and clients using our platform
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              sx={{
-                px: 6,
-                py: 1.5,
-                fontSize: '1rem',
-                fontWeight: 600,
-                borderRadius: 2,
-                boxShadow: 4
-              }}
-            >
-              Register as Professional
-            </Button>
-            <Button
-              variant="outlined"
-              color="inherit"
-              
-              size="large"
-              sx={{
-                px: 6,
-                py: 1.5,
-                fontSize: '1rem',
-                fontWeight: 600,
-                borderRadius: 2,
-                borderColor: 'primary.main',
-                color: 'primary.main',
-                backgroundColor: 'transparent',
-                ":hover": {
-                  backgroundColor: 'secondary.main',
-                  color: 'common.white'
-                },
-                borderWidth: 2,
-                '&:hover': {
-                  borderWidth: 2
-                }
-              }}
-            >
-              Find a Professional
-            </Button>
-          </Box>
-        </Container>
-      </Box>
+      </Box>   
 
       {/* Modal */}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
