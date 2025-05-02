@@ -37,7 +37,7 @@ export default function Home() {
   const resultToDisplay = searchQuery ? searchResults : professionals;
 
   return (
-    <Box bgcolor="#f5f5f5" fontFamily="sans-serif">
+    <Box bgcolor="background.paper" fontFamily="sans-serif">
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* Hero Section */}
@@ -73,7 +73,7 @@ export default function Home() {
       </Box>
 
       {/* Features Section */}
-      <Container sx={{ py: 8 }}>
+      <Container sx={{ py: 8}}>
         <Typography variant="h4" textAlign="center" fontWeight="bold" mb={4}>
           FEATURES
         </Typography>
@@ -145,7 +145,7 @@ export default function Home() {
       </Container>
 
       {/* How It Works Section */}
-      <Box bgcolor="#e0e0e0" py={8}>
+      <Box bgcolor="background.default" py={8}>
         <Container>
           <Typography variant="h4" textAlign="center" fontWeight="bold" mb={4}>
             HOW IT WORKS
