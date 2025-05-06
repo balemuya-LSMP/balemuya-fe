@@ -19,10 +19,17 @@ export const blogApi = createApi({
       query: () => `/blog/posts/`,
       providesTags: ["Post"],
     }),
-
+    createPost: builder.mutation<any, FormData>({
+      query: (data) => ({
+        url: "/blog/posts/",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Post"],
+    }),
     getPostById: builder.query<any, string>({
       query: (post_id) => `/blog/posts/${post_id}/`,
-      providesTags:  ["Post"],
+      providesTags: ["Post"],
     }),
     getComments: builder.query<any, string>({
       query: (postId) => `/blog/posts/${postId}/comments/`,
@@ -35,7 +42,7 @@ export const blogApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Comment"],
+      invalidatesTags: ["Post", "Comment"],
     }),
     updateComment: builder.mutation<any, { postId: string; data: any }>({
       query: ({ postId, data }) => ({
@@ -43,7 +50,7 @@ export const blogApi = createApi({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Comment"],
+      invalidatesTags: ["Post"],
     }),
     deleteComment: builder.mutation<any, { postId: string; data: any }>({
       query: ({ postId, data }) => ({
@@ -59,7 +66,7 @@ export const blogApi = createApi({
         url: `/blog/posts/${postId}/likes/`,
         method: "POST",
       }),
-      invalidatesTags: ["Like"],
+      invalidatesTags: ["Post","Like"],
     }),
     getLikes: builder.query<any, string>({
       query: (postId) => `/blog/posts/${postId}/likes/`,
@@ -70,6 +77,7 @@ export const blogApi = createApi({
 
 export const {
   useGetAllPostsQuery,
+  useCreatePostMutation,
   useGetPostByIdQuery,
   useGetCommentsQuery,
   useAddCommentMutation,
