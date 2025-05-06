@@ -68,6 +68,7 @@ export default function UserDetails() {
     }
   }
 
+
   const handleverifyUser = async () => {
     const adminReviews = {
       admin_comment: adminComment,
