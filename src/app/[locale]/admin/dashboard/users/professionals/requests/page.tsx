@@ -40,7 +40,7 @@ const PendingRequests = () => {
                                 />
                                 <div>
                                     <p className="text-gray-800 font-medium">
-                                        {request.user.first_name} {request.user.middle_name} {request.user.last_name}
+                                        {request.user.first_name} {request.user.org_name} {request.user.last_name}
                                     </p>
                                     <p className="text-gray-500 text-sm">{request.user.user_type}</p>
                                 </div>
