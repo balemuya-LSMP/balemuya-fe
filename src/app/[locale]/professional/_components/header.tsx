@@ -11,20 +11,20 @@ import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import { useGetNotificationsQuery, useGetCategoriesQuery } from "@/store/api/services.api";
 import { useAuth } from "@/contexts/authContext";
 import NotificationsPanel from "./NotificationsPanel";
-import { 
-  AppBar, 
-  Toolbar, 
+import {
+  AppBar,
+  Toolbar,
   Container,
-  Drawer, 
-  Box, 
-  Menu, 
-  MenuItem, 
-  TextField, 
-  Typography, 
-  Checkbox, 
-  ListItemText, 
-  Badge, 
-  Avatar, 
+  Drawer,
+  Box,
+  Menu,
+  MenuItem,
+  TextField,
+  Typography,
+  Checkbox,
+  ListItemText,
+  Badge,
+  Avatar,
   IconButton,
   Button
 } from "@mui/material";
@@ -56,7 +56,8 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
     { name: 'Home', path: '/professional' },
     { name: 'Subscription', path: '/professional/subscription' },
     { name: 'Job', path: '/professional/jobs' },
-    { name: 'Requests', path: '/professional/requests' }
+    { name: 'Requests', path: '/professional/requests' },
+    { name: "Blog", path: "/professional/blog" },
   ];
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -159,7 +160,12 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
                   handleCloseNavMenu();
                   router.push(page.path);
                 }}>
-                  <Typography textAlign="center">{page.name}</Typography>
+                  <Typography textAlign="center" sx={{
+                    '&:hover': {
+                      color: 'primary.main',
+                      backgroundColor: 'transparent'
+                    }
+                  }}>{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -196,7 +202,7 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
           </Typography>
 
           {/* Desktop Navigation */}
-          <Box sx={{ flexGrow: 1, justifyContent:'center', display: { xs: 'none', md: 'flex' }, ml: 2 }}>
+          <Box sx={{ flexGrow: 1, justifyContent: 'center', display: { xs: 'none', md: 'flex' }, ml: 2 }}>
             {pages.map((page) => (
               <Button
                 key={page.name}
@@ -204,7 +210,13 @@ export default function Header({ searchQuery, setSearchQuery, filter, setFilter,
                   handleCloseNavMenu();
                   router.push(page.path);
                 }}
-                sx={{ my: 2, color: 'text.primary', display: 'block', '&:hover': { color: 'purple.700' } }}
+                sx={{
+                  my: 2, color: 'text.primary', display: 'block',
+                  '&:hover': {
+                    color: 'primary.main',
+                    backgroundColor: 'transparent'
+                  }
+                }}
               >
                 {page.name}
               </Button>
