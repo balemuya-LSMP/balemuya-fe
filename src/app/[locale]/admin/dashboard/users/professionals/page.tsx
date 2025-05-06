@@ -27,8 +27,9 @@ export default function Users() {
     userlist?.filter((userData: any) => {
       const user = userData.user;
       const matchesSearch =
-        user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.middle_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.org_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
@@ -54,7 +55,6 @@ export default function Users() {
 
         {/* Search and Filter Section */}
         <div className="p-4 flex flex-col sm:flex-row justify-center items-center gap-4 border-b relative">
-          {/* Search Input */}
           <div className="flex items-center w-full sm:w-auto border-2 border-gray-300 rounded-2xl px-3 py-2">
             <input
               type="text"
