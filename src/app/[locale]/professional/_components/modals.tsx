@@ -49,16 +49,13 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
 
   const user = userData?.user?.user;
 
-  console.log("User data:", user);
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedData = {
       first_name: firstName ?? user?.first_name ?? '',
       last_name: lastName ?? user?.last_name ?? '',
       org_name: orgName ?? user?.org_name ?? '',
-      phone_number: phoneNumber ?? user?.phone_number ?? '',
+      phone_number: phoneNumber ?? user?.phone_number ?? null,
       bio: bio ?? user?.bio ?? '',
       profile_image: profilePicture ?? null,
     };
@@ -109,7 +106,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
                 <input
                   type="text"
                   value={firstName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => setFirstName(e.target.value)}
                   placeholder={user?.first_name || "Enter first name"}
                   className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                 />
