@@ -57,7 +57,8 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
   const pages = [
     { name: 'Home', href: '/customer' },
     { name: 'Professionals', href: '/customer/professionals' },
-    { name: 'Work Post', href: '/customer/work' }
+    { name: 'Work Post', href: '/customer/work' },
+    { name: "Blog", href: "/customer/blog" },
   ];
 
   const handleLogout = async () => {
@@ -88,11 +89,11 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
 
   return (
     <>
-      <AppBar 
-        position="sticky" 
-        color="default" 
+      <AppBar
+        position="sticky"
+        color="default"
         elevation={0}
-        sx={{ 
+        sx={{
           backgroundColor: theme.palette.background.paper,
           borderBottom: `1px solid ${theme.palette.divider}`,
           py: 1
@@ -103,19 +104,19 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
             {/* Logo - Desktop */}
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <Link href="/customer" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                <Avatar 
-                  src="/images/logo.jpg" 
-                  alt="Logo" 
-                  sx={{ 
-                    width: 48, 
+                <Avatar
+                  src="/images/logo.jpg"
+                  alt="Logo"
+                  sx={{
+                    width: 48,
                     height: 48,
                     mr: 1.5
-                  }} 
+                  }}
                 />
-                <Typography 
-                  variant="h6" 
-                  color="primary" 
-                  sx={{ 
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  sx={{
                     fontWeight: 700,
                     letterSpacing: 0.5,
                     fontSize: '1.25rem'
@@ -137,30 +138,30 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               >
                 <FaBars />
               </IconButton>
-              
+
               {/* Mobile Logo */}
-              <Link 
-                href="/customer" 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
+              <Link
+                href="/customer"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
                   textDecoration: 'none',
                   marginLeft: '12px'
                 }}
               >
-                <Avatar 
-                  src="/images/logo.jpg" 
-                  alt="Logo" 
-                  sx={{ 
-                    width: 36, 
+                <Avatar
+                  src="/images/logo.jpg"
+                  alt="Logo"
+                  sx={{
+                    width: 36,
                     height: 36,
                     mr: 1
-                  }} 
+                  }}
                 />
-                <Typography 
-                  variant="h6" 
-                  color="primary" 
-                  sx={{ 
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  sx={{
                     fontWeight: 700,
                     fontSize: '1.1rem'
                   }}
@@ -197,10 +198,10 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               }}
             >
               {pages.map((page) => (
-                <MenuItem 
-                  key={page.name} 
-                  onClick={handleCloseNavMenu} 
-                  component={Link} 
+                <MenuItem
+                  key={page.name}
+                  onClick={handleCloseNavMenu}
+                  component={Link}
                   href={page.href}
                   sx={{
                     '&:hover': {
@@ -214,9 +215,9 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
             </Menu>
 
             {/* Navigation Links - Desktop */}
-            <Box sx={{ 
-              flexGrow: 1, 
-              display: { xs: 'none', md: 'flex' }, 
+            <Box sx={{
+              flexGrow: 1,
+              display: { xs: 'none', md: 'flex' },
               justifyContent: 'center',
               gap: 1
             }}>
@@ -225,7 +226,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   key={page.name}
                   component={Link}
                   href={page.href}
-                  sx={{ 
+                  sx={{
                     color: 'text.primary',
                     fontWeight: 500,
                     fontSize: '0.9rem',
@@ -267,16 +268,16 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     fullWidth
-                    sx={{ 
-                      ml: 1, 
+                    sx={{
+                      ml: 1,
                       flex: 1,
                       fontSize: '0.9rem'
                     }}
                     endAdornment={
-                      <IconButton 
-                        type="button" 
-                        sx={{ 
-                          p: '6px', 
+                      <IconButton
+                        type="button"
+                        sx={{
+                          p: '6px',
                           color: 'text.secondary',
                           '&:hover': {
                             color: 'primary.main'
@@ -290,8 +291,8 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 </Paper>
               )}
 
-              <IconButton 
-                onClick={() => setIsOpen(true)} 
+              <IconButton
+                onClick={() => setIsOpen(true)}
                 size="medium"
                 sx={{
                   color: 'text.primary',
@@ -300,8 +301,8 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   }
                 }}
               >
-                <Badge 
-                  badgeContent={unreadCount} 
+                <Badge
+                  badgeContent={unreadCount}
                   color="error"
                   sx={{
                     '& .MuiBadge-badge': {
@@ -316,7 +317,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               </IconButton>
 
               {/* Theme Toggle */}
-              <IconButton 
+              <IconButton
                 onClick={toggleTheme}
                 sx={{
                   color: 'text.primary',
@@ -333,9 +334,9 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
               </IconButton>
 
               {/* Profile Avatar */}
-              <IconButton 
-                onClick={handleOpenUserMenu} 
-                sx={{ 
+              <IconButton
+                onClick={handleOpenUserMenu}
+                sx={{
                   p: 0,
                   ml: 0.5
                 }}
@@ -380,9 +381,9 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   }
                 }}
               >
-                <MenuItem 
-                  onClick={handleCloseUserMenu} 
-                  component={Link} 
+                <MenuItem
+                  onClick={handleCloseUserMenu}
+                  component={Link}
                   href="/customer/profile"
                   sx={{
                     '&:hover': {
@@ -390,12 +391,12 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                     }
                   }}
                 >
-                  <FiUser style={{ marginRight: 12, fontSize: '1rem' }} /> 
+                  <FiUser style={{ marginRight: 12, fontSize: '1rem' }} />
                   Profile
                 </MenuItem>
-                <MenuItem 
-                  onClick={handleCloseUserMenu} 
-                  component={Link} 
+                <MenuItem
+                  onClick={handleCloseUserMenu}
+                  component={Link}
                   href="/customer/settings"
                   sx={{
                     '&:hover': {
@@ -403,14 +404,14 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                     }
                   }}
                 >
-                  <FiSettings style={{ marginRight: 12, fontSize: '1rem' }} /> 
+                  <FiSettings style={{ marginRight: 12, fontSize: '1rem' }} />
                   Settings
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
-                <MenuItem 
-                  onClick={() => { 
-                    handleLogout(); 
-                    handleCloseUserMenu(); 
+                <MenuItem
+                  onClick={() => {
+                    handleLogout();
+                    handleCloseUserMenu();
                   }}
                   sx={{
                     color: theme.palette.error.main,
@@ -420,7 +421,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                     }
                   }}
                 >
-                  <FiLogOut style={{ marginRight: 12, fontSize: '1rem' }} /> 
+                  <FiLogOut style={{ marginRight: 12, fontSize: '1rem' }} />
                   Logout
                 </MenuItem>
               </Menu>
