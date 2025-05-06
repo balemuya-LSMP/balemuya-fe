@@ -29,7 +29,7 @@ import { Box, Tab, Tabs, Button, Card, CardActions, Divider, IconButton, Paper, 
 
 export default function WorkPage() {
     const { position, getPosition } = useGeolocation();
-    // const { data: workPosts, error, isLoading } = useGetServicePostsQuery({});
+    // const { data: workPosts } = useGetServicePostsQuery({});
     const { data: categories } = useGetCategoriesQuery();
 
     const [createServicePost] = useCreateServicePostMutation();
@@ -264,7 +264,11 @@ export default function WorkPage() {
                                     <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
                                         <FaBusinessTime color="purple" />
                                         <Typography variant="body1">
-                                            {format(new Date(work?.work_due_date ?? work?.service?.work_due_date), "MMM dd, yyyy")}
+                                            {(work?.work_due_date || work?.service?.work_due_date) ? (
+                                                format(new Date(work?.work_due_date ?? work?.service?.work_due_date), "MM dd, yyyy")
+                                            ) : (
+                                                "N/A"
+                                            )}
                                         </Typography>
                                     </Box>
 
