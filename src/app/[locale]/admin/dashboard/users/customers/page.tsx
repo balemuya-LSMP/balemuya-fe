@@ -28,8 +28,9 @@ export default function Users() {
     userlist?.filter((userData: any) => {
       const user = userData.user;
       const matchesSearch =
-        user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.middle_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.org_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
