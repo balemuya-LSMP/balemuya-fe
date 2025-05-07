@@ -46,6 +46,7 @@ export default function JobsPage() {
   const { data: searchResults } = useSearchServicesQuery(searchQuery);
   const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
 
+
   const handleFilter = async (updatedFilter: string[]) => {
     const newData = {
       categories: updatedFilter,
