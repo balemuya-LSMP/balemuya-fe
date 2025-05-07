@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
+  paymentInitiate,
   PaymentResponse,
   PaymentStatusResponse,
   SubscriptionPayload,
@@ -226,6 +227,13 @@ export const userProfileApi = createApi({
         body: data,
       }),
     }),
+    paymentService: builder.mutation<PaymentResponse, paymentInitiate>({
+      query: (subscription) => ({
+        url: `/customer/services/payment/transfer/initiate/`,
+        method: "POST",
+        body: subscription,
+      }),
+    }),
   }),
 });
 
@@ -254,4 +262,5 @@ export const {
   useAddCategoriesMutation,
   useRemoveCategoriesMutation,
   useGiveFeedbackMutation,
+  usePaymentServiceMutation,
 } = userProfileApi;
