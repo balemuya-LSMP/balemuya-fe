@@ -13,6 +13,7 @@ import {
     useCancelBookingMutation,
     useCompleteBookingMutation,
 } from "@/store/api/services.api";
+import { usePaymentServiceMutation } from "@/store/api/userProfile.api";
 import { useState, useEffect } from "react";
 import { IoIosTime } from "react-icons/io";
 import { GrStatusGood } from "react-icons/gr";
@@ -31,7 +32,7 @@ export default function WorkPage() {
     const { position, getPosition } = useGeolocation();
     // const { data: workPosts } = useGetServicePostsQuery({});
     const { data: categories } = useGetCategoriesQuery();
-
+    const [paymentService] = usePaymentServiceMutation();
     const [createServicePost] = useCreateServicePostMutation();
     const [reviewService] = useReviewServiceMutation();
     const [giveComplaint] = useGiveComplaintMutation();
@@ -62,7 +63,8 @@ export default function WorkPage() {
     } = useGetCustomerServicesQuery(activeTab);
 
     const customerServices = customerServicesData?.data;
-
+  
+    console.log("customerServices", customerServices);
 
     useEffect(() => {
         if (showPostModal && !position && !showLocationDialog && !locationDenied) {
@@ -78,6 +80,11 @@ export default function WorkPage() {
         }
         setShowLocationDialog(false);
     };
+
+    const handlePayment = async (id: string) => { 
+
+
+    }
 
     const handleCreatePost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -339,6 +346,16 @@ export default function WorkPage() {
                                                 </Tooltip>
 
                                             </Box>
+                                        )}
+                                        {work?.status === "completed" && (
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() => handlePayment(work.id)}
+                                                sx={{ flex: 1, bgcolor: 'green.600', '&:hover': { bgcolor: 'green.700' } }}
+                                            >
+                                                Pay Now
+                                            </Button>
                                         )}
                                     </CardActions>
                                 </Card>
