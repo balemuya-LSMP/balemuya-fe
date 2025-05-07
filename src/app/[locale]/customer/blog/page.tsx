@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
@@ -39,6 +40,8 @@ import {
   Dialog,
   DialogTitle
 } from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   CalendarMonth as CalendarIcon,
   Person as PersonIcon,
@@ -49,11 +52,11 @@ import {
   ExpandMore as ExpandMoreIcon,
   Add as PlusIcon
 } from '@mui/icons-material';
-import { format } from 'date-fns';
 import { useRouter } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import Footer from '../../(features)/_components/footer';
 import Header from '../_components/header';
+import { formatDate } from '@/shared/formatDate';
 
 const MotionCard = motion(Card);
 
@@ -86,6 +89,7 @@ export default function BlogPage() {
     }
   };
 
+
   const handleLike = async (postId: string) => {
     try {
       await likePost(postId).unwrap();
@@ -99,10 +103,6 @@ export default function BlogPage() {
       ...prev,
       [postId]: !prev[postId]
     }));
-  };
-
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'MMM dd, yyyy');
   };
 
   if (error) {
@@ -128,88 +128,6 @@ export default function BlogPage() {
       }} />
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
-
-
-        {/* Featured Post */}
-        {!isLoading && posts?.length > 0 && (
-          <MotionCard
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            sx={{
-              mb: 6,
-              borderRadius: 3,
-              overflow: 'hidden',
-              boxShadow: theme.shadows[10],
-              backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7))',
-              color: 'common.white',
-              position: 'relative',
-              minHeight: 400,
-              display: 'flex',
-              alignItems: 'flex-end',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-          >
-            <Box sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%)',
-              zIndex: 1
-            }} />
-
-            <Box sx={{
-              position: 'relative',
-              zIndex: 2,
-              p: 5,
-              width: '100%'
-            }}>
-              <Chip
-                label="Featured"
-                color="primary"
-                size="small"
-                sx={{
-                  mb: 2,
-                  fontWeight: 600,
-                  backdropFilter: 'blur(4px)',
-                  backgroundColor: alpha(theme.palette.primary.main, 0.2)
-                }}
-              />
-              <Typography variant="h3" sx={{
-                fontWeight: 700,
-                mb: 2,
-                lineHeight: 1.2
-              }}>
-                {posts[0].title}
-              </Typography>
-              <Typography variant="body1" sx={{
-                mb: 3,
-                fontSize: '1.1rem',
-                opacity: 0.9,
-                maxWidth: '80%'
-              }}>
-                {posts[0].content.substring(0, 150)}...
-              </Typography>
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => router.push(`/blog/${posts[0].id}`)}
-                sx={{
-                  fontWeight: 600,
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: 2,
-                  textTransform: 'none'
-                }}
-              >
-                Read Featured Story
-              </Button>
-            </Box>
-          </MotionCard>
-        )}
 
         {/* Main Content */}
         <Box sx={{ mb: 4 }}>
@@ -278,24 +196,145 @@ export default function BlogPage() {
                     <Box sx={{
                       height: 200,
                       backgroundColor: alpha(theme.palette.primary.light, 0.2),
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'text.secondary'
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '&:hover .scroll-arrows': {
+                        opacity: 1
+                      }
                     }}>
                       {post.medias?.length > 0 ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={post.medias[0].url}
-                          alt={post.title}
-                          style={{
+                        <>
+                          {/* Media Slider */}
+                          <Box sx={{
+                            display: 'flex',
+                            height: '100%',
+                            overflowX: 'auto',
+                            scrollSnapType: 'x mandatory',
+                            '&::-webkit-scrollbar': {
+                              height: 6,
+                            },
+                            '&::-webkit-scrollbar-thumb': {
+                              backgroundColor: theme.palette.primary.main,
+                              borderRadius: 3,
+                            },
+                          }}>
+                            {post.medias.map((media: any) => (
+                              <Box
+                                key={media.id}
+                                sx={{
+                                  flex: '0 0 100%',
+                                  scrollSnapAlign: 'start',
+                                  position: 'relative'
+                                }}
+                              >
+                                <img
+                                  src={media.media_file_url}
+                                  alt={`${post.title} - Media`}
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover'
+                                  }}
+                                />
+                              </Box>
+                            ))}
+                          </Box>
+
+                          {/* Navigation Arrows (only show if multiple media) */}
+                          {post.medias.length > 1 && (
+                            <>
+                              <IconButton
+                                className="scroll-arrows"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.currentTarget.parentElement?.querySelector('div[style*="display: flex"]')?.scrollBy({
+                                    left: -200,
+                                    behavior: 'smooth'
+                                  });
+                                }}
+                                sx={{
+                                  position: 'absolute',
+                                  left: 10,
+                                  top: '50%',
+                                  transform: 'translateY(-50%)',
+                                  backgroundColor: alpha(theme.palette.common.black, 0.5),
+                                  color: theme.palette.common.white,
+                                  opacity: 0,
+                                  transition: 'opacity 0.3s ease',
+                                  '&:hover': {
+                                    backgroundColor: alpha(theme.palette.common.black, 0.7)
+                                  }
+                                }}
+                              >
+                                <ChevronLeftIcon />
+                              </IconButton>
+                              <IconButton
+                                className="scroll-arrows"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  e.currentTarget.parentElement?.querySelector('div[style*="display: flex"]')?.scrollBy({
+                                    left: 200,
+                                    behavior: 'smooth'
+                                  });
+                                }}
+                                sx={{
+                                  position: 'absolute',
+                                  right: 10,
+                                  top: '50%',
+                                  transform: 'translateY(-50%)',
+                                  backgroundColor: alpha(theme.palette.common.black, 0.5),
+                                  color: theme.palette.common.white,
+                                  opacity: 0,
+                                  transition: 'opacity 0.3s ease',
+                                  '&:hover': {
+                                    backgroundColor: alpha(theme.palette.common.black, 0.7)
+                                  }
+                                }}
+                              >
+                                <ChevronRightIcon />
+                              </IconButton>
+
+                              {/* Dot Indicators */}
+                              <Box sx={{
+                                position: 'absolute',
+                                bottom: 10,
+                                left: 0,
+                                right: 0,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                gap: 1
+                              }}>
+                                {post.medias.map((_: any, index: any) => (
+                                  <Box
+                                    key={index}
+                                    sx={{
+                                      width: 8,
+                                      height: 8,
+                                      borderRadius: '50%',
+                                      backgroundColor: theme.palette.common.white,
+                                      opacity: 0.7,
+                                      cursor: 'pointer'
+                                    }}
+                                  />
+                                ))}
+                              </Box>
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <Typography
+                          variant="h6"
+                          sx={{
                             width: '100%',
                             height: '100%',
-                            objectFit: 'cover'
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'text.secondary'
                           }}
-                        />
-                      ) : (
-                        <Typography variant="h6">No Image</Typography>
+                        >
+                          No Image
+                        </Typography>
                       )}
                     </Box>
 
@@ -495,22 +534,22 @@ function PostComments({ postId }: { postId: string }) {
         <ListItem key={comment.id} alignItems="flex-start" sx={{ px: 0 }}>
           <ListItemAvatar>
             <Avatar
-              src={comment?.author?.profile_image_url}
-              alt={comment?.author?.email}
+              src={comment?.user?.profile_image_url}
+              alt={comment?.user?.full_name}
             >
-              {comment?.author?.email.charAt(0).toUpperCase()}
+              {comment?.user?.full_name?.charAt(0).toUpperCase()}
             </Avatar>
           </ListItemAvatar>
           <ListItemText
             primary={
-              <React.Fragment>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography
                   component="span"
                   variant="subtitle2"
                   color="text.primary"
                   sx={{ fontWeight: 600 }}
                 >
-                  {comment?.author?.email}
+                  {comment?.user?.full_name}
                 </Typography>
                 <Typography
                   component="span"
@@ -518,9 +557,9 @@ function PostComments({ postId }: { postId: string }) {
                   color="text.secondary"
                   sx={{ ml: 1 }}
                 >
-                  {format(new Date(comment.created_at), 'MMM d, yyyy')}
+                  {formatDate(comment.created_at)}
                 </Typography>
-              </React.Fragment>
+              </Box>
             }
             secondary={
               <Typography
