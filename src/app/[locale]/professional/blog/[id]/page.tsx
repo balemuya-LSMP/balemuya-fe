@@ -30,6 +30,8 @@ import {
   ListItemAvatar,
   ListItemText
 } from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   CalendarMonth as CalendarIcon,
   ThumbUp as LikeIcon,
@@ -38,7 +40,7 @@ import {
   ArrowBack as BackIcon,
   Send as SendIcon
 } from '@mui/icons-material';
-import { format } from 'date-fns';
+import { formatDate } from '@/shared/formatDate';
 
 export default function BlogPostPage() {
   const { id } = useParams();
@@ -46,22 +48,13 @@ export default function BlogPostPage() {
   const [likePost] = useLikePostMutation();
   const [addComment] = useAddCommentMutation();
   const [commentText, setCommentText] = useState<{ [postId: string]: string }>({});
-  
+
 
   const { data: comments } = useGetCommentsQuery(id as string);
 
   const router = useRouter();
   const theme = useTheme();
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
-      return 'Invalid date'; 
-    }
-    const formattedDate = format(date, 'MMM d, yyyy');
-    const formattedTime = format(date, 'hh:mm aa');
-    return `${formattedDate} at ${formattedTime}`;
-  };
 
   const handleLike = async (postId: string) => {
     try {
@@ -186,23 +179,161 @@ export default function BlogPostPage() {
 
           {/* Featured Image */}
           {post.medias?.length > 0 && (
-            <Box sx={{
-              mb: 5,
-              borderRadius: 3,
-              overflow: 'hidden',
-              boxShadow: theme.shadows[2],
-              '& img': {
-                width: '100%',
-                height: 'auto',
-                display: 'block'
-              }
-            }}>
-              <img
-                src={post.medias[0].url}
-                alt={post.title}
-              />
-            </Box>
-          )}
+  <Box
+    sx={{
+      mb: 5,
+      borderRadius: 3,
+      overflow: 'hidden',
+      position: 'relative',
+      height: '300px',
+      '&:hover .media-arrow': {
+        opacity: 1,
+      },
+    }}
+  >
+    {/* Media Slider */}
+    <Box
+      className="media-container"
+      sx={{
+        display: 'flex',
+        overflowX: 'scroll',
+        scrollSnapType: 'x mandatory',
+        scrollBehavior: 'smooth',
+        height: '100%',
+        // Hide scrollbar
+        scrollbarWidth: 'none', // Firefox
+        '&::-webkit-scrollbar': {
+          display: 'none', // Chrome/Safari
+        },
+      }}
+    >
+      {post.medias.map((media: any) => (
+        <Box
+          key={media.id}
+          sx={{
+            flex: '0 0 100%',
+            scrollSnapAlign: 'start',
+            position: 'relative',
+            minWidth: '100%',
+            height: '100%',
+          }}
+        >
+          <img
+            src={media.media_file_url}
+            alt={`${post.title} - Media`}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover', // Ensures proper fill without distortion
+              display: 'block',
+            }}
+          />
+        </Box>
+      ))}
+    </Box>
+
+    {/* Navigation Arrows */}
+    {post.medias.length > 1 && (
+      <>
+        <IconButton
+          className="media-arrow"
+          onClick={() => {
+            const container = document.querySelector('.media-container');
+            if (container) {
+              container.scrollBy({
+                left: -container.clientWidth,
+                behavior: 'smooth',
+              });
+            }
+          }}
+          sx={{
+            position: 'absolute',
+            left: 16,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            backgroundColor: alpha(theme.palette.common.black, 0.5),
+            color: theme.palette.common.white,
+            opacity: 0,
+            transition: 'opacity 0.3s ease',
+            '&:hover': {
+              backgroundColor: alpha(theme.palette.common.black, 0.7),
+            },
+          }}
+        >
+          <ChevronLeftIcon />
+        </IconButton>
+
+        <IconButton
+          className="media-arrow"
+          onClick={() => {
+            const container = document.querySelector('.media-container');
+            if (container) {
+              container.scrollBy({
+                left: container.clientWidth,
+                behavior: 'smooth',
+              });
+            }
+          }}
+          sx={{
+            position: 'absolute',
+            right: 16,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            backgroundColor: alpha(theme.palette.common.black, 0.5),
+            color: theme.palette.common.white,
+            opacity: 0,
+            transition: 'opacity 0.3s ease',
+            '&:hover': {
+              backgroundColor: alpha(theme.palette.common.black, 0.7),
+            },
+          }}
+        >
+          <ChevronRightIcon />
+        </IconButton>
+
+        {/* Dot Indicators */}
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 16,
+            left: 0,
+            right: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 1,
+          }}
+        >
+          {post.medias.map((_: any, index: number) => (
+            <Box
+              key={index}
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                backgroundColor: theme.palette.common.white,
+                opacity: 0.7,
+                cursor: 'pointer',
+                '&:hover': {
+                  opacity: 1,
+                },
+              }}
+              onClick={() => {
+                const container = document.querySelector('.media-container');
+                if (container) {
+                  container.scrollTo({
+                    left: container.clientWidth * index,
+                    behavior: 'smooth',
+                  });
+                }
+              }}
+            />
+          ))}
+        </Box>
+      </>
+    )}
+  </Box>
+)}
+
 
           {/* Content */}
           <Paper elevation={0} sx={{
@@ -292,16 +423,16 @@ export default function BlogPostPage() {
               multiline
               rows={4}
               placeholder="Share your thoughts..."
-                variant="outlined"
-                value={commentText[post.id] || ''}
+              variant="outlined"
+              value={commentText[post.id] || ''}
               onChange={(e) => handleCommentChange(post.id, e.target.value)}
-                
+
               sx={{ mb: 2 }}
             />
             <Button
               variant="contained"
               endIcon={<SendIcon />}
-                sx={{ float: 'right' }}
+              sx={{ float: 'right' }}
               onClick={() => handleAddComment(post.id)}
             >
               Post Comment
@@ -313,18 +444,23 @@ export default function BlogPostPage() {
             {comments?.data?.map((comment: any) => (
               <ListItem key={comment.id} alignItems="flex-start" sx={{ px: 0 }}>
                 <ListItemAvatar>
-                  <Avatar alt={comment.author} />
+                  <Avatar
+                    src={comment?.user?.profile_image_url}
+                    alt={comment?.user?.full_name}
+                  >
+                    {comment?.user?.full_name?.charAt(0).toUpperCase()}
+                  </Avatar>
                 </ListItemAvatar>
                 <ListItemText
                   primary={
-                    <>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                       <Typography fontWeight="600" component="span">
-                        {comment.author}
+                        {comment?.user?.full_name}
                       </Typography>
                       <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
                         {formatDate(comment.created_at)}
                       </Typography>
-                    </>
+                    </Box>
                   }
                   secondary={
                     <Typography
