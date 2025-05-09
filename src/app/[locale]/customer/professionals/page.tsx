@@ -34,8 +34,8 @@ export default function Professionals() {
   // Filter professionals based on search input
   const filteredProfessionals = professionalsInfo?.filter(
     (professional: any) =>
-      professional.name.toLowerCase().includes(search.toLowerCase()) ||
-      professional.title.toLowerCase().includes(search.toLowerCase())
+      professional?.name?.toLowerCase().includes(search.toLowerCase()) ||
+      professional?.title?.toLowerCase().includes(search.toLowerCase())
   );
 
 
