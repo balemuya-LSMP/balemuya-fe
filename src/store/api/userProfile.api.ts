@@ -4,6 +4,7 @@ import {
   paymentInitiate,
   PaymentResponse,
   PaymentStatusResponse,
+  PaymentVerifyResponse,
   SubscriptionPayload,
   UserResponse,
 } from "../types";
@@ -50,7 +51,7 @@ export const userProfileApi = createApi({
     }),
     updateAddresses: builder.mutation<
       UserResponse,
-      {  address: Record<string, any> }
+      { address: Record<string, any> }
     >({
       query: ({ address }) => ({
         url: `/profile/address/`,
@@ -171,7 +172,7 @@ export const userProfileApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["UserProfile"],
-    }),    
+    }),
     addCategories: builder.mutation<any, { data: any }>({
       query: ({ data }) => ({
         url: `/professional/profile/categories/`,
@@ -188,7 +189,7 @@ export const userProfileApi = createApi({
       }),
       invalidatesTags: ["UserProfile"],
     }),
-   
+
     updateProfessionalProfile: builder.mutation<
       UserResponse,
       { updated: Record<string, any> }
@@ -234,6 +235,13 @@ export const userProfileApi = createApi({
         body: subscription,
       }),
     }),
+    verifyPayment: builder.mutation<PaymentVerifyResponse, string>({
+      query: (transactionId) => ({
+        url: `customer/services/payment/transfer/verify/`,
+        method: "POST",
+        body: { tx_ref: transactionId },
+      }),
+    }),
   }),
 });
 
@@ -263,4 +271,5 @@ export const {
   useRemoveCategoriesMutation,
   useGiveFeedbackMutation,
   usePaymentServiceMutation,
+  useVerifyPaymentMutation
 } = userProfileApi;
