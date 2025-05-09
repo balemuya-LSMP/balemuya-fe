@@ -92,6 +92,9 @@ export interface PaymentStatusResponse {
   currency: string;
 }
 
+export interface PaymentVerifyResponse {
+  detail: string;
+}
 export interface WorkPostResponse {
   id: string;
   customer: string;
@@ -118,9 +121,8 @@ export interface WorkPost {
 }
 
 export interface paymentInitiate {
-  professional: string,
-  amount: number,
-  booking: string,
-  return_url: string
+  professional: string;
+  amount: number;
+  booking: string;
+  return_url: string;
 }
-
