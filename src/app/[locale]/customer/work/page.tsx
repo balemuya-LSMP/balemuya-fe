@@ -22,6 +22,7 @@ import { FaLocationDot, FaBusinessTime } from "react-icons/fa6";
 import { MdAdd } from "react-icons/md";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useRouter } from "@/i18n/navigation";
+import { useParams } from "next/navigation";
 import { format, set } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
 import Footer from "../../(features)/_components/footer";
@@ -29,6 +30,8 @@ import Loader from "../../(features)/_components/loader";
 import { Box, Tab, Tabs, Button, Card, CardActions, Divider, IconButton, Paper, Typography, Tooltip } from "@mui/material";
 
 export default function WorkPage() {
+      const params = useParams();
+      const locale = params.locale;
     const { position, getPosition } = useGeolocation();
     // const { data: workPosts } = useGetServicePostsQuery({});
     const { data: categories } = useGetCategoriesQuery();
@@ -63,7 +66,7 @@ export default function WorkPage() {
     } = useGetCustomerServicesQuery(activeTab);
 
     const customerServices = customerServicesData?.data;
-  
+
     console.log("customerServices", customerServices);
 
     useEffect(() => {
@@ -81,10 +84,27 @@ export default function WorkPage() {
         setShowLocationDialog(false);
     };
 
-    const handlePayment = async (id: string) => { 
 
 
-    }
+       const handlePayment = async (bookingId: string, professionalId: string) => {
+        try {
+            const response = await paymentService({
+                professional: professionalId,
+                amount: 200, 
+                booking: bookingId,
+                return_url: `${window.location.origin}/${locale}/customer/check` // Adjust this URL as needed
+            }).unwrap();
+    
+            if (response?.data?.payment_url) {
+                window.location.href = response.data.payment_url;
+            } else {
+                throw new Error("Payment URL not found in response");
+            }
+        } catch (error) {
+            console.error("Payment failed:", error);
+            toast.error("Payment failed. Please try again.");
+        }
+    };
 
     const handleCreatePost = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -351,7 +371,7 @@ export default function WorkPage() {
                                             <Button
                                                 variant="contained"
                                                 color="primary"
-                                                onClick={() => handlePayment(work.id)}
+                                                onClick={() => handlePayment(work.id, work.professional.professional_id)}
                                                 sx={{ flex: 1, bgcolor: 'green.600', '&:hover': { bgcolor: 'green.700' } }}
                                             >
                                                 Pay Now
