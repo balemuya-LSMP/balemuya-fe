@@ -7,11 +7,14 @@ import {
   useAddCertificatesMutation,
   useAddEducationsMutation,
   useAddPortifoliosMutation,
+  useAddProfessionalBankAccountMutation,
   useAddSkillsMutation,
+  useFetchProfessionalBankListsQuery,
   useUpdateAddressesMutation,
   useUpdateCertificatesMutation,
   useUpdateEducationsMutation,
   useUpdatePortifoliosMutation,
+  useUpdateProfessionalBankAccountMutation,
   useUpdateProfessionalProfileMutation,
   useUpdateProfileMutation,
   useUserProfileQuery,
@@ -707,6 +710,111 @@ export function PortfolioModal({ isOpen, onClose, data, mode }: ModalProps) {
             <button
               type="submit"
               onClick={(e) => handleSubmit(e)}
+              className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Submit
+            </button>
+            <button
+              onClick={onClose}
+              className="w-1/4 mt-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export function BankModal({ isOpen, onClose, data, mode }: ModalProps) {
+  const [accountName, setAccountName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [bankId, setBankId] = useState("");
+  const [addBank] = useAddProfessionalBankAccountMutation();
+  const [updateBank] = useUpdateProfessionalBankAccountMutation();
+  const { data: bankList } = useFetchProfessionalBankListsQuery();
+  useEffect(() => {
+    if (isOpen) {
+      if (mode === "edit" && data) {
+        setBankId(data.bank || "");
+        setAccountNumber(data.account_number || "");
+        setAccountName(data.account_name || "");
+      } else if (mode === "add") {
+        setBankId("");
+        setAccountNumber("");
+        setAccountName("");
+      }
+    }
+  }, [mode, data, isOpen]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const bankData = {
+      account_number: accountNumber,
+      bank: bankId,
+      account_name: accountName,
+    };
+
+    try {
+      if (mode === "add") {
+        await addBank(bankData).unwrap();
+
+      } else if (mode === "edit" && data?.id) {
+        await updateBank(bankData).unwrap();
+      }
+      onClose();
+    } catch (error) {
+      console.error("Bank submission failed:", error);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <h1 className="text-2xl font-semibold mb-4">Bank Account Information</h1>
+        <form>
+          <label className="block mb-2">
+            Account Name:
+            <input
+              type="text"
+              placeholder="Enter bank name"
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <label className="block mb-2">
+            Bank:
+            <select
+              value={bankId}
+              onChange={(e) => setBankId(e.target.value)}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+              required
+            >
+              <option value="" disabled hidden>Select a bank</option>
+              {bankList?.map((bank: any) => (
+                <option key={bank.id} value={bank.id}>
+                  {bank.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block mb-2">
+            Account Number:
+            <input
+              type="text"
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              placeholder="Enter account number"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+            />
+          </label>
+          <div className="flex justify-end gap-4">
+            <button
+              type="submit"
+              onClick={handleSubmit}
               className="w-1/4 mt-4 py-2 bg-blue-600 text-white rounded-md"
             >
               Submit
