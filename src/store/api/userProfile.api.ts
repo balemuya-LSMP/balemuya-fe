@@ -21,7 +21,7 @@ export const userProfileApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["UserProfile"],
+  tagTypes: ["UserProfile", "Account"],
   endpoints: (builder) => ({
     userProfile: builder.query({
       query: () => "/profile/",
@@ -242,6 +242,47 @@ export const userProfileApi = createApi({
         body: { tx_ref: transactionId },
       }),
     }),
+    withdrawFromPlatform: builder.mutation<any, { amount: number }>({
+      query: ({ amount }) => ({
+        url: `/professional/services/payment/withdraw/`,
+        method: "POST",
+        body: { amount },
+      }),
+      invalidatesTags: ["UserProfile"],
+    }),
+
+    fetchProfessionalBankLists: builder.query<any, void>({
+      query: () => `/professional/bank-lists/`,
+    }),
+
+    fetchProfessionalBankAccount: builder.query<any, void>({
+      query: () => `/professional/bank-account/`,
+      providesTags: ["Account"],
+    }),
+
+    addProfessionalBankAccount: builder.mutation<
+      any,
+      { account_name: string; account_number: string; bank: string }
+    >({
+      query: (data) => ({
+        url: `/professional/bank-account/`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Account"],
+    }),
+
+    updateProfessionalBankAccount: builder.mutation<
+      any,
+      { account_name: string; account_number: string; bank: string }
+    >({
+      query: (data) => ({
+        url: `/professional/bank-account/`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Account"],
+    }),
   }),
 });
 
@@ -271,5 +312,10 @@ export const {
   useRemoveCategoriesMutation,
   useGiveFeedbackMutation,
   usePaymentServiceMutation,
-  useVerifyPaymentMutation
+  useVerifyPaymentMutation,
+  useWithdrawFromPlatformMutation,
+  useFetchProfessionalBankListsQuery,
+  useFetchProfessionalBankAccountQuery,
+  useAddProfessionalBankAccountMutation,
+  useUpdateProfessionalBankAccountMutation,
 } = userProfileApi;
