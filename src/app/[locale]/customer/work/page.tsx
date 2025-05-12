@@ -30,8 +30,8 @@ import Loader from "../../(features)/_components/loader";
 import { Box, Tab, Tabs, Button, Card, CardActions, Divider, IconButton, Paper, Typography, Tooltip } from "@mui/material";
 
 export default function WorkPage() {
-      const params = useParams();
-      const locale = params.locale;
+    const params = useParams();
+    const locale = params.locale;
     const { position, getPosition } = useGeolocation();
     // const { data: workPosts } = useGetServicePostsQuery({});
     const { data: categories } = useGetCategoriesQuery();
@@ -41,6 +41,12 @@ export default function WorkPage() {
     const [giveComplaint] = useGiveComplaintMutation();
     const [cancelBooking] = useCancelBookingMutation();
     const [completeBooking] = useCompleteBookingMutation();
+
+    const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+    const [paymentAmount, setPaymentAmount] = useState('');
+    const [currentBookingId, setCurrentBookingId] = useState('');
+    const [currentProfessionalId, setCurrentProfessionalId] = useState('');
+
 
     const [showPostModal, setShowPostModal] = useState(false);
     const [showLocationDialog, setShowLocationDialog] = useState(false);
@@ -86,15 +92,25 @@ export default function WorkPage() {
 
 
 
-       const handlePayment = async (bookingId: string, professionalId: string) => {
+    const handlePaymentClick = (bookingId: string, professionalId: string) => {
+        setCurrentBookingId(bookingId);
+        setCurrentProfessionalId(professionalId);
+        setPaymentModalOpen(true);
+    };
+    const handlePayment = async () => {
         try {
+            if (!paymentAmount || isNaN(Number(paymentAmount))) {
+                toast.error("Please enter a valid amount");
+                return;
+            }
+
             const response = await paymentService({
-                professional: professionalId,
-                amount: 200, 
-                booking: bookingId,
-                return_url: `${window.location.origin}/${locale}/customer/check` // Adjust this URL as needed
+                professional: currentProfessionalId,
+                amount: Number(paymentAmount),
+                booking: currentBookingId,
+                return_url: `${window.location.origin}/${locale}/customer/check`
             }).unwrap();
-    
+
             if (response?.data?.payment_url) {
                 window.location.href = response.data.payment_url;
             } else {
@@ -103,6 +119,9 @@ export default function WorkPage() {
         } catch (error) {
             console.error("Payment failed:", error);
             toast.error("Payment failed. Please try again.");
+        } finally {
+            setPaymentModalOpen(false);
+            setPaymentAmount('');
         }
     };
 
@@ -371,7 +390,7 @@ export default function WorkPage() {
                                             <Button
                                                 variant="contained"
                                                 color="primary"
-                                                onClick={() => handlePayment(work.id, work.professional.professional_id)}
+                                                onClick={() => handlePaymentClick(work.id, work.professional.professional_id)}
                                                 sx={{ flex: 1, bgcolor: 'green.600', '&:hover': { bgcolor: 'green.700' } }}
                                             >
                                                 Pay Now
@@ -496,6 +515,59 @@ export default function WorkPage() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {paymentModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-96 relative">
+                        <button
+                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
+                            onClick={() => {
+                                setPaymentModalOpen(false);
+                                setPaymentAmount('');
+                            }}
+                        >
+                            &times;
+                        </button>
+
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                            Enter Amount
+                        </h3>
+
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-medium mb-2">
+                                Amount (Birr)
+                            </label>
+                            <input
+                                type="number"
+                                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 transition-all"
+                                placeholder="Enter amount"
+                                value={paymentAmount}
+                                onChange={(e) => setPaymentAmount(e.target.value)}
+                                min="1"
+                                step="0.01"
+                            />
+                        </div>
+
+                        <div className="flex justify-end space-x-3 mt-5">
+                            <button
+                                className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-all"
+                                onClick={handlePayment}
+                            >
+                                Pay Now
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow-md hover:bg-gray-400 transition-all"
+                                onClick={() => {
+                                    setPaymentModalOpen(false);
+                                    setPaymentAmount('');
+                                }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
