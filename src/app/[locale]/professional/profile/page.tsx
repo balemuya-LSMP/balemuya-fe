@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useDeleteCertificatesMutation, useDeleteEducationsMutation, useDeletePortifoliosMutation, useRemoveAddressesMutation, useRequestVerficationMutation, useUserProfileQuery, useAddCategoriesMutation, useRemoveCategoriesMutation } from "@/store/api/userProfile.api";
+import { useDeleteCertificatesMutation, useDeleteEducationsMutation, useDeletePortifoliosMutation, useRemoveAddressesMutation, useRequestVerficationMutation, useUserProfileQuery, useAddCategoriesMutation, useRemoveCategoriesMutation, useFetchProfessionalBankAccountQuery, useWithdrawFromPlatformMutation } from "@/store/api/userProfile.api";
 import { useGetCategoriesQuery } from "@/store/api/services.api";
 import { use, useState } from "react";
 import {
@@ -13,12 +13,14 @@ import {
   FaExclamationTriangle,
   FaMailBulk,
   FaPhone,
+  FaTimesCircle,
   FaTrash,
   FaUser,
 } from "react-icons/fa";
 import { FiCheckCircle, FiEdit, FiTrash } from "react-icons/fi";
-import { MdAdd, MdDelete, MdEdit, MdMail } from "react-icons/md";
-import { Box, Paper } from "@mui/material";
+import { MdAdd, MdClose, MdDelete, MdEdit, MdMail } from "react-icons/md";
+import { CiBank } from "react-icons/ci";
+import { Box, Button, Paper } from "@mui/material";
 import {
   UserModal,
   EducationModal,
@@ -27,13 +29,18 @@ import {
   GovernmentIdModal,
   CertificateModal,
   AddressModal,
+  BankModal,
 } from "../_components/modals";
 import { toast, ToastContainer } from "react-toastify";
 import Loader from "../../(features)/_components/loader";
+import { set } from "date-fns";
 
 export default function Profile() {
   const { data: userPofile, isLoading, error } = useUserProfileQuery({});
   const { data: categoriesData } = useGetCategoriesQuery();
+  const { data: bankAccount } = useFetchProfessionalBankAccountQuery();
+  const [withdrawFromPlatform] = useWithdrawFromPlatformMutation();
+
   const [addCategory] = useAddCategoriesMutation();
   const [removeCategory] = useRemoveCategoriesMutation();
   const [requestVerification] = useRequestVerficationMutation();
@@ -49,13 +56,16 @@ export default function Profile() {
   const [isCertificateModalOpen, setCertificateModalOpen] = useState(false);
   const [isGovernmentIdModalOpen, setGovernmentIdModalOpen] = useState(false);
   const [isPortfolioModalOpen, setPortfolioModalOpen] = useState(false);
+  const [isBankModalOpen, setBankModalOpen] = useState(false);
   const [selectdEducation, setSelectedEducation] = useState<any>(null);
   const [selctedPortfolio, setSelectedPortfolio] = useState<any>(null);
   const [selectedAddress, setSelectedAddress] = useState<any>(null);
+  const [selectedBank, setSelectedBank] = useState<any>(null);
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   const [isCategoryModalOpen, setCategoryModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
-
+  const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState<string>('');
   if (isLoading) {
     return <Loader />;
   }
@@ -67,8 +77,6 @@ export default function Profile() {
       </p>
     );
   }
-
-  console.log(userPofile);
 
   const {
     user: {
@@ -93,17 +101,20 @@ export default function Profile() {
       kebele_id_back_image_url,
       skills = [],
       rating,
+      balance,
       num_of_request,
       is_verified,
-      categories =[],
+      categories = [],
       educations = [],
       portfolios = [],
       certificates = []
     } = {}
   } = userPofile || {};
 
-  console.log(userPofile);
-  
+
+  console.log(userPofile)
+
+
   const handeSubmitRequestVerification = async () => {
     try {
       await requestVerification();
@@ -192,17 +203,31 @@ export default function Profile() {
     setCertificateModalOpen(true);
   }
 
+  const handleWithdraw = async () => { 
+    if (withdrawAmount) {
+      try {
+        await withdrawFromPlatform({ amount: parseFloat(withdrawAmount) }).unwrap();
+        toast.success("Withdrawal successful");
+        setWithdrawAmount('');
+        setWithdrawModalOpen(false);
+      } catch (error) {
+        toast.error("Withdrawal failed");
+      }
+    } else {
+      toast.error("Please enter an amount to withdraw");
+    }
+  }
   return (
     <Box
-    sx={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "100vh",
-      backgroundColor: "background.default",
-      padding: 4,
-    }}>
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        backgroundColor: "background.default",
+        padding: 4,
+      }}>
       <Paper elevation={3} sx={{ padding: 4, maxWidth: '900px', width: '100%' }}>
         {/* Profile Details */}
         <Box className="flex-1 text-center md:text-left">
@@ -222,7 +247,7 @@ export default function Profile() {
                 />
               </div>
               <h1 className="text-2xl font-bold text-gray-800 mt-2 md:ml-10">
-                {entity_type === "organization"? org_name : `${first_name} ${last_name}`}
+                {entity_type === "organization" ? org_name : `${first_name} ${last_name}`}
               </h1>
               <p className="text-gray-600 text-sm mt-2 md:ml-10">{bio}</p>
               <div className="flex flex-col justify-start items-center gap-3 p-4 rounded-lg shadow-md bg-white">
@@ -278,6 +303,145 @@ export default function Profile() {
               )
             }
           </div>
+          <hr className="my-6 border-t border-gray-300" />
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Bank Account</h2>
+              <button
+                onClick={() => {
+                  setSelectedBank(bankAccount ?? null);
+                  setBankModalOpen(true);
+                }}
+                className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
+              >
+                {bankAccount ? <MdEdit /> : <MdAdd />}
+              </button>
+            </div>
+
+            {bankAccount ? (
+              <div className="space-y-4">
+                <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
+                      <div>
+                        <span className="block text-sm font-medium text-gray-500">Account Name</span>
+                        <span className="text-lg font-semibold text-gray-800 mt-1">{bankAccount.account_name}</span>
+                      </div>
+                      <div>
+                        <span className="block text-sm font-medium text-gray-500">Account Number</span>
+                        <span className="text-lg font-semibold text-gray-800 mt-1">{bankAccount.account_number}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <span className="block text-sm font-medium text-gray-500">Bank</span>
+                        <span className="text-lg font-semibold text-gray-800 mt-1">{bankAccount.bank_details.name}</span>
+                      </div>
+                      <div>
+                        <span className="block text-sm font-medium text-gray-500">Bank Code</span>
+                        <span className="text-lg font-semibold text-gray-800 mt-1">{bankAccount.bank_details.code}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Separate Balance and Withdraw Section */}
+                <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="block text-sm font-medium text-gray-500">Available Balance</span>
+                      <span className="text-2xl font-bold text-gray-800">
+                        {balance !== null ? `${balance} Birr` : 'Loading...'}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setWithdrawModalOpen(true)}
+                      className="px-6 py-3 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+                    >
+                      Withdraw Funds
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-6 p-8 bg-gray-50 rounded-xl text-center">
+                <div className="text-gray-400 mb-3">
+                  <CiBank className="inline-block text-3xl" />
+                </div>
+                <p className="text-gray-500 font-medium">No bank account found</p>
+                <button
+                  onClick={() => setBankModalOpen(true)}
+                  className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 text-sm font-medium"
+                >
+                  Add Bank Account
+                </button>
+              </div>
+            )}
+
+            {isBankModalOpen && (
+              <BankModal
+                isOpen={isBankModalOpen}
+                onClose={() => setBankModalOpen(false)}
+                mode={bankAccount ? "edit" : "add"}
+                data={bankAccount}
+              />
+            )}
+
+            {/* Withdraw Modal */}
+            {isWithdrawModalOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div className="bg-white rounded-xl p-6 w-full max-w-md">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-semibold text-gray-800">Withdraw Funds</h3>
+                    <button
+                      onClick={() => setWithdrawModalOpen(false)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      <MdClose />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-500">Available Balance</span>
+                        <span className="text-lg font-bold text-gray-800">
+                          {balance !== null ? `${balance} Birr` : '0.00 Birr'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Amount (Birr)</label>
+                      <input
+                        type="number"
+                        value={withdrawAmount}
+                        onChange={(e) => setWithdrawAmount(e.target.value)}
+                        placeholder="Enter amount to withdraw"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        max={balance || undefined}
+                      />
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        onClick={handleWithdraw}
+                        disabled={!withdrawAmount || (balance !== null && parseFloat(withdrawAmount) > balance)}
+                        className={`w-full py-3 px-4 rounded-md text-white font-medium ${!withdrawAmount || (balance !== null && parseFloat(withdrawAmount )> balance)
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-purple-600 hover:bg-purple-700'
+                          } transition-colors duration-200`}
+                      >
+                        Confirm Withdrawal
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Add categories  is drop down select and post */}
           <hr className="my-6 border-t border-gray-300" />
           <div className="mt-6">
