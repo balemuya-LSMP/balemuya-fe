@@ -94,7 +94,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
         color="default"
         elevation={0}
         sx={{
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: "background.paper",
           borderBottom: `1px solid ${theme.palette.divider}`,
           py: 1
         }}
