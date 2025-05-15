@@ -111,10 +111,6 @@ export default function Profile() {
     } = {}
   } = userPofile || {};
 
-
-  console.log(userPofile)
-
-
   const handeSubmitRequestVerification = async () => {
     try {
       await requestVerification();
