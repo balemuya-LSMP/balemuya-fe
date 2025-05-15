@@ -29,8 +29,6 @@ export default function Professionals() {
 
   const professionalsInfo = professionalsData?.professionals || [];
 
-  console.log(professionalsInfo);
-
   // Filter professionals based on search input
   const filteredProfessionals = professionalsInfo?.filter(
     (professional: any) =>
