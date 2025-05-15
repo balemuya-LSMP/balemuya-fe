@@ -62,16 +62,12 @@ export default function Home() {
             Connecting Professionals and Customers in Ethiopia
           </Typography>
           <Stack direction="row" spacing={2} mt={4} justifyContent="center">
-            <Button variant="contained" sx={{ bgcolor: '#6a1b9a' }}>
-              Get Started
-            </Button>
-            <Button variant="outlined" sx={{ bgcolor: '#fff', color: '#444' }}>
-              Learn More
+            <Button variant="contained" sx={{ bgcolor: 'transparent', color: 'white', px: 4 , py: 1.5}}>
+              Browse Professionals
             </Button>
           </Stack>
         </Box>
       </Box>
-
       {/* Features Section */}
       <Container sx={{ py: 8}}>
         <Typography variant="h4" textAlign="center" fontWeight="bold" mb={4}>
