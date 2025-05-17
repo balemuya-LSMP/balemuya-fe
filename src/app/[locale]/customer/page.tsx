@@ -11,6 +11,8 @@ import {
   Paper,
   Avatar,
   Stack,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   FaClipboardList,
@@ -29,6 +31,8 @@ import StarRating from '../(features)/_components/StarRating';
 
 export default function Home() {
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { data: professionalsData } = useGetNearByProfessionalsQuery({});
   const [searchQuery, setSearchQuery] = useState('');
   const { data: searchResults } = useGetNearByProfessionalsQuery(searchQuery);
@@ -37,55 +41,204 @@ export default function Home() {
   const resultToDisplay = searchQuery ? searchResults : professionals;
 
   return (
-    <Box bgcolor="background.paper" fontFamily="sans-serif">
+    <Box sx={{ backgroundColor: 'background.default', fontFamily: 'inherit' }}>
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* Hero Section */}
-      <Box
+        <Box
         sx={{
-          backgroundImage: 'url("/images/hero.jpeg")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          height: { xs: 300, md: 500 },
+          position: 'relative',
+          height: { xs: '60vh', md: '80vh' },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           color: 'white',
           textAlign: 'center',
+          overflow: 'hidden',
         }}
       >
-        <Box maxWidth="sm">
-          <Typography variant="h3" fontWeight="bold">
-            Welcome to Balemuya
-          </Typography>
-          <Typography variant="h6" fontWeight="300" mt={2}>
-            Connecting Professionals and Customers in Ethiopia
-          </Typography>
-          <Stack direction="row" spacing={2} mt={4} justifyContent="center">
-            <Button variant="contained" sx={{ bgcolor: 'transparent', color: 'white', px: 4 , py: 1.5}}>
-              Browse Professionals
-            </Button>
-          </Stack>
-        </Box>
+        {/* Background Image with Overlay */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: 'url("/images/hero.jpeg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            zIndex: 1,
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            }
+          }}
+        />
+        
+        {/* Content */}
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+          <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 2, sm: 0 } }}>
+            <Typography 
+              variant={isMobile ? 'h4' : 'h2'} 
+              fontWeight={700}
+              gutterBottom
+              sx={{ 
+                textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                lineHeight: 1.2,
+                animation: 'fadeIn 1s ease-in'
+              }}
+            >
+              Find Trusted Professionals in Your Area
+            </Typography>
+            <Typography 
+              variant={isMobile ? 'subtitle1' : 'h5'} 
+              sx={{ 
+                mb: 4,
+                textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+                fontWeight: 300,
+                animation: 'fadeIn 1.5s ease-in'
+              }}
+            >
+              Connecting skilled professionals with customers across Ethiopia
+            </Typography>
+            <Stack 
+              direction={{ xs: 'column', sm: 'row' }} 
+              spacing={2} 
+              justifyContent="center"
+              sx={{ animation: 'fadeInUp 1s ease-in' }}
+            >
+              <Button 
+                variant="contained" 
+                color="primary"
+                size="large"
+                sx={{ 
+                  px: 4,
+                  py: 1.5,
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  boxShadow: theme.shadows[4],
+                  '&:hover': {
+                    boxShadow: theme.shadows[8],
+                    transform: 'translateY(-2px)',
+                  },
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                Browse Professionals
+              </Button>
+              <Button 
+                variant="outlined" 
+                color="inherit"
+                size="large"
+                sx={{ 
+                  px: 4,
+                  py: 1.5,
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  borderWidth: 2,
+                  '&:hover': {
+                    borderWidth: 2,
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    transform: 'translateY(-2px)',
+                  },
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                How It Works
+              </Button>
+            </Stack>
+          </Box>
+        </Container>
       </Box>
+
       {/* Features Section */}
-      <Container sx={{ py: 8}}>
-        <Typography variant="h4" textAlign="center" fontWeight="bold" mb={4}>
-          FEATURES
+      <Container maxWidth="lg" sx={{ py: 10 }}>
+        <Typography 
+          variant="h3" 
+          textAlign="center" 
+          fontWeight={700} 
+          mb={2}
+          color="text.primary"
+        >
+          Our Services
+        </Typography>
+        <Typography 
+          variant="subtitle1" 
+          textAlign="center" 
+          color="text.secondary"
+          mb={6}
+          sx={{ maxWidth: 700, mx: 'auto' }}
+        >
+          Discover the benefits of using our platform to find or offer professional services
         </Typography>
         <Grid container spacing={4}>
           {[
-            { icon: <FaMapMarkerAlt />, text: 'Location-Based Search' },
-            { icon: <FiClipboard />, text: 'Service Registration' },
-            { icon: <MdPayment />, text: 'Secure Payments' },
-            { icon: <HiOutlineBriefcase />, text: 'Apply for Work' },
-          ].map(({ icon, text }, idx) => (
+            { 
+              icon: <FaMapMarkerAlt size={32} />, 
+              text: 'Location-Based Search',
+              description: 'Find professionals near you with our advanced geolocation technology'
+            },
+            { 
+              icon: <FiClipboard size={32} />, 
+              text: 'Service Registration',
+              description: 'Easily register your services and expand your customer base'
+            },
+            { 
+              icon: <MdPayment size={32} />, 
+              text: 'Secure Payments',
+              description: 'Safe and reliable payment options for all transactions'
+            },
+            { 
+              icon: <HiOutlineBriefcase size={32} />, 
+              text: 'Apply for Work',
+              description: 'Professionals can apply for available jobs in their field'
+            },
+          ].map(({ icon, text, description }, idx) => (
             <Grid item xs={12} sm={6} md={3} key={idx}>
-              <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
-                <Box fontSize={40} color="#6a1b9a" mb={2}>
+              <Paper 
+                elevation={0} 
+                sx={{ 
+                  p: 4, 
+                  textAlign: 'center',
+                  height: '100%',
+                  borderRadius: 3,
+                  backgroundColor: 'background.paper',
+                  transition: 'transform 0.3s, box-shadow 0.3s',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                    boxShadow: theme.shadows[6],
+                  }
+                }}
+              >
+                <Box 
+                  sx={{ 
+                    width: 80,
+                    height: 80,
+                    mx: 'auto',
+                    mb: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'primary.light',
+                    color: 'primary.main',
+                    borderRadius: '50%',
+                  }}
+                >
                   {icon}
                 </Box>
-                <Typography fontWeight="medium">{text}</Typography>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  {text}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {description}
+                </Typography>
               </Paper>
             </Grid>
           ))}
@@ -93,90 +246,176 @@ export default function Home() {
       </Container>
 
       {/* Professionals Section */}
-      <Container sx={{ py: 8 }}>
-        <Typography variant="h4" textAlign="center" fontWeight="bold" mb={1}>
-          PROFESSIONALS
-        </Typography>
-        <Typography textAlign="center" color="text.secondary" mb={4}>
-          Browse available professionals for various services.
-        </Typography>
+      <Box sx={{ backgroundColor: 'background.paper', py: 10 }}>
+        <Container maxWidth="lg">
+          <Typography variant="h3" textAlign="center" fontWeight={700} mb={2}>
+            Featured Professionals
+          </Typography>
+          <Typography 
+            variant="subtitle1" 
+            textAlign="center" 
+            color="text.secondary" 
+            mb={6}
+            sx={{ maxWidth: 700, mx: 'auto' }}
+          >
+            Browse our top-rated professionals ready to serve you
+          </Typography>
 
-        <Grid container spacing={3}>
-          {resultToDisplay?.map((professional: any) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={professional.id}>
-              <Paper sx={{ p: 3, borderRadius: 2 }}>
-                <Stack direction="row" justifyContent="space-between">
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar src={professional.profile_image} sx={{ width: 60, height: 60 }} />
-                    <Typography fontWeight="bold">{professional.name}</Typography>
+          <Grid container spacing={4}>
+            {resultToDisplay?.map((professional: any) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={professional.id}>
+                <Paper 
+                  sx={{ 
+                    p: 3, 
+                    borderRadius: 3,
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transition: 'transform 0.3s',
+                    '&:hover': {
+                      transform: 'translateY(-5px)',
+                      boxShadow: theme.shadows[4],
+                    }
+                  }}
+                >
+                  <Stack direction="row" justifyContent="space-between">
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Avatar 
+                        src={professional.profile_image} 
+                        sx={{ 
+                          width: 60, 
+                          height: 60,
+                          border: '2px solid',
+                          borderColor: 'primary.main'
+                        }} 
+                      />
+                      <Box>
+                        <Typography fontWeight={600}>{professional.name}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {professional.title}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    <StarRating rating={professional?.rating} />
                   </Stack>
-                  <StarRating rating={professional?.rating} />
-                </Stack>
 
-                <Stack direction="row" spacing={1} alignItems="center" mt={2}>
-                  <FaMapMarkerAlt color="#6a1b9a" />
-                  <Typography>{professional?.distance} Km</Typography>
-                </Stack>
+                  <Stack direction="row" spacing={1} alignItems="center" mt={2}>
+                    <FaMapMarkerAlt color={theme.palette.primary.main} />
+                    <Typography variant="body2">{professional?.distance} Km away</Typography>
+                  </Stack>
 
-                <Typography fontWeight="bold" mt={2}>
-                  {professional.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" mt={1} noWrap>
-                  {professional?.bio}
-                </Typography>
-
-                <Box textAlign="right">
-                  <Button
-                    size="small"
-                    sx={{ mt: 2, color: '#6a1b9a' }}
-                    onClick={() => router.push(`/customer/professionals/${professional.id}`)}
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary" 
+                    mt={2}
+                    sx={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      flexGrow: 1
+                    }}
                   >
-                    Details
-                  </Button>
-                </Box>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
+                    {professional?.bio}
+                  </Typography>
+
+                  <Box textAlign="right" mt={3}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      color="primary"
+                      onClick={() => router.push(`/customer/professionals/${professional.id}`)}
+                      sx={{
+                        fontWeight: 600,
+                        textTransform: 'none',
+                        borderRadius: 2,
+                        px: 3
+                      }}
+                    >
+                      View Profile
+                    </Button>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
 
       {/* How It Works Section */}
-      <Box bgcolor="background.default" py={8}>
-        <Container>
-          <Typography variant="h4" textAlign="center" fontWeight="bold" mb={4}>
-            HOW IT WORKS
+      <Box sx={{ py: 10, backgroundColor: 'background.default' }}>
+        <Container maxWidth="lg">
+          <Typography variant="h3" textAlign="center" fontWeight={700} mb={2}>
+            How It Works
           </Typography>
-          <Grid container alignItems="center" justifyContent="center" spacing={2}>
+          <Typography 
+            variant="subtitle1" 
+            textAlign="center" 
+            color="text.secondary" 
+            mb={6}
+            sx={{ maxWidth: 700, mx: 'auto' }}
+          >
+            Simple steps to get the service you need
+          </Typography>
+          
+          <Grid 
+            container 
+            alignItems="center" 
+            justifyContent="center" 
+            spacing={isMobile ? 4 : 2}
+            sx={{ mt: 4 }}
+          >
             {[
-              { icon: <FaUserPlus />, text: 'Register as a Customer' },
-              { icon: <FaClipboardList />, text: 'Post Work' },
-              { icon: <FaSearch />, text: 'Review Applications' },
-              { icon: <FaHandshake />, text: 'Connect with Professionals' },
-            ].map(({ icon, text }, idx, arr) => (
+              { 
+                icon: <FaUserPlus size={24} />, 
+                text: 'Register', 
+                description: 'Create your account as a customer or professional' 
+              },
+              { 
+                icon: <FaClipboardList size={24} />, 
+                text: 'Post Work', 
+                description: 'Describe the service you need' 
+              },
+              { 
+                icon: <FaSearch size={24} />, 
+                text: 'Review', 
+                description: 'Evaluate professionals and their offers' 
+              },
+              { 
+                icon: <FaHandshake size={24} />, 
+                text: 'Connect', 
+                description: 'Hire the right professional for the job' 
+              },
+            ].map(({ icon, text, description }, idx, arr) => (
               <React.Fragment key={idx}>
-                <Grid item>
-                  <Stack alignItems="center">
+                <Grid item xs={12} sm={6} md={3}>
+                  <Stack alignItems="center" sx={{ px: 2 }}>
                     <Box
-                      width={64}
-                      height={64}
-                      border="4px solid #6a1b9a"
+                      width={72}
+                      height={72}
+                      border={`3px solid ${theme.palette.primary.main}`}
                       borderRadius="50%"
-                      bgcolor="white"
+                      bgcolor="background.paper"
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
+                      color="primary.main"
                       fontSize={28}
+                      mb={2}
                     >
                       {icon}
                     </Box>
-                    <Typography mt={1} textAlign="center">
+                    <Typography variant="h6" fontWeight={600} textAlign="center" gutterBottom>
                       {text}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" textAlign="center">
+                      {description}
                     </Typography>
                   </Stack>
                 </Grid>
-                {idx < arr.length - 1 && (
-                  <Grid item>
-                    <Box fontSize={32} color="gray">
+                {idx < arr.length - 1 && !isMobile && (
+                  <Grid item md="auto">
+                    <Box fontSize={32} color="divider">
                       <FiArrowRight />
                     </Box>
                   </Grid>
@@ -186,6 +425,7 @@ export default function Home() {
           </Grid>
         </Container>
       </Box>
+
 
       {/* Footer */}
       <Footer />
