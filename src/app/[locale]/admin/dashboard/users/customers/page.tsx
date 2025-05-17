@@ -31,7 +31,7 @@ export default function Users() {
         user?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user?.org_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user?.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+        user?.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         accountStatus === "" ||
