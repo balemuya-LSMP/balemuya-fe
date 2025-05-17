@@ -1,9 +1,5 @@
+'use client'
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @next/next/no-img-element */
-"use client";
-
 import React, { useState, useEffect } from "react";
 import {
   useUpdateProfileMutation,
@@ -11,12 +7,55 @@ import {
   useAddAddressesMutation,
   useUpdateAddressesMutation,
 } from "@/store/api/userProfile.api";
-import { FaUser, FaUpload } from "react-icons/fa";
-import { MdEdit, MdEmail, MdLocationOn, MdPhone } from "react-icons/md";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Modal,
+  Stack,
+  TextField,
+  Typography,
+  styled,
+} from "@mui/material";
+import {
+  Edit as EditIcon,
+  Email as EmailIcon,
+  Phone as PhoneIcon,
+  Person as PersonIcon,
+  LocationOn as LocationIcon,
+  Upload as UploadIcon,
+  Close as CloseIcon,
+} from "@mui/icons-material";
 import Loader from "../../(features)/_components/loader";
-import Modal from "../../admin/dashboard/_components/modal";
 
+const StyledModal = styled(Modal)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  "& .modal-content": {
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius * 2,
+    boxShadow: theme.shadows[24],
+    padding: theme.spacing(4),
+    width: "100%",
+    maxWidth: "450px",
+    outline: "none",
+    position: "relative",
+  },
+}));
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  width: 120,
+  height: 120,
+  border: `4px solid ${theme.palette.primary.main}`,
+  boxShadow: theme.shadows[6],
+}));
 
 const UserProfile = () => {
   const userProfile = useUserProfileQuery({});
@@ -25,32 +64,28 @@ const UserProfile = () => {
   const [addAddress] = useAddAddressesMutation();
   const [updateAddress] = useUpdateAddressesMutation();
 
-  const { data, isLoading, error } = userProfile;
-
+  const { data, isLoading } = userProfile;
   const userData = data?.user?.user;
-  const address = userData?.address
+  const address = userData?.address;
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
-
-
   const handleEditClick = () => setIsModalOpen(true);
   const handleModalClose = () => setIsModalOpen(false);
-
 
   useEffect(() => {
     if (isAddressModalOpen) {
       getPosition();
     }
-  }, []);
+  }, [isAddressModalOpen]);
 
-  if (isLoading) return <Loader />
+  if (isLoading) return <Loader />;
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const form = e.target;
+    const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
 
     if (selectedFile) {
@@ -59,17 +94,17 @@ const UserProfile = () => {
 
     updateProfile({ updated: formData });
     handleModalClose();
-  }
+  };
 
-  const handleAddressSubmit = async (e: any) => {
+  const handleAddressSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const form = e.target;
+    const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
 
     const addressData = {
-      city: formData.get("city"),
-      region: formData.get("region"),
-      country: formData.get("country"),
+      city: formData.get("city") as string,
+      region: formData.get("region") as string,
+      country: formData.get("country") as string,
       latitude: position?.lat,
       longitude: position?.lng,
     };
@@ -83,234 +118,244 @@ const UserProfile = () => {
     setIsAddressModalOpen(false);
   };
 
-
   const avatarSrc = userData.profile_image_url || "/images/user.jpg";
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-purple-50 p-6">
-      <div className="relative bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg">
-        {/* Edit Icon */}
-        <button
-          className="absolute top-4 right-4 p-3 text-gray-700 hover:bg-blue-50 rounded-full transition-transform transform hover:scale-110"
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 3,
+        background: "linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)",
+      }}
+    >
+      <Card
+        sx={{
+          width: "100%",
+          maxWidth: 600,
+          borderRadius: 4,
+          boxShadow: 3,
+          position: "relative",
+        }}
+      >
+        <IconButton
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            zIndex: 1,
+          }}
           onClick={handleEditClick}
         >
-          <MdEdit className="h-6 w-6" />
-        </button>
+          <EditIcon fontSize="medium" />
+        </IconButton>
 
-        <div className="flex flex-col items-center space-y-6">
-          {/* Avatar */}
-          <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-purple-600 shadow-lg">
-            <img
-              src={avatarSrc}
-              alt="User Avatar"
-              className="w-full h-full object-cover"
-            />
-          </div>
+        <CardContent sx={{ p: 4 }}>
+          <Stack spacing={4} alignItems="center">
+            <StyledAvatar src={avatarSrc} alt="User Avatar" />
 
-          {/* Name */}
-          <h1 className="text-2xl font-bold text-gray-900 text-center">
-            {userData.first_name} {userData.middle_name} {userData.last_name}
-          </h1>
+            <Typography variant="h4" component="h1" textAlign="center" fontWeight={600}>
+              {`${userData.first_name} ${userData.middle_name || ""} ${userData.last_name}`}
+            </Typography>
 
-          {/* User Details */}
-          <div className="flex flex-col items-start gap-4 bg-gray-100 px-6 py-4 rounded-lg w-full">
-            <div className="flex items-center gap-3">
-              <MdEmail className="w-5 h-5 text-purple-600" />
-              <span className="text-gray-700">{userData.email}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <MdPhone className="w-5 h-5 text-purple-600" />
-              <span className="text-gray-700">{userData.phone_number}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <FaUser className="w-5 h-5 text-purple-600" />
-              <span className="font-medium capitalize text-gray-800">
-                {userData.user_type || "User"}
-              </span>
-            </div>
-          </div>
+            <Stack spacing={2} width="100%">
+              <Stack
+                spacing={2}
+                sx={{
+                  p: 3,
+                  bgcolor: "background.default",
+                  borderRadius: 2,
+                  width: "100%",
+                }}
+              >
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <EmailIcon color="primary" />
+                  <Typography variant="body1">{userData.email}</Typography>
+                </Stack>
 
-          {/* Address Section */}
-          {address && (
-            <div className="bg-gray-100 px-6 py-4 rounded-lg w-full">
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-                  <MdLocationOn className="w-6 h-6 text-purple-600 mr-2" />
-                  Address
-                </h2>
-                <button className="p-2 rounded-md text-gray-700 hover:bg-gray-200 transition duration-200"
-                  onClick={() => setIsAddressModalOpen(true)}
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <PhoneIcon color="primary" />
+                  <Typography variant="body1">{userData.phone_number}</Typography>
+                </Stack>
+
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <PersonIcon color="primary" />
+                  <Typography variant="body1" textTransform="capitalize">
+                    {userData.user_type || "User"}
+                  </Typography>
+                </Stack>
+              </Stack>
+
+              {address && (
+                <Stack
+                  spacing={2}
+                  sx={{
+                    p: 3,
+                    bgcolor: "background.default",
+                    borderRadius: 2,
+                    width: "100%",
+                  }}
                 >
-                  <MdEdit className="h-6 w-6" />
-                </button>
-              </div>
-              <p className="text-gray-700 mt-2">
-                {address.city}, {address.region}, {address.country}
-              </p>
-            </div>
-          )}
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <LocationIcon color="primary" />
+                      <Typography variant="h6">Address</Typography>
+                    </Stack>
+                    <IconButton onClick={() => setIsAddressModalOpen(true)}>
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Stack>
+                  <Typography variant="body1">
+                    {`${address.city}, ${address.region}, ${address.country}`}
+                  </Typography>
+                </Stack>
+              )}
+            </Stack>
+          </Stack>
+        </CardContent>
 
-          {
-            isAddressModalOpen && (
-              <Modal onClose={() => setIsAddressModalOpen(false)}>
-                <div className="p-8 bg-white rounded-2xl shadow-2xl w-[400px] transition-transform transform scale-95 animate-fadeIn">
-                  {/* Modal Header */}
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
-                    Edit Address
-                  </h2>
-                  <form className="space-y-5"  onSubmit={handleAddressSubmit}>
-                    {/* City */}
-                    <div>
-                      <label className="block text-gray-700 font-medium">City</label>
-                      <input
-                        type="text"
-                        name="city"
-                        defaultValue={address.city}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all shadow-sm hover:shadow-md"
-                      />
-                    </div>
+        {/* Edit Profile Modal */}
+        <StyledModal open={isModalOpen} onClose={handleModalClose}>
+          <Box className="modal-content">
+            <IconButton
+              sx={{ position: "absolute", top: 16, right: 16 }}
+              onClick={handleModalClose}
+            >
+              <CloseIcon />
+            </IconButton>
 
-                    {/* Region */}
-                    <div>
-                      <label className="block text-gray-700 font-medium">Region</label>
-                      <input
-                        type="text"
-                        name="region"
-                        defaultValue={address.region}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all shadow-sm hover:shadow-md"
-                      />
-                    </div>
+            <Typography variant="h5" component="h2" mb={3} textAlign="center">
+              Edit Profile
+            </Typography>
 
-                    {/* Country */}
-                    <div>
-                      <label className="block text-gray-700 font-medium">Country</label>
-                      <input
-                        type="text"
-                        name="country"
-                        defaultValue={address.country}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all shadow-sm hover:shadow-md"
-                      />
-                    </div>
+            <form onSubmit={handleSubmit}>
+              <Stack spacing={3}>
+                <TextField
+                  name="first_name"
+                  label="First Name"
+                  defaultValue={userData.first_name}
+                  fullWidth
+                  variant="outlined"
+                />
 
-                    {/* Action Buttons */}
-                    <div className="flex justify-end gap-8 items-center mt-6">
-                      <button
-                        type="submit"
-                        className="px-6 py-3 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-all"
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        className="px-5 py-2 text-gray-700 border border-gray-400 rounded-lg hover:bg-gray-200 transition"
-                        onClick={() => setIsAddressModalOpen(false)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </Modal>
-            )
-          }
-        </div>
+                <TextField
+                  name="last_name"
+                  label="Last Name"
+                  defaultValue={userData.last_name}
+                  fullWidth
+                  variant="outlined"
+                />
 
-        {/* Edit Modal */}
-        {isModalOpen && (
-          <Modal onClose={handleModalClose}>
-            <div className="p-8 bg-white rounded-2xl shadow-2xl w-[400px] transition-transform transform scale-95 animate-fadeIn">
-              {/* Modal Header */}
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
-                Edit Profile
-              </h2>
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* First Name */}
-                <div>
-                  <label className="block text-gray-700 font-medium">First Name</label>
+                <Box>
                   <input
-                    type="text"
-                    name="first_name"
-                    defaultValue={userData.first_name}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all shadow-sm hover:shadow-md"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    id="profile-image-upload"
+                    type="file"
+                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
                   />
-                </div>
-
-                {/* Last Name */}
-                <div>
-                  <label className="block text-gray-700 font-medium">Last Name</label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    defaultValue={userData.last_name}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all shadow-sm hover:shadow-md"
-                  />
-                </div>
-                {/* profile image */}
-                <div>
-                  <label className="block mb-4">
-                    Profile Picture:
-                    <div className="mt-1 flex items-center justify-center p-2 border border-gray-300 rounded-md bg-gray-50 cursor-pointer hover:bg-gray-100">
-                      <FaUpload className="text-gray-600 mr-2" />
-                      <span className="text-gray-700">
-                        {selectedFile ? selectedFile.name : "upload a photo"}
-                      </span>
-                      <input
-                        type="file"
-                        className="hidden"
-                        onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
-                    </div>
+                  <label htmlFor="profile-image-upload">
+                    <Button
+                      component="span"
+                      variant="outlined"
+                      fullWidth
+                      startIcon={<UploadIcon />}
+                    >
+                      {selectedFile ? selectedFile.name : "Upload Profile Picture"}
+                    </Button>
                   </label>
-                </div>
-                <div>
+                </Box>
 
-                </div>
+                <TextField
+                  name="email"
+                  label="Email"
+                  defaultValue={userData.email}
+                  fullWidth
+                  variant="outlined"
+                  type="email"
+                />
 
-                {/* Email */}
-                <div>
-                  <label className="block text-gray-700 font-medium">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    defaultValue={userData.email}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all shadow-sm hover:shadow-md"
-                  />
-                </div>
+                <TextField
+                  name="phone_number"
+                  label="Phone Number"
+                  defaultValue={userData.phone_number}
+                  fullWidth
+                  variant="outlined"
+                />
 
-                {/* Phone Number */}
-                <div>
-                  <label className="block text-gray-700 font-medium">Phone Number</label>
-                  <input
-                    type="text"
-                    name="phone_number"
-                    defaultValue={userData.phone_number}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 transition-all shadow-sm hover:shadow-md"
-                  />
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-end gap-8 items-center mt-6">
-
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 transition-all"
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    className="px-5 py-2 text-gray-700 border border-gray-400 rounded-lg hover:bg-gray-200 transition"
-                    onClick={handleModalClose}
-                  >
+                <Stack direction="row" spacing={2} justifyContent="flex-end" mt={2}>
+                  <Button variant="outlined" onClick={handleModalClose}>
                     Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </Modal>
+                  </Button>
+                  <Button type="submit" variant="contained" color="primary">
+                    Save Changes
+                  </Button>
+                </Stack>
+              </Stack>
+            </form>
+          </Box>
+        </StyledModal>
 
-        )}
-      </div>
-    </div>
+        {/* Edit Address Modal */}
+        <StyledModal open={isAddressModalOpen} onClose={() => setIsAddressModalOpen(false)}>
+          <Box className="modal-content">
+            <IconButton
+              sx={{ position: "absolute", top: 16, right: 16 }}
+              onClick={() => setIsAddressModalOpen(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            <Typography variant="h5" component="h2" mb={3} textAlign="center">
+              Edit Address
+            </Typography>
+
+            <form onSubmit={handleAddressSubmit}>
+              <Stack spacing={3}>
+                <TextField
+                  name="city"
+                  label="City"
+                  defaultValue={address?.city || ""}
+                  fullWidth
+                  variant="outlined"
+                />
+
+                <TextField
+                  name="region"
+                  label="Region"
+                  defaultValue={address?.region || ""}
+                  fullWidth
+                  variant="outlined"
+                />
+
+                <TextField
+                  name="country"
+                  label="Country"
+                  defaultValue={address?.country || ""}
+                  fullWidth
+                  variant="outlined"
+                />
+
+                <Stack direction="row" spacing={2} justifyContent="flex-end" mt={2}>
+                  <Button variant="outlined" onClick={() => setIsAddressModalOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" variant="contained" color="primary">
+                    Save Address
+                  </Button>
+                </Stack>
+              </Stack>
+            </form>
+          </Box>
+        </StyledModal>
+      </Card>
+    </Box>
   );
 };
 
