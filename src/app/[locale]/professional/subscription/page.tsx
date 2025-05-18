@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 'use client';
@@ -29,7 +30,7 @@ export default function ProfessionalCard() {
         plan_type: activeTab.toLowerCase(),
         duration: selectedDuration,
         amount: totalAmount,
-        return_url: `http://localhost:3000/${locale}/professional/check`,
+        return_url: `${window.location.origin}/${locale}/professional/check`,
       }).unwrap();
 
       if (response?.data?.payment_url) {
@@ -37,9 +38,8 @@ export default function ProfessionalCard() {
       } else {
         throw new Error("Payment URL not found in response");
       }
-    } catch (error) {
-      console.error("Subscription failed:", error);
-      toast.error("Subscription failed. Please try again.");
+    } catch (error: any) {
+      toast.error(error?.data?.detail);
     }
   };
 
@@ -61,7 +61,7 @@ export default function ProfessionalCard() {
       }} />
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", backgroundColor: "background.default", padding: 4 }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: "100%", maxWidth: "lg" }}>
-          
+
           {/* Subscription Plan Section - Now at the top */}
           <Box sx={{ width: "100%", display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 4 }}>
             {/* Subscription Card - Main Focus */}
@@ -110,9 +110,9 @@ export default function ProfessionalCard() {
                 </FormControl>
               </Box>
 
-              <Box sx={{ 
-                p: 2, 
-                borderRadius: 1, 
+              <Box sx={{
+                p: 2,
+                borderRadius: 1,
                 mb: 3,
                 textAlign: 'center'
               }}>
@@ -131,7 +131,7 @@ export default function ProfessionalCard() {
                 variant="contained"
                 color="primary"
                 size="large"
-                sx={{ 
+                sx={{
                   marginTop: 1,
                   py: 1.5,
                   fontSize: '1rem',
@@ -142,10 +142,10 @@ export default function ProfessionalCard() {
                 {isLoading ? <CircularProgress size={24} color="inherit" /> : "Subscribe Now"}
               </Button>
 
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 mt: 2,
                 color: 'success.main'
               }}>
@@ -161,7 +161,7 @@ export default function ProfessionalCard() {
               <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, color: "primary.main" }}>
                 Plan Benefits
               </Typography>
-              
+
               <Box sx={{ mb: 3 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
                   {activeTab} Plan Includes:
@@ -212,9 +212,9 @@ export default function ProfessionalCard() {
                 { icon: Briefcase, title: "Opportunities", desc: "Get matched with relevant job opportunities", color: "error" }
               ].map(({ icon: Icon, title, desc, color }) => (
                 <Grid item xs={12} sm={6} md={4} key={title}>
-                  <Box sx={{ 
-                    display: "flex", 
-                    alignItems: "flex-start", 
+                  <Box sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
                     gap: 2,
                     p: 2,
                     height: '100%'
