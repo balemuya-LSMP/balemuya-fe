@@ -39,7 +39,7 @@ export default function ProfessionalCard() {
         throw new Error("Payment URL not found in response");
       }
     } catch (error: any) {
-      toast.error(error?.data?.detail);
+      toast.error(error?.data?.detail ?? "Subscription failed");
     }
   };
 
@@ -242,7 +242,6 @@ export default function ProfessionalCard() {
           </Card>
         </Box>
       </Box>
-
       <Footer />
     </>
   );
