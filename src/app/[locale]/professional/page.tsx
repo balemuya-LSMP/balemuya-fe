@@ -20,7 +20,6 @@ import { useRouter } from "@/i18n/routing";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
-import { toast, ToastContainer } from "react-toastify";
 import {
   Box,
   Typography,
@@ -35,8 +34,14 @@ import {
   Paper,
   Divider,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/effect-fade";
+import { toast } from "react-toastify";
 import { purple } from "@mui/material/colors";
 
 export default function Home() {
@@ -66,13 +71,14 @@ export default function Home() {
 
   const handleApply = async (id: string) => {
     try {
-      await createApplication({ service_id: id, message: message }).unwrap();
-      toast.success("Application Sent Successfully");
+      await createApplication({ service_id: id, message }).unwrap();
+      toast.success("Application submitted successfully");
       setMessage("");
       setModalOpen(false);
-    } catch (err) {
-      console.log(err);
-      toast.error("Failed to send application");
+    } catch (err: any) {
+      toast.error(err?.data?.[0] || "Error occurred");
+      setModalOpen(false);
+      setMessage("");
     }
   };
 
@@ -87,6 +93,15 @@ export default function Home() {
     return <Loader />;
   }
 
+
+  const images = [
+    "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80",
+    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+    'https://images.unsplash.com/photo-14973662105479-4275897d4737',
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3',
+    'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40'
+  ]
+
   return (
     <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>
       <Header
@@ -100,30 +115,88 @@ export default function Home() {
       {/* Hero Section */}
       <Box
         sx={{
-          position: 'relative',
-          height: { xs: '60vh', md: '80vh' },
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("/images/balem.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          color: 'common.white',
-          textAlign: 'center',
-          px: 2
+          position: "relative",
+          height: { xs: "60vh", md: "80vh" },
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "common.white",
+          textAlign: "center",
+          px: 2,
+          overflow: "hidden",
         }}
       >
-        <Container maxWidth="lg">
-          <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+        {/* Swiper Image Slider */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 0,
+          }}
+        >
+          <Swiper
+            modules={[Autoplay, Pagination, EffectFade]}
+            effect="fade"
+            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            pagination={{ clickable: true }}
+            loop
+            style={{ width: "100%", height: "100%" }}
+          >
+            {images.map((url, idx) => (
+              <SwiperSlide key={idx}>
+                <Box
+                  component="img"
+                  src={url}
+                  alt={`Hero Slide ${idx + 1}`}
+                  sx={{
+                    width: "100%",
+                    height: { xs: "60vh", md: "80vh" },
+                    objectFit: "cover",
+                    filter: "brightness(0.5)",
+                  }}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          {/* Overlay for darkening */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              bgcolor: "rgba(0,0,0,0.5)",
+              zIndex: 1,
+            }}
+          />
+        </Box>
+
+        {/* Hero Content */}
+        <Container
+          maxWidth="lg"
+          sx={{
+            position: "relative",
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <Box sx={{ maxWidth: 800, mx: "auto" }}>
             <Typography
               variant={isMobile ? "h3" : "h2"}
               component="h1"
               gutterBottom
               sx={{
                 fontWeight: 700,
-                color: 'primary.main',
+                color: "primary.main",
                 mb: 3,
-                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                textShadow: "0 2px 4px rgba(0,0,0,0.3)",
               }}
             >
               {t("hero.title")}
@@ -133,28 +206,27 @@ export default function Home() {
               component="p"
               sx={{
                 mb: 4,
-                color: 'primary.main',
-                textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+                color: "primary.main",
+                textShadow: "0 1px 2px rgba(0,0,0,0.3)",
               }}
             >
               {t("hero.subtitle")}
             </Typography>
             <Button
-              onClick={()=> router.push("/professional/jobs")}
+              onClick={() => router.push("/professional/jobs")}
               variant="contained"
               color="primary"
               size="large"
-
               sx={{
                 px: 4,
                 py: 1.5,
-                fontSize: '1.1rem',
+                fontSize: "1.1rem",
                 fontWeight: 600,
                 borderRadius: 2,
                 boxShadow: 4,
-                '&:hover': {
-                  boxShadow: 6
-                }
+                "&:hover": {
+                  boxShadow: 6,
+                },
               }}
             >
               {t("hero.browseButton")}
@@ -517,7 +589,7 @@ export default function Home() {
             ))}
           </Grid>
         </Container>
-      </Box>   
+      </Box>
 
       {/* Modal */}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
@@ -549,7 +621,7 @@ export default function Home() {
             sx={{ mb: 3 }}
           />
           <Box display="flex" justifyContent="flex-end" gap={2}>
-          <Button
+            <Button
               variant="contained"
               color="primary"
               onClick={() => {
@@ -582,7 +654,6 @@ export default function Home() {
       </Modal>
 
       <Footer />
-      <ToastContainer position="bottom-right" />
     </Box>
   );
 }
