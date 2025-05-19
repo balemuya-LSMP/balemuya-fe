@@ -391,8 +391,6 @@ export default function WorkDetails() {
           </DialogActions>
         </form>
       </Dialog>
-
-      <ToastContainer position='top-center' />
       <Footer />
     </>
   );
