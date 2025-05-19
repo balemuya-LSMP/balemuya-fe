@@ -8,10 +8,11 @@ import { FaLocationDot } from "react-icons/fa6";
 import { useParams } from "next/navigation";
 import { useGetProfessionalByIdQuery } from "@/store/api/user.api";
 import { useRequestProfessionalServiceMutation } from "@/store/api/services.api";
-import {toast, ToastContainer} from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { FaTimes } from "react-icons/fa";
 import Loader from "@/app/[locale]/(features)/_components/loader";
 import MapComponent from "@/app/[locale]/(features)/_components/map";
+import { CircularProgress } from "@mui/material";
 
 const job = {
   id: 1,
@@ -42,7 +43,7 @@ export default function ProfessionalDetailsPage() {
   const { id } = useParams();
   const { data: professionalData, isLoading } = useGetProfessionalByIdQuery(id);
 
-  const [requestService] = useRequestProfessionalServiceMutation();
+  const [requestService, {isLoading:isRequestLoading}] = useRequestProfessionalServiceMutation();
   const [requestModal, setRequestModal] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -52,7 +53,7 @@ export default function ProfessionalDetailsPage() {
 
   const lat = professionalInfo?.professional?.user?.address?.latitude;
   const lng = professionalInfo?.professional?.user?.address?.longitude;
-  
+
   const userLocations = [
     {
       latitude: lat,
@@ -63,17 +64,17 @@ export default function ProfessionalDetailsPage() {
 
   if (isLoading) return <Loader />
 
-    const handelRequest = async() => {
-  
-      const newData = {
-        professional: professionalInfo?.professional?.user?.id,
-        detail: message
-      }
-      await requestService({data: newData}).unwrap();
-      toast.success("Request sent successfully");
-      setMessage("");
-      setRequestModal(false);
+  const handelRequest = async () => {
+
+    const newData = {
+      professional: professionalInfo?.professional?.user?.id,
+      detail: message
     }
+    await requestService({ data: newData }).unwrap();
+    toast.success("Request sent successfully");
+    setMessage("");
+    setRequestModal(false);
+  }
 
   return (
     <div className="flex h-screen items-start justify-between gap-6 px-6 py-6">
@@ -236,41 +237,43 @@ export default function ProfessionalDetailsPage() {
         {/* Apply Button */}
         <div className="flex justify-center">
           <button className="w-full px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-800 transition mt-6"
-           onClick={() => setRequestModal(true)}>
-            Request Service
+            onClick={() => setRequestModal(true)}
+            disabled={isRequestLoading}
+          >
+            {isRequestLoading ? <CircularProgress size={24} color="inherit" /> : "Request Service"}
           </button>
         </div>
       </div>
       {
-  requestModal && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md relative">
-        {/* Cancel Icon */}
-        <FaTimes
-          className="absolute top-2 right-2 text-gray-500 text-xl cursor-pointer"
-          onClick={() => setRequestModal(false)}
-        />
-        
-        <h3 className="text-xl font-bold text-gray-800 mb-4">Request Service</h3>
-        <textarea
-          className="w-full p-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button
-          className="bg-purple-700 text-white py-2 px-4 rounded-lg w-full hover:bg-purple-600 transition"
-          onClick={handelRequest}
-        >
-          Send Request
-        </button>
-      </div>
-    </div>
-  )},
-     
+        requestModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md relative">
+              {/* Cancel Icon */}
+              <FaTimes
+                className="absolute top-2 right-2 text-gray-500 text-xl cursor-pointer"
+                onClick={() => setRequestModal(false)}
+              />
+
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Request Service</h3>
+              <textarea
+                className="w-full p-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button
+                className="bg-purple-700 text-white py-2 px-4 rounded-lg w-full hover:bg-purple-600 transition"
+                onClick={handelRequest}
+              >
+                Send Request
+              </button>
+            </div>
+          </div>
+        )},
+
       <div className="w-1/2 bg-white rounded-lg shadow-md p-6 relative z-10">
         <MapComponent userLocations={userLocations} />
       </div>
-      <ToastContainer position="top-center"/>
+      <ToastContainer position="top-center" />
     </div>
   );
 }
