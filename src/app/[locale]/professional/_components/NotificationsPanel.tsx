@@ -101,9 +101,9 @@ export default function NotificationsPanel({ isOpen, onClose }: { isOpen: boolea
       >
         <div className="h-full flex flex-col">
           {/* Header */}
-          <div className="flex justify-between items-center p-4 border-b bg-gray-100">
+          <div className="flex justify-between items-center p-4 border-b bg-gray-600">
             <h1 className="text-lg font-bold">📢 Notifications</h1>
-            <button className="text-gray-600 hover:text-gray-800" onClick={onClose}>✖</button>
+            <button className="text-gray-200 hover:text-gray-800" onClick={onClose}>✖</button>
           </div>
 
           {/* Mark All as Read */}
@@ -145,12 +145,13 @@ export default function NotificationsPanel({ isOpen, onClose }: { isOpen: boolea
                     <div className="flex-1 ml-3">
                       <h2 className="text-md font-semibold flex items-center">
                         <span className="text-lg">{getIcon(notification.type)}</span>
-                        <span className="ml-2">{notification.title}</span>
+                        <span className="ml-2 text-gray-800">{notification.title}</span>
                       </h2>
                       <p className="text-sm text-gray-600 break-words">{notification.description}</p>
                       <div className="text-xs text-gray-500">
                         <span className="font-medium">{notification.metadata?.name}</span> • {notification.date} - {notification.time}
                       </div>
+                      <hr className="my-2 border-gray-300" />
                     </div>
                   </li>
                 ))}
