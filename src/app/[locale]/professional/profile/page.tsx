@@ -856,7 +856,6 @@ export default function Profile() {
             </div>
           </Box>
         </Paper>
-        <ToastContainer position="top-center" />
       </Box>
       <Footer />
     </>
