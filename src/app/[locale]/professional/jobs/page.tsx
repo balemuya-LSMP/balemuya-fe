@@ -14,8 +14,8 @@ import { IoIosTime } from "react-icons/io";
 import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMutation, useGiveComplaintMutation, useCancelBookingMutation, useCompleteBookingMutation, useServiceFilterMutation, useSearchServicesQuery } from "@/store/api/services.api";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { toast, ToastContainer } from "react-toastify";
-import { Box,Rating, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton } from "@mui/material";
+import { toast } from "react-toastify";
+import { Box, Rating, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton } from "@mui/material";
 import Footer from "../../(features)/_components/footer";
 
 export default function JobsPage() {
@@ -27,6 +27,7 @@ export default function JobsPage() {
   const [completeBooking] = useCompleteBookingMutation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
+
 
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["pending", "rejected", "booked", "canceled"];
@@ -66,12 +67,14 @@ export default function JobsPage() {
   const handleApply = async (id: string) => {
 
     try {
-      await createApplication({ service_id: id, message: message }).unwrap();
+      await createApplication({ service_id: id, message }).unwrap();
       toast.success("Application submitted successfully");
+      setMessage("");
       setModalOpen(false);
-    } catch (error) {
-      toast.error("An error occurred. Please try again later");
-      console.error(error);
+    } catch (err: any) {
+      toast.error(err?.data?.[0] || "Error occurred");
+      setModalOpen(false);
+      setMessage("");
     }
 
   };
@@ -363,8 +366,6 @@ export default function JobsPage() {
             </Box>
           </Box>
         </Modal>
-
-        <ToastContainer position="top-center" />
       </Box>
       <Footer />
     </>
