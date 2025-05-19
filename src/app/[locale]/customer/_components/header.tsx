@@ -8,7 +8,6 @@ import { useAuth } from "@/contexts/authContext";
 import { useGetNotificationsQuery } from "@/store/api/services.api";
 import NotificationsPanel from "../../professional/_components/NotificationsPanel";
 import { useThemeToggle } from "@/hooks/useTheme";
-
 import {
   AppBar,
   Toolbar,
@@ -27,7 +26,6 @@ import {
   Button,
   Divider,
 } from "@mui/material";
-
 import { FiLogOut, FiUser, FiSettings } from "react-icons/fi";
 import { FaBell, FaSearch, FaBars } from "react-icons/fa";
 import { DarkMode, LightMode } from "@mui/icons-material";
@@ -58,7 +56,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
     { name: 'Home', href: '/customer' },
     { name: 'Professionals', href: '/customer/professionals' },
     { name: 'Work Post', href: '/customer/work' },
-    { name: "Blog", href: "/customer/blog" },
+    { name: 'Blog', href: '/customer/blog' },
   ];
 
   const handleLogout = async () => {
@@ -91,16 +89,16 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
     <>
       <AppBar
         position="sticky"
-        color="default"
         elevation={0}
         sx={{
-          backgroundColor: "background.paper",
+          backgroundColor: theme.palette.background.paper,
           borderBottom: `1px solid ${theme.palette.divider}`,
-          py: 1
+          py: 1.5,
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
         }}
       >
         <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ justifyContent: "space-between", gap: 2 }}>
+          <Toolbar disableGutters sx={{ justifyContent: "space-between", gap: 3 }}>
             {/* Logo - Desktop */}
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
               <Link href="/customer" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
@@ -108,18 +106,22 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   src="/images/logo.jpg"
                   alt="Logo"
                   sx={{
-                    width: 48,
-                    height: 48,
-                    mr: 1.5
+                    width: 52,
+                    height: 52,
+                    mr: 2,
+                    border: '2px solid #e5e7eb',
+                    transition: 'transform 0.2s ease',
+                    '&:hover': { transform: 'scale(1.05)' },
                   }}
                 />
                 <Typography
                   variant="h6"
-                  color="primary"
                   sx={{
-                    fontWeight: 700,
-                    letterSpacing: 0.5,
-                    fontSize: '1.25rem'
+                    color: "primary.main",
+                    fontWeight: 800,
+                    letterSpacing: 0.8,
+                    fontSize: '1.5rem',
+                    fontFamily: '"Inter", sans-serif',
                   }}
                 >
                   Balamuya
@@ -133,10 +135,13 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 size="large"
                 aria-label="menu"
                 onClick={handleOpenNavMenu}
-                color="inherit"
-                sx={{ color: 'text.primary' }}
+                sx={{
+                  color: 'text.primary',
+                  '&:hover': { color: 'primary.main', transform: 'scale(1.1)' },
+                  transition: 'all 0.2s ease',
+                }}
               >
-                <FaBars />
+                <FaBars size={20} />
               </IconButton>
 
               {/* Mobile Logo */}
@@ -146,24 +151,31 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   display: 'flex',
                   alignItems: 'center',
                   textDecoration: 'none',
-                  marginLeft: '12px'
+                  marginLeft: '16px',
                 }}
               >
                 <Avatar
                   src="/images/logo.jpg"
                   alt="Logo"
                   sx={{
-                    width: 36,
-                    height: 36,
-                    mr: 1
+                    width: 40,
+                    height: 40,
+                    mr: 1.5,
+                    border: '2px solid #e5e7eb',
+                    transition: 'transform 0.2s ease',
+                    '&:hover': { transform: 'scale(1.05)' },
                   }}
                 />
                 <Typography
                   variant="h6"
                   color="primary"
                   sx={{
-                    fontWeight: 700,
-                    fontSize: '1.1rem'
+                    fontWeight: 800,
+                    fontSize: '1.25rem',
+                    fontFamily: '"Inter", sans-serif',
+                    background: 'linear-gradient(to right, #3b82f6, #7c3aed)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
                   }}
                 >
                   {!isSmallMobile && 'Balamuya'}
@@ -175,26 +187,20 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
             <Menu
               id="mobile-menu"
               anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
               keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
+              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
+              sx={{ display: { xs: 'block', md: 'none' } }}
               PaperProps={{
                 sx: {
-                  minWidth: 200,
-                  boxShadow: theme.shadows[3],
-                  mt: 1
-                }
+                  minWidth: 220,
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  mt: 1.5,
+                  borderRadius: 2,
+                  background: 'white',
+                },
               }}
             >
               {pages.map((page) => (
@@ -204,23 +210,24 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   component={Link}
                   href={page.href}
                   sx={{
+                    py: 1.5,
+                    fontSize: '0.95rem',
+                    fontWeight: 500,
+                    color: 'text.primary',
                     '&:hover': {
-                      backgroundColor: theme.palette.action.hover
-                    }
+                      backgroundColor: '#f1f5f9',
+                      color: 'primary.main',
+                    },
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  <Typography>{page.name}</Typography>
+                  {page.name}
                 </MenuItem>
               ))}
             </Menu>
 
             {/* Navigation Links - Desktop */}
-            <Box sx={{
-              flexGrow: 1,
-              display: { xs: 'none', md: 'flex' },
-              justifyContent: 'center',
-              gap: 1
-            }}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', gap: 3 }}>
               {pages.map((page) => (
                 <Button
                   key={page.name}
@@ -228,14 +235,17 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   href={page.href}
                   sx={{
                     color: 'text.primary',
-                    fontWeight: 500,
-                    fontSize: '0.9rem',
+                    fontWeight: 600,
+                    fontSize: '1rem',
                     textTransform: 'none',
-                    px: 2,
+                    px: 3,
+                    py: 1,
+                    borderRadius: 2,
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      color: 'primary.main',
-                      backgroundColor: 'transparent'
-                    }
+                      backgroundColor: '#f1f5f9',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    },
                   }}
                 >
                   {page.name}
@@ -244,23 +254,24 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
             </Box>
 
             {/* Search & Actions */}
-            <Box display="flex" alignItems="center" gap={1}>
+            <Box display="flex" alignItems="center" gap={1.5}>
               {!isSmallMobile && (
                 <Paper
                   component="form"
                   sx={{
-                    p: '2px 8px',
+                    p: '4px 12px',
                     display: 'flex',
                     alignItems: 'center',
-                    width: isMobile ? 180 : 240,
-                    borderRadius: 4,
-                    boxShadow: 'none',
-                    border: `1px solid ${theme.palette.divider}`,
-                    backgroundColor: theme.palette.background.paper,
+                    width: isMobile ? 200 : 280,
+                    borderRadius: 8,
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    border: 'none',
+                    backgroundColor: '#f1f5f9',
                     transition: 'all 0.2s ease',
                     '&:hover': {
-                      borderColor: theme.palette.primary.main
-                    }
+                      backgroundColor: '#e2e8f0',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    },
                   }}
                 >
                   <InputBase
@@ -271,20 +282,21 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                     sx={{
                       ml: 1,
                       flex: 1,
-                      fontSize: '0.9rem'
+                      fontSize: '0.95rem',
+                      fontFamily: '"Inter", sans-serif',
+                      color: 'text.primary',
                     }}
                     endAdornment={
                       <IconButton
                         type="button"
                         sx={{
-                          p: '6px',
+                          p: '8px',
                           color: 'text.secondary',
-                          '&:hover': {
-                            color: 'primary.main'
-                          }
+                          '&:hover': { color: 'primary.main', transform: 'scale(1.1)' },
+                          transition: 'all 0.2s ease',
                         }}
                       >
-                        <FaSearch size={14} />
+                        <FaSearch size={16} />
                       </IconButton>
                     }
                   />
@@ -296,9 +308,13 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 size="medium"
                 sx={{
                   color: 'text.primary',
+                  p: 1.2,
+                  transition: 'all 0.2s ease',
                   '&:hover': {
-                    color: 'primary.main'
-                  }
+                    color: 'primary.main',
+                    backgroundColor: '#f1f5f9',
+                    transform: 'scale(1.1)',
+                  },
                 }}
               >
                 <Badge
@@ -306,13 +322,16 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   color="error"
                   sx={{
                     '& .MuiBadge-badge': {
-                      right: 3,
-                      top: 3,
-                      fontSize: '0.6rem'
-                    }
+                      right: 2,
+                      top: 2,
+                      fontSize: '0.65rem',
+                      minWidth: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                    },
                   }}
                 >
-                  <FaBell size={16} />
+                  <FaBell size={18} />
                 </Badge>
               </IconButton>
 
@@ -321,9 +340,13 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 onClick={toggleTheme}
                 sx={{
                   color: 'text.primary',
+                  p: 1.2,
+                  transition: 'all 0.2s ease',
                   '&:hover': {
-                    color: 'primary.main'
-                  }
+                    color: 'primary.main',
+                    backgroundColor: '#f1f5f9',
+                    transform: 'scale(1.1)',
+                  },
                 }}
               >
                 {currentTheme === "light" ? (
@@ -338,47 +361,47 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 onClick={handleOpenUserMenu}
                 sx={{
                   p: 0,
-                  ml: 0.5
+                  ml: 0.5,
+                  transition: 'all 0.2s ease',
+                  '&:hover': { transform: 'scale(1.05)' },
                 }}
               >
                 <Avatar
                   alt="User"
                   src={userProfile?.user?.user?.profile_image_url ?? "/images/user.png"}
                   sx={{
-                    width: 36,
-                    height: 36,
-                    border: `1px solid ${theme.palette.divider}`
+                    width: 40,
+                    height: 40,
+                    border: `2px solid ${theme.palette.primary.main}`,
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                   }}
                 />
               </IconButton>
 
               {/* User Menu */}
               <Menu
-                sx={{ mt: '45px' }}
+                sx={{ mt: '50px' }}
                 id="user-menu"
                 anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
                 PaperProps={{
                   sx: {
-                    minWidth: 200,
-                    boxShadow: theme.shadows[3],
-                    mt: 1.5,
-                    py: 0.5,
+                    minWidth: 220,
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    mt: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    background: 'white',
                     '& .MuiMenuItem-root': {
-                      fontSize: '0.875rem',
-                      py: 1.2
-                    }
-                  }
+                      fontSize: '0.9rem',
+                      py: 1.5,
+                      fontFamily: '"Inter", sans-serif',
+                    },
+                  },
                 }}
               >
                 <MenuItem
@@ -386,12 +409,15 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   component={Link}
                   href="/customer/profile"
                   sx={{
+                    color: 'text.primary',
                     '&:hover': {
-                      backgroundColor: theme.palette.action.hover
-                    }
+                      backgroundColor: '#f1f5f9',
+                      color: 'primary.main',
+                    },
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  <FiUser style={{ marginRight: 12, fontSize: '1rem' }} />
+                  <FiUser style={{ marginRight: 12, fontSize: '1.1rem' }} />
                   Profile
                 </MenuItem>
                 <MenuItem
@@ -399,12 +425,15 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                   component={Link}
                   href="/customer/settings"
                   sx={{
+                    color: 'text.primary',
                     '&:hover': {
-                      backgroundColor: theme.palette.action.hover
-                    }
+                      backgroundColor: '#f1f5f9',
+                      color: 'primary.main',
+                    },
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  <FiSettings style={{ marginRight: 12, fontSize: '1rem' }} />
+                  <FiSettings style={{ marginRight: 12, fontSize: '1.1rem' }} />
                   Settings
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
@@ -414,14 +443,15 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                     handleCloseUserMenu();
                   }}
                   sx={{
-                    color: theme.palette.error.main,
+                    color: 'error.main',
                     '&:hover': {
-                      backgroundColor: theme.palette.error.light,
-                      color: theme.palette.error.contrastText
-                    }
+                      backgroundColor: '#fef2f2',
+                      color: 'error.dark',
+                    },
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  <FiLogOut style={{ marginRight: 12, fontSize: '1rem' }} />
+                  <FiLogOut style={{ marginRight: 12, fontSize: '1.1rem' }} />
                   Logout
                 </MenuItem>
               </Menu>
