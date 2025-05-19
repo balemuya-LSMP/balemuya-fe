@@ -59,7 +59,7 @@ export default function JobsPage() {
 
 
   console.log(serviceRequests);
-  
+
   const userLat = position?.lat ?? 11.60000000;
   const userLng = position?.lng ?? 37.38333330;
 
@@ -67,6 +67,9 @@ export default function JobsPage() {
     setActiveTab(newValue);
   };
 
+  const handleAccept = async (id: number) => {
+    
+  }
   return (
     <>
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={filter} setFilter={setFilter} />
@@ -91,7 +94,7 @@ export default function JobsPage() {
             </Tabs>
           </Box>
           <Divider />
-          
+
           {serviceRequests?.length === 0 && (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '384px' }}>
               <Typography variant="h6" color="text.secondary">
@@ -117,7 +120,7 @@ export default function JobsPage() {
                     <Typography variant="h6" component="p" gutterBottom>
                       {request?.detail}
                     </Typography>
-                    
+
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 2 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <GrStatusGood style={{ color: '#7b1fa2', marginRight: 8 }} />
@@ -127,7 +130,7 @@ export default function JobsPage() {
                           sx={{ backgroundColor: 'secondary.light', color: 'common.white' }}
                         />
                       </Box>
-                      
+
                       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           <IoIosTime style={{ color: '#7b1fa2', marginRight: 8 }} />
@@ -135,21 +138,32 @@ export default function JobsPage() {
                             {timeDifference(new Date(), new Date(request?.created_at))}
                           </Typography>
                         </Box>
-                        
+
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           <FaLocationDot style={{ color: '#7b1fa2', marginRight: 8 }} />
                           <Typography variant="body2" color="text.secondary">
                             {getDistanceFromLatLon(
-                              userLat, 
-                              userLng, 
-                              request.customer?.user?.address?.latitude, 
+                              userLat,
+                              userLng,
+                              request.customer?.user?.address?.latitude,
                               request.customer?.user?.address?.longitude
                             )}
                           </Typography>
                         </Box>
                       </Box>
+                       <CardActions sx={{ justifyContent: 'flex-end' }}>
+                    {request.status === "pending" && (
+                      <Button
+                        variant="contained"
+                        size="small"
+                      onClick={() => handleAccept(request.id)}
+                      >
+                        Accept
+                      </Button>
+                    )}
+                  </CardActions>
                     </Box>
-                    
+
                     {/* Poster info */}
                     <Box sx={{ display: 'flex', alignItems: 'center', pt: 2, mt: 2, borderTop: 1, borderColor: 'divider' }}>
                       <Link href={`/professional/customer/${request.customer?.user?.id}`}>
@@ -166,10 +180,9 @@ export default function JobsPage() {
                       </Box>
                     </Box>
                   </CardContent>
-                  
-                  <CardActions sx={{ justifyContent: 'flex-end' }}>
-                    {/* Add any action buttons here if needed */}
-                  </CardActions>
+
+                 
+
                 </Card>
               </Grid>
             ))}
