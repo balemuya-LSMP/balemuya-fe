@@ -66,7 +66,7 @@ export default function BlogPage() {
   const [commentText, setCommentText] = useState<{ [postId: string]: string }>({});
   const [expandedComments, setExpandedComments] = useState<{ [postId: string]: boolean }>({});
   const [addComment] = useAddCommentMutation();
-
+  const [localLikes, setLocalLikes] = useState<{ [postId: string]: { count: number, isLiked: boolean } }>({});
 
   const router = useRouter();
   const theme = useTheme();
@@ -92,9 +92,25 @@ export default function BlogPage() {
 
   const handleLike = async (postId: string) => {
     try {
+      // Optimistic update
+      setLocalLikes(prev => ({
+        ...prev,
+        [postId]: {
+          count: (prev[postId]?.count || posts.find((p: { id: string; }) => p.id === postId)?.likes_count || 0) +
+            (prev[postId]?.isLiked ? -1 : 1),
+          isLiked: !prev[postId]?.isLiked
+        }
+      }));
       await likePost(postId).unwrap();
     } catch (err) {
       console.error("Failed to like post", err);
+      setLocalLikes(prev => ({
+        ...prev,
+        [postId]: {
+          count: posts.find((p: { id: string; }) => p.id === postId)?.likes_count || 0,
+          isLiked: prev[postId]?.isLiked ? false : true
+        }
+      }));
     }
   };
 
@@ -379,7 +395,8 @@ export default function BlogPage() {
                         <Avatar
                           src={post?.author?.profile_image_url}
                           alt={post.author.full_name}
-                          sx={{ width: 32, height: 32, mr: 1 }}
+                          sx={{ width: 32, height: 32, mr: 1, cursor: 'pointer' }}
+                          onClick={() => router.push(`/customer/professionals/${post?.author?.id}`)}
                         >
                           {post.author.full_name.charAt(0).toUpperCase()}
                         </Avatar>
@@ -397,13 +414,13 @@ export default function BlogPage() {
                           startIcon={<LikeIcon fontSize="small" />}
                           onClick={() => handleLike(post.id)}
                           sx={{
-                            color: 'text.secondary',
+                            color: localLikes[post.id]?.isLiked ? 'error.main' : 'text.secondary',
                             '&:hover': {
                               color: 'error.main'
                             }
                           }}
                         >
-                          {post.likes_count}
+                          {localLikes[post.id]?.count ?? post.likes_count}
                         </Button>
 
                         <Button
@@ -441,7 +458,7 @@ export default function BlogPage() {
                           }
                         }}
                       >
-                        <ReadMoreIcon />
+                        Details
                       </Button>
                     </CardActions>
 
