@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import {
   Box,
@@ -20,6 +20,8 @@ import {
   FaMapMarkerAlt,
   FaSearch,
   FaUserPlus,
+  FaChevronLeft,
+  FaChevronRight,
 } from 'react-icons/fa';
 import { MdPayment } from 'react-icons/md';
 import { FiArrowRight, FiClipboard } from 'react-icons/fi';
@@ -29,6 +31,25 @@ import Footer from '../(features)/_components/footer';
 import Header from './_components/header';
 import StarRating from '../(features)/_components/StarRating';
 
+const heroImages = [
+  {
+    url: "https://images.unsplash.com/photo-1605106702734-205df224ecce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", // Professional worker image
+    alt: "Skilled professional at work"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", // Happy customer with professional
+    alt: "Customer receiving professional service"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", // Team of professionals
+    alt: "Team of skilled professionals"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", // Professional using tools
+    alt: "Professional using high-quality tools"
+  }
+];
+
 export default function Home() {
   const router = useRouter();
   const theme = useTheme();
@@ -36,16 +57,32 @@ export default function Home() {
   const { data: professionalsData } = useGetNearByProfessionalsQuery({});
   const [searchQuery, setSearchQuery] = useState('');
   const { data: searchResults } = useGetNearByProfessionalsQuery(searchQuery);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
   const professionals = professionalsData?.nearby_professionals;
   const resultToDisplay = searchQuery ? searchResults : professionals;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const nextHero = () => {
+    setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+  };
+
+  const prevHero = () => {
+    setCurrentHeroIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+  };
 
   return (
     <Box sx={{ backgroundColor: 'background.default', fontFamily: 'inherit' }}>
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* Hero Section */}
-        <Box
+      <Box
         sx={{
           position: 'relative',
           height: { xs: '60vh', md: '80vh' },
@@ -57,30 +94,73 @@ export default function Home() {
           overflow: 'hidden',
         }}
       >
-        {/* Background Image with Overlay */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundImage: 'url("/images/hero.jpeg")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            zIndex: 1,
-            '&::before': {
-              content: '""',
+        {/* Hero Image Slider */}
+        {heroImages.map((image, index) => (
+          <Box
+            key={index}
+            sx={{
               position: 'absolute',
               top: 0,
               left: 0,
               width: '100%',
               height: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              backgroundImage: `url(${image.url})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              zIndex: 1,
+              opacity: index === currentHeroIndex ? 1 : 0,
+              transition: 'opacity 1s ease-in-out',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              }
+            }}
+          />
+        ))}
+        
+        {/* Navigation Arrows */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: 20,
+            zIndex: 3,
+            color: 'white',
+            cursor: 'pointer',
+            fontSize: '2rem',
+            transform: 'translateY(-50%)',
+            '&:hover': {
+              color: theme.palette.primary.main,
             }
           }}
-        />
+          onClick={prevHero}
+        >
+          <FaChevronLeft />
+        </Box>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            right: 20,
+            zIndex: 3,
+            color: 'white',
+            cursor: 'pointer',
+            fontSize: '2rem',
+            transform: 'translateY(-50%)',
+            '&:hover': {
+              color: theme.palette.primary.main,
+            }
+          }}
+          onClick={nextHero}
+        >
+          <FaChevronRight />
+        </Box>
         
         {/* Content */}
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
@@ -92,7 +172,8 @@ export default function Home() {
               sx={{ 
                 textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
                 lineHeight: 1.2,
-                animation: 'fadeIn 1s ease-in'
+                animation: 'fadeIn 1s ease-in',
+                color: 'white'
               }}
             >
               Find Trusted Professionals in Your Area
@@ -103,7 +184,8 @@ export default function Home() {
                 mb: 4,
                 textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
                 fontWeight: 300,
-                animation: 'fadeIn 1.5s ease-in'
+                animation: 'fadeIn 1.5s ease-in',
+                color: 'white'
               }}
             >
               Connecting skilled professionals with customers across Ethiopia
@@ -130,6 +212,7 @@ export default function Home() {
                   },
                   transition: 'all 0.3s ease'
                 }}
+                onClick={() => router.push('/customer/professionals')}
               >
                 Browse Professionals
               </Button>
@@ -150,6 +233,7 @@ export default function Home() {
                   },
                   transition: 'all 0.3s ease'
                 }}
+                onClick={() => window.scrollTo({ top: document.getElementById('how-it-works')?.offsetTop, behavior: 'smooth' })}
               >
                 How It Works
               </Button>
@@ -262,7 +346,7 @@ export default function Home() {
           </Typography>
 
           <Grid container spacing={4}>
-            {resultToDisplay?.map((professional: any) => (
+            {resultToDisplay?.slice(0, 4).map((professional: any) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={professional.id}>
                 <Paper 
                   sx={{ 
@@ -339,11 +423,29 @@ export default function Home() {
               </Grid>
             ))}
           </Grid>
+          
+          <Box textAlign="center" mt={6}>
+            <Button
+              variant="contained"
+              size="large"
+              color="primary"
+              onClick={() => router.push('/customer/professionals')}
+              sx={{
+                fontWeight: 600,
+                textTransform: 'none',
+                borderRadius: 2,
+                px: 6,
+                py: 1.5
+              }}
+            >
+              View All Professionals
+            </Button>
+          </Box>
         </Container>
       </Box>
 
       {/* How It Works Section */}
-      <Box sx={{ py: 10, backgroundColor: 'background.default' }}>
+      <Box id="how-it-works" sx={{ py: 10, backgroundColor: 'background.default' }}>
         <Container maxWidth="lg">
           <Typography variant="h3" textAlign="center" fontWeight={700} mb={2}>
             How It Works
@@ -425,8 +527,6 @@ export default function Home() {
           </Grid>
         </Container>
       </Box>
-
-
       {/* Footer */}
       <Footer />
     </Box>
