@@ -178,160 +178,160 @@ export default function BlogPostPage() {
 
           {/* Featured Image */}
           {post.medias?.length > 0 && (
-  <Box
-    sx={{
-      mb: 5,
-      borderRadius: 3,
-      overflow: 'hidden',
-      position: 'relative',
-      height: '300px',
-      '&:hover .media-arrow': {
-        opacity: 1,
-      },
-    }}
-  >
-    {/* Media Slider */}
-    <Box
-      className="media-container"
-      sx={{
-        display: 'flex',
-        overflowX: 'scroll',
-        scrollSnapType: 'x mandatory',
-        scrollBehavior: 'smooth',
-        height: '100%',
-        // Hide scrollbar
-        scrollbarWidth: 'none', // Firefox
-        '&::-webkit-scrollbar': {
-          display: 'none', // Chrome/Safari
-        },
-      }}
-    >
-      {post.medias.map((media: any) => (
-        <Box
-          key={media.id}
-          sx={{
-            flex: '0 0 100%',
-            scrollSnapAlign: 'start',
-            position: 'relative',
-            minWidth: '100%',
-            height: '100%',
-          }}
-        >
-          <img
-            src={media.media_file_url}
-            alt={`${post.title} - Media`}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover', // Ensures proper fill without distortion
-              display: 'block',
-            }}
-          />
-        </Box>
-      ))}
-    </Box>
-
-    {/* Navigation Arrows */}
-    {post.medias.length > 1 && (
-      <>
-        <IconButton
-          className="media-arrow"
-          onClick={() => {
-            const container = document.querySelector('.media-container');
-            if (container) {
-              container.scrollBy({
-                left: -container.clientWidth,
-                behavior: 'smooth',
-              });
-            }
-          }}
-          sx={{
-            position: 'absolute',
-            left: 16,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            backgroundColor: alpha(theme.palette.common.black, 0.5),
-            color: theme.palette.common.white,
-            opacity: 0,
-            transition: 'opacity 0.3s ease',
-            '&:hover': {
-              backgroundColor: alpha(theme.palette.common.black, 0.7),
-            },
-          }}
-        >
-          <ChevronLeftIcon />
-        </IconButton>
-
-        <IconButton
-          className="media-arrow"
-          onClick={() => {
-            const container = document.querySelector('.media-container');
-            if (container) {
-              container.scrollBy({
-                left: container.clientWidth,
-                behavior: 'smooth',
-              });
-            }
-          }}
-          sx={{
-            position: 'absolute',
-            right: 16,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            backgroundColor: alpha(theme.palette.common.black, 0.5),
-            color: theme.palette.common.white,
-            opacity: 0,
-            transition: 'opacity 0.3s ease',
-            '&:hover': {
-              backgroundColor: alpha(theme.palette.common.black, 0.7),
-            },
-          }}
-        >
-          <ChevronRightIcon />
-        </IconButton>
-
-        {/* Dot Indicators */}
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 16,
-            left: 0,
-            right: 0,
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 1,
-          }}
-        >
-          {post.medias.map((_: any, index: number) => (
             <Box
-              key={index}
               sx={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                backgroundColor: theme.palette.common.white,
-                opacity: 0.7,
-                cursor: 'pointer',
-                '&:hover': {
+                mb: 5,
+                borderRadius: 3,
+                overflow: 'hidden',
+                position: 'relative',
+                height: '300px',
+                '&:hover .media-arrow': {
                   opacity: 1,
                 },
               }}
-              onClick={() => {
-                const container = document.querySelector('.media-container');
-                if (container) {
-                  container.scrollTo({
-                    left: container.clientWidth * index,
-                    behavior: 'smooth',
-                  });
-                }
-              }}
-            />
-          ))}
-        </Box>
-      </>
-    )}
-  </Box>
-)}
+            >
+              {/* Media Slider */}
+              <Box
+                className="media-container"
+                sx={{
+                  display: 'flex',
+                  overflowX: 'scroll',
+                  scrollSnapType: 'x mandatory',
+                  scrollBehavior: 'smooth',
+                  height: '100%',
+                  // Hide scrollbar
+                  scrollbarWidth: 'none', // Firefox
+                  '&::-webkit-scrollbar': {
+                    display: 'none', // Chrome/Safari
+                  },
+                }}
+              >
+                {post.medias.map((media: any) => (
+                  <Box
+                    key={media.id}
+                    sx={{
+                      flex: '0 0 100%',
+                      scrollSnapAlign: 'start',
+                      position: 'relative',
+                      minWidth: '100%',
+                      height: '100%',
+                    }}
+                  >
+                    <img
+                      src={media.media_file_url}
+                      alt={`${post.title} - Media`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover', // Ensures proper fill without distortion
+                        display: 'block',
+                      }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+
+              {/* Navigation Arrows */}
+              {post.medias.length > 1 && (
+                <>
+                  <IconButton
+                    className="media-arrow"
+                    onClick={() => {
+                      const container = document.querySelector('.media-container');
+                      if (container) {
+                        container.scrollBy({
+                          left: -container.clientWidth,
+                          behavior: 'smooth',
+                        });
+                      }
+                    }}
+                    sx={{
+                      position: 'absolute',
+                      left: 16,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      backgroundColor: alpha(theme.palette.common.black, 0.5),
+                      color: theme.palette.common.white,
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.common.black, 0.7),
+                      },
+                    }}
+                  >
+                    <ChevronLeftIcon />
+                  </IconButton>
+
+                  <IconButton
+                    className="media-arrow"
+                    onClick={() => {
+                      const container = document.querySelector('.media-container');
+                      if (container) {
+                        container.scrollBy({
+                          left: container.clientWidth,
+                          behavior: 'smooth',
+                        });
+                      }
+                    }}
+                    sx={{
+                      position: 'absolute',
+                      right: 16,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      backgroundColor: alpha(theme.palette.common.black, 0.5),
+                      color: theme.palette.common.white,
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.common.black, 0.7),
+                      },
+                    }}
+                  >
+                    <ChevronRightIcon />
+                  </IconButton>
+
+                  {/* Dot Indicators */}
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      bottom: 16,
+                      left: 0,
+                      right: 0,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    {post.medias.map((_: any, index: number) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          backgroundColor: theme.palette.common.white,
+                          opacity: 0.7,
+                          cursor: 'pointer',
+                          '&:hover': {
+                            opacity: 1,
+                          },
+                        }}
+                        onClick={() => {
+                          const container = document.querySelector('.media-container');
+                          if (container) {
+                            container.scrollTo({
+                              left: container.clientWidth * index,
+                              behavior: 'smooth',
+                            });
+                          }
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </>
+              )}
+            </Box>
+          )}
 
           {/* Content */}
           <Paper elevation={0} sx={{
@@ -390,7 +390,8 @@ export default function BlogPostPage() {
             <Stack direction="row" spacing={3} alignItems="center">
               <Avatar
                 src={post.author.profile_image_url}
-                sx={{ width: 80, height: 80 }}
+                sx={{ width: 80, height: 80, cursor: 'pointer' }}
+                onClick={() => router.push(`/customer/professionals/${post?.author?.id}`)}
               />
               <Box>
                 <Typography variant="h6" gutterBottom>
