@@ -13,9 +13,9 @@ import { Container, Box, Typography, Button, Card, CardContent, Avatar, Grid } f
 import { Search, People, Lock, PhoneIphone } from "@mui/icons-material";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+
 export default function Landing() {
   const router = useRouter();
-
   const t = useTranslations("Landing");
 
   const testimonials = [
@@ -45,48 +45,139 @@ export default function Landing() {
     },
   ];
 
+  const heroImages = [
+    "https://img.freepik.com/free-photo/group-diverse-people-having-business-meeting_53876-103798.jpg",
+    "https://img.freepik.com/free-photo/business-people-working-laptop-meeting_23-2148907179.jpg",
+    "https://img.freepik.com/free-photo/person-front-computer-working-html-concept_23-2150040132.jpg",
+  ];
+
   return (
     <Box bgcolor="background.default" minHeight="100vh">
       <Header />
-
-      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: "center", height: "80vh", color: "white", background: 'linear-gradient(135deg, #A084E8, #D0A2F7)' }}>
-        <Box sx={{ flex: 1, textAlign: "left", pr: 4, pl: { xs: 2, sm: 4 } }}>
-          <Typography variant="h3" fontWeight="bold" gutterBottom>
-            {t("title")}
-          </Typography>
-          <Typography variant="body1" mb={4}>
-            {t("description")}
-          </Typography>
-          <Box display="flex" gap={2}>
-            <Button
-              onClick={() => router.push("/auth/login")}
-              variant="contained" color="primary" size="large">
-              {t("findProfessionals")}
-            </Button>
-            <Button
-              onClick={() => router.push("/auth/signup")}
-              variant="outlined" color="inherit" size="large">
-              {t("offerServices")}
-            </Button>
-          </Box>
+     <Box
+        sx={{
+          position: "relative",
+          height: "80vh",
+          width: "100%",
+        }}
+      >
+        <Swiper
+          modules={[Navigation, Pagination, Autoplay]}
+          spaceBetween={0}
+          slidesPerView={1}
+          navigation
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 5000 }}
+          style={{ height: "100%", width: "100%" }}
+        >
+          {heroImages.map((image, index) => (
+            <SwiperSlide key={index}>
+              <Box
+                sx={{
+                  height: "100%",
+                  width: "100%",
+                  backgroundImage: `url(${image})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            zIndex: 1,
+          }}
+        >
+          <Container
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              variant="h3"
+              fontWeight="bold"
+              gutterBottom
+              sx={{ fontSize: { xs: "2.5rem", md: "3.5rem" }, color: "whitesmoke", lineHeight: 1.2 }}
+            >
+              {t("title")}
+            </Typography>
+            <Typography
+              variant="body1"
+              mb={4}
+              sx={{ fontSize: { xs: "1rem", md: "1.25rem" }, color: "whitesmoke", maxWidth: "600px", mx: "auto" }}
+            >
+              {t("description")}
+            </Typography>
+            <Box display="flex" gap={2} justifyContent="center">
+              <Button
+                onClick={() => router.push("/auth/login")}
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ borderRadius: "25px", px: 4, py: 1.5, fontWeight: "bold" }}
+              >
+                {t("findProfessionals")}
+              </Button>
+              <Button
+                onClick={() => router.push("/auth/signup")}
+                variant="outlined"
+                color="inherit"
+                size="large"
+                sx={{ borderRadius: "25px", px: 4, py: 1.5, fontWeight: "bold" }}
+              >
+                {t("offerServices")}
+              </Button>
+            </Box>
+          </Container>
         </Box>
-        <Box sx={{ width: "50%", height: "100%", backgroundImage: "url('/images/hero.jpeg')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPosition: "center" }} />
       </Box>
-      {/* New Section: Features */}
-      <Container sx={{ py: 6 }}>
-        <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
+
+      {/* Features Section */}
+      <Container sx={{ py: 8 }}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          textAlign="center"
+          gutterBottom
+          sx={{ fontSize: { xs: "2rem", md: "2.5rem" } }}
+        >
           {t("keyFeatures")}
         </Typography>
         <Grid container spacing={4} textAlign="center">
           {[t("features.0"), t("features.1"), t("features.2")].map((title, index) => (
             <Grid item xs={12} sm={4} key={index}>
-              <Card sx={{ p: 3, textAlign: "center" }}>
+              <Card
+                sx={{
+                  p: 3,
+                  textAlign: "center",
+                  borderRadius: 3,
+                  boxShadow: 2,
+                  transition: "transform 0.3s",
+                  "&:hover": { transform: "translateY(-5px)" },
+                }}
+              >
                 <CardContent>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>{title}</Typography>
+                  <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: "1.25rem" }}>
+                    {title}
+                  </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    {index === 0 ? t("featuresDesc.0")
-                      : index === 1 ? t("featuresDesc.1")
-                        : t("featuresDesc.2")}
+                    {index === 0 ? t("featuresDesc.0") : index === 1 ? t("featuresDesc.1") : t("featuresDesc.2")}
                   </Typography>
                 </CardContent>
               </Card>
@@ -95,33 +186,43 @@ export default function Landing() {
         </Grid>
       </Container>
 
-      {/* New Section: User Benefits Cards */}
-      <Box py={6}>
+      {/* Benefits Section */}
+      <Box py={8}>
         <Container>
-          <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            textAlign="center"
+            gutterBottom
+            sx={{ fontSize: { xs: "2rem", md: "2.5rem" } }}
+          >
             {t("benefitsTitle")}
           </Typography>
           <Grid container spacing={4} justifyContent="center">
             {[
-              { title: t("benefits.0"), icon: <Search sx={{ fontSize: 50 }} /> },
-              { title: t("benefits.1"), icon: <People sx={{ fontSize: 50 }} /> },
-              { title: t("benefits.2"), icon: <Lock sx={{ fontSize: 50 }} /> },
+              { title: t("benefits.0"), icon: <Search sx={{ fontSize: 50, color: "primary.main" }} /> },
+              { title: t("benefits.1"), icon: <People sx={{ fontSize: 50, color: "primary.main" }} /> },
+              { title: t("benefits.2"), icon: <Lock sx={{ fontSize: 50, color: "primary.main" }} /> },
             ].map((benefit, index) => (
               <Grid item xs={12} sm={4} key={index}>
-                <Card sx={{ display: "flex", flexDirection: "column", height: "100%", boxShadow: 3 }}>
+                <Card
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    boxShadow: 2,
+                    borderRadius: 3,
+                    transition: "transform 0.3s",
+                    "&:hover": { transform: "translateY(-5px)" },
+                  }}
+                >
                   <CardContent sx={{ textAlign: "center", flexGrow: 1 }}>
-                    <Box sx={{ mb: 2 }}>
-                      {benefit.icon}
-                    </Box>
-                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                    <Box sx={{ mb: 2 }}>{benefit.icon}</Box>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: "1.25rem" }}>
                       {benefit.title}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      {index === 0
-                        ? t("benefitsDesc.0")
-                        : index === 1
-                          ? t("benefitsDesc.1")
-                          : t("benefitsDesc.2")}
+                      {index === 0 ? t("benefitsDesc.0") : index === 1 ? t("benefitsDesc.1") : t("benefitsDesc.2")}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -131,9 +232,17 @@ export default function Landing() {
         </Container>
       </Box>
 
-      <Box py={6} textAlign="center">
+      {/* Testimonials Section */}
+      <Box py={8} textAlign="center">
         <Container>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>{t("testimonialsTitle")}</Typography>
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            gutterBottom
+            sx={{ fontSize: { xs: "2rem", md: "2.5rem" } }}
+          >
+            {t("testimonialsTitle")}
+          </Typography>
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={20}
@@ -144,8 +253,14 @@ export default function Landing() {
           >
             {testimonials.map((testimonial, index) => (
               <SwiperSlide key={index}>
-                <Card sx={{ p: 3, maxWidth: 400, mx: "auto", textAlign: "center" }}>
-                  <Avatar src={testimonial.image} alt={testimonial.name} sx={{ width: 72, height: 72, mb: 2, mx: "auto" }} />
+                <Card
+                  sx={{ p: 3, maxWidth: 400, mx: "auto", textAlign: "center", borderRadius: 3, boxShadow: 2 }}
+                >
+                  <Avatar
+                    src={testimonial.image}
+                    alt={testimonial.name}
+                    sx={{ width: 72, height: 72, mb: 2, mx: "auto" }}
+                  />
                   <Typography variant="body1" fontStyle="italic" gutterBottom>
                     "{testimonial.feedback}"
                   </Typography>
@@ -159,12 +274,18 @@ export default function Landing() {
         </Container>
       </Box>
 
-      <Box textAlign="center" py={6} sx={{ bgcolor: "background.paper" }}>
-        <Container maxWidth="md" sx={{ bgcolor: "background.paper", p: 4, borderRadius: 2, boxShadow: 3 }}>
-          <Typography variant="h5" gutterBottom>
+      {/* App Download Section */}
+      <Box textAlign="center" py={8} sx={{ bgcolor: "background.paper" }}>
+        <Container maxWidth="md" sx={{ bgcolor: "background.paper", p: 4, borderRadius: 3, boxShadow: 3 }}>
+          <Typography variant="h5" gutterBottom sx={{ fontSize: { xs: "1.5rem", md: "2rem" } }}>
             {t("appTitle")}
           </Typography>
-          <Typography variant="body1" color="textSecondary" mb={3}>
+          <Typography
+            variant="body1"
+            color="textSecondary"
+            mb={3}
+            sx={{ fontSize: { xs: "1rem", md: "1.125rem" } }}
+          >
             {t("appDesc")}
           </Typography>
           <Box display="flex" justifyContent="center" gap={2} mb={4}>
@@ -173,13 +294,15 @@ export default function Landing() {
               color="primary"
               endIcon={<PhoneIphone />}
               size="large"
-              onClick={() => window.open("https://link-to-your-app-store", "_blank")} // Replace with your app store link
+              onClick={() => window.open("https://link-to-your-app-store", "_blank")}
+              sx={{ borderRadius: "25px", px: 4, py: 1.5, fontWeight: "bold" }}
             >
               {t("downloadBtn")}
             </Button>
           </Box>
         </Container>
       </Box>
+
       <Footer />
     </Box>
   );
