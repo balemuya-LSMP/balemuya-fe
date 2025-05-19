@@ -346,7 +346,7 @@ export default function Home() {
           </Typography>
 
           <Grid container spacing={4}>
-            {resultToDisplay?.slice(0, 4).map((professional: any) => (
+            {Array.isArray(resultToDisplay) && resultToDisplay?.slice(0, 4).map((professional: any) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={professional.id}>
                 <Paper 
                   sx={{ 
@@ -426,17 +426,24 @@ export default function Home() {
           
           <Box textAlign="center" mt={6}>
             <Button
-              variant="contained"
-              size="large"
-              color="primary"
+              variant="outlined" 
+                color="inherit"
+                size="large"
+                sx={{ 
+                  px: 4,
+                  py: 1.5,
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  borderWidth: 2,
+                  '&:hover': {
+                    borderWidth: 2,
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    transform: 'translateY(-2px)',
+                  },
+                  transition: 'all 0.3s ease'
+                }}
               onClick={() => router.push('/customer/professionals')}
-              sx={{
-                fontWeight: 600,
-                textTransform: 'none',
-                borderRadius: 2,
-                px: 6,
-                py: 1.5
-              }}
+         
             >
               View All Professionals
             </Button>
