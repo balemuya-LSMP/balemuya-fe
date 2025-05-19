@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
@@ -98,7 +97,7 @@ export default function BlogPage() {
     const formData = new FormData();
     formData.append('title', newPost.title);
     formData.append('content', newPost.content);
-    newPost.media.forEach(file => formData.append('media', file));
+    newPost.media.forEach(file => formData.append('media_files', file));
 
     try {
       await createPost(formData).unwrap();
