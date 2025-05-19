@@ -110,7 +110,8 @@ const UserProfile = () => {
     };
 
     if (address) {
-      await updateAddress({ address: addressData });
+      const res = await updateAddress({ address: addressData });
+      console.log(res)
     } else {
       await addAddress({ address: addressData });
     }
