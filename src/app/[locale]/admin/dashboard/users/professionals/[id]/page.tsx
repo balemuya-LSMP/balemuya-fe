@@ -58,7 +58,7 @@ export default function UserDetails() {
       console.error("Error deleting user:", error);
     }
   };
-  
+
   const handleBlockUser = async () => {
     try {
       await blockUser(id).unwrap();
@@ -113,9 +113,7 @@ export default function UserDetails() {
             <div className="mr-8">
               {/* Name */}
               <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-                {userData?.data?.user?.first_name}{" "}
-                {userData?.data?.user?.middle_name}{" "}
-                {userData?.data?.user?.last_name}
+                {userData?.data?.user?.first_name ?? userData?.data?.user?.org_name}{" "}
               </h2>
 
               {/* Bio */}
