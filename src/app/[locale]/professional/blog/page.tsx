@@ -68,6 +68,7 @@ export default function BlogPage() {
   const [expandedComments, setExpandedComments] = useState<{ [postId: string]: boolean }>({});
   const [addComment] = useAddCommentMutation();
   const [openAddPost, setOpenAddPost] = useState(false);
+  const [localLikes, setLocalLikes] = useState<{ [postId: string]: { count: number, isLiked: boolean } }>({});
   const [newPost, setNewPost] = useState({
     title: '',
     content: '',
@@ -129,9 +130,24 @@ export default function BlogPage() {
 
   const handleLike = async (postId: string) => {
     try {
+      setLocalLikes(prev => ({
+        ...prev,
+        [postId]: {
+          count: (prev[postId]?.count || posts.find((p: { id: string; }) => p.id === postId)?.likes_count || 0) +
+            (prev[postId]?.isLiked ? -1 : 1),
+          isLiked: !prev[postId]?.isLiked
+        }
+      }));
       await likePost(postId).unwrap();
     } catch (err) {
       console.error("Failed to like post", err);
+      setLocalLikes(prev => ({
+        ...prev,
+        [postId]: {
+          count: posts.find((p: { id: string; }) => p.id === postId)?.likes_count || 0,
+          isLiked: prev[postId]?.isLiked ? false : true
+        }
+      }));
     }
   };
 
@@ -193,7 +209,7 @@ export default function BlogPage() {
             New Post
           </Button>
         </Box>
-       
+
         {/* Main Content */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h5" sx={{
@@ -258,7 +274,7 @@ export default function BlogPage() {
                       }
                     }}
                   >
-                   <Box sx={{
+                    <Box sx={{
                       height: 200,
                       backgroundColor: alpha(theme.palette.primary.light, 0.2),
                       position: 'relative',
@@ -462,15 +478,14 @@ export default function BlogPage() {
                           startIcon={<LikeIcon fontSize="small" />}
                           onClick={() => handleLike(post.id)}
                           sx={{
-                            color: 'text.secondary',
+                            color: localLikes[post.id]?.isLiked ? 'error.main' : 'text.secondary',
                             '&:hover': {
                               color: 'error.main'
                             }
                           }}
                         >
-                          {post.likes_count}
+                          {localLikes[post.id]?.count ?? post.likes_count}
                         </Button>
-
                         <Button
                           size="small"
                           startIcon={<CommentIcon fontSize="small" />}
