@@ -11,12 +11,14 @@ import { GrStatusGood } from "react-icons/gr";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { CheckCircle, MessageSquare, Flag, XCircle } from "lucide-react";
 import { IoIosTime } from "react-icons/io";
-import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMutation, useGiveComplaintMutation, useCancelBookingMutation, useCompleteBookingMutation, useServiceFilterMutation, useSearchServicesQuery } from "@/store/api/services.api";
+import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMutation, useGiveComplaintMutation, useCancelBookingMutation, useCompleteBookingMutation, useServiceFilterMutation, useSearchServicesQuery, useReportServiceMutation } from "@/store/api/services.api";
+import { useAddFavoritesMutation, useFetchFavoritesQuery } from "@/store/api/userProfile.api";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast } from "react-toastify";
-import { Box, Rating, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton } from "@mui/material";
+import { Box, Rating, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton, Tooltip, CircularProgress } from "@mui/material";
 import Footer from "../../(features)/_components/footer";
+import { Face2 } from "@mui/icons-material";
 
 export default function JobsPage() {
   const { position, getPosition } = useGeolocation();
@@ -27,6 +29,12 @@ export default function JobsPage() {
   const [completeBooking] = useCompleteBookingMutation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
+  const [addToFavorites] = useAddFavoritesMutation();
+  const { data: favoritesData } = useFetchFavoritesQuery();
+  const [reportService] = useReportServiceMutation();
+
+
+  console.log("Favorites Data:", favoritesData);
 
 
   const [activeTab, setActiveTab] = useState("");
@@ -34,18 +42,21 @@ export default function JobsPage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [reason, setReason] = useState("");
   const [selectedWorkId, setSelectedWorkId] = useState("");
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportServiceModal, setReportServiceModal] = useState(false);
 
   const [bookId, setBookId] = useState("");
   const [rating, setRating] = useState<number | null>(0);
   const [review, setReview] = useState("");
   const [complaint, setComplaint] = useState("");
 
-  const { data: servicesData } = useGetServicesQuery(activeTab);
+  const { data: servicesData, isLoading } = useGetServicesQuery(activeTab);
   const { data: searchResults } = useSearchServicesQuery(searchQuery);
   const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
+
 
 
   const handleFilter = async (updatedFilter: string[]) => {
@@ -79,6 +90,19 @@ export default function JobsPage() {
 
   };
 
+
+  const handeReportService = async (id: string) => {
+    try {
+      await reportService({ id, reason: reason }).unwrap();
+      toast.success("Report submitted successfully");
+      setReason("");
+      setReportServiceModal(false);
+    } catch (error) {
+      toast.error("Error occurred while reporting");
+      setReportServiceModal(false);
+      setReason("");
+    }
+  }
   const handleReview = async () => {
     const reviewData = {
       booking: bookId,
@@ -149,6 +173,25 @@ export default function JobsPage() {
 
           {/* Jobs Section */}
           <Grid container spacing={3} sx={{ mt: 3 }}>
+            {isLoading && (
+              <Grid item xs={12} sx={{ textAlign: "center", mt: 5 }}>
+                <Typography variant="h3" color="text.secondary">
+                  <CircularProgress />
+                </Typography>
+              </Grid>
+            )}
+            {/* No services found */}
+            {!isLoading && services.length === 0 && (
+              <Grid item xs={12} sx={{ textAlign: "center", mt: 5 }}>
+                <Typography variant="h3"><Face2 /></Typography>
+                <Typography variant="h6" color="text.secondary" sx={{ mt: 2 }}>
+                  No services found
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Please refine your data try again later.
+                </Typography>
+              </Grid>
+            )}
             {services?.map((job: any) => (
               <Grid item xs={12} sm={6} lg={4} key={job.id}>
                 <Paper
@@ -201,37 +244,58 @@ export default function JobsPage() {
                     {job?.description ?? job?.service?.description}
                   </Typography>
 
-                  <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
                     {job?.status === "active" && (
-                      <Button
-                        variant="contained"
-                        sx={{ bgcolor: "purple.700", "&:hover": { bgcolor: "purple.800" } }}
-                        onClick={() => {
-                          setSelectedWorkId(job?.id);
-                          setModalOpen(true);
-                        }}
-                      >
-                        Apply
-                      </Button>
+                      <>
+                        <Button
+                          variant="contained"
+                          sx={{ bgcolor: "purple.700", "&:hover": { bgcolor: "purple.800" } }}
+                          onClick={() => {
+                            setSelectedWorkId(job?.id);
+                            setModalOpen(true);
+                          }}
+                        >
+                          Apply
+                        </Button>
+                        <Button
+                          variant="contained"
+                          sx={{ bgcolor: "gray", "&:hover": { bgcolor: "purple.800" } }}
+                          onClick={() => {
+                            setSelectedWorkId(job?.id);
+                            setReportServiceModal(true);
+                          }}
+                        >
+                          Report
+                        </Button>
+                      </>
                     )}
                     {job?.service?.status === "booked" && (
                       <Box sx={{ display: "flex", gap: 2, borderTop: 1, borderColor: "divider", pt: 2, mt: 3 }}>
-                        <IconButton onClick={() => { setBookId(job.id); setReviewModalOpen(true); }}>
-                          <MessageSquare style={{ color: "purple.700" }} />
-                        </IconButton>
-                        <IconButton onClick={() => { setBookId(job.id); setReportModalOpen(true); }}>
-                          <Flag style={{ color: "red.500" }} />
-                        </IconButton>
-                        <IconButton onClick={() => handleCancel(job.id)}>
-                          <XCircle style={{ color: "gray.600" }} />
-                        </IconButton>
-                        <IconButton onClick={() => handleComplete(job.id)}>
-                          <CheckCircle style={{ color: "gray.600" }} />
-                        </IconButton>
+                        <Tooltip title="Review">
+                          <IconButton
+                            onClick={() => { setBookId(job.id); setReviewModalOpen(true); }}>
+                            <MessageSquare style={{ color: "purple.700" }} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Report">
+                          <IconButton onClick={() => { setBookId(job.id); setReportModalOpen(true); }}>
+                            <Flag style={{ color: "red.500" }} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Cancel">
+                          <IconButton onClick={() => handleCancel(job.id)}>
+                            <XCircle style={{ color: "gray.600" }} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Complete">
+
+                          <IconButton onClick={() => handleComplete(job.id)}>
+                            <CheckCircle style={{ color: "gray.600" }} />
+                          </IconButton>
+                        </Tooltip>
                       </Box>
                     )}
                   </Box>
-
                   {job.customer && (
                     <Box sx={{ display: "flex", alignItems: "center", mt: 3, pt: 3, borderTop: 1, borderColor: "divider" }}>
                       <Avatar
@@ -288,6 +352,42 @@ export default function JobsPage() {
           </Box>
         </Modal>
 
+        <Modal open={reportServiceModal} onClose={() => setReportServiceModal(false)}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+              width: 400,
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Report for the Job
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              placeholder="Write a report here..."
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+              <Button variant="contained" onClick={() => handeReportService(selectedWorkId)}>
+                Submit
+              </Button>
+              <Button variant="outlined" onClick={() => setReportServiceModal(false)}>
+                Cancel
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
         {/* Review Modal */}
         <Modal open={reviewModalOpen} onClose={() => setReviewModalOpen(false)}>
           <Box
