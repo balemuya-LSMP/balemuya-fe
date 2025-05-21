@@ -25,12 +25,11 @@ export default function Users() {
 
   
   const filteredUsers =
-    userlist?.filter((userData: any) => {
-      const user = userData.user;
+    userlist?.filter((user: any) => {
       const matchesSearch =
-        user?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user?.org_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user?.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.phone_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user?.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
@@ -41,6 +40,7 @@ export default function Users() {
       return matchesSearch && matchesStatus;
     }) || [];
 
+  console.log("filteredUsers", filteredUsers);
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
@@ -147,7 +147,7 @@ export default function Users() {
                     </tr>
                   ) : filteredUsers.length > 0 ? (
                     filteredUsers.map((userData: any, index: number) => {
-                      const user = userData.user;
+                      const user = userData;
                       return (
                         <tr
                           key={user.id}
@@ -156,8 +156,8 @@ export default function Users() {
                           }`}
                         >
                           <td className="px-6 py-3 whitespace-nowrap overflow-hidden text-ellipsis">
-                            {user.first_name} {user.middle_name}
-                          </td>
+                            {user?.full_name ?? user?.org_name}
+                           </td>
                           <td className="px-6 py-3">{user.phone_number}</td>
                           <td className="px-6 py-3">{user.email}</td>
                           <td className="px-6 py-3">
