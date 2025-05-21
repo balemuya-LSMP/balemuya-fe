@@ -58,7 +58,7 @@ export default function Home() {
   const [selectedWorkId, setSelectedWorkId] = useState("")
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
-
+     
   const { data: searchResults } = useSearchServicesQuery(searchQuery);
   const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
 
@@ -85,6 +85,7 @@ export default function Home() {
   useEffect(() => {
     getPosition();
   }, []);
+
 
   const userLat = position?.lat ?? userProfile?.user?.user?.address.latitude;
   const userLng = position?.lng ?? userProfile?.user?.user?.address.longitude;
@@ -240,8 +241,8 @@ export default function Home() {
         <Container maxWidth="lg">
           <Grid container spacing={3} justifyContent="center">
             {[
-              { number: '500+', label: t("stats.professionals") },
-              { number: '1,000+', label: t("stats.completedJobs") },
+              { number: '10+', label: t("stats.professionals") },
+              { number: '15+', label: t("stats.completedJobs") },
               { number: '95%', label: t("stats.satisfactionRate") },
               { number: '24/7', label: t("stats.support") }
             ].map((stat, index) => (
