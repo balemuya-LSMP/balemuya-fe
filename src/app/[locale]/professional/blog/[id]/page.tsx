@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 'use client';
@@ -6,9 +7,13 @@ import {
   useGetPostByIdQuery,
   useLikePostMutation,
   useAddCommentMutation,
-  useGetCommentsQuery
+  useGetCommentsQuery,
+  useUpdatePostMutation,
+  useDeleteCommentMutation,
+  useDeletePostMutation,
 } from "@/store/api/blog.api";
 import { useParams } from "next/navigation";
+import { useUserProfileQuery } from '@/store/api/userProfile.api';
 import { useRouter } from "@/i18n/navigation";
 import {
   Box,
@@ -28,7 +33,11 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  ListItemText
+  ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -38,9 +47,11 @@ import {
   Bookmark as BookmarkIcon,
   Share as ShareIcon,
   ArrowBack as BackIcon,
-  Send as SendIcon
+  Send as SendIcon,
+  CloudUpload
 } from '@mui/icons-material';
 import { formatDate } from '@/shared/formatDate';
+import { DeleteIcon, EditIcon } from 'lucide-react';
 
 export default function BlogPostPage() {
   const { id } = useParams();
@@ -48,7 +59,19 @@ export default function BlogPostPage() {
   const [likePost] = useLikePostMutation();
   const [addComment] = useAddCommentMutation();
   const [commentText, setCommentText] = useState<{ [postId: string]: string }>({});
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
+  const [deletePost] = useDeletePostMutation();
+  const [updatePost] = useUpdatePostMutation();
+  const { data: userProfile } = useUserProfileQuery({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [editPostData, setEditPostData] = useState({
+    title: post?.title ?? '',
+    content: post?.content ?? '',
+    media: [] as File[],
+  });
+
+  const userId = userProfile?.user?.user?.id
 
   const { data: comments } = useGetCommentsQuery(id as string);
 
@@ -81,6 +104,33 @@ export default function BlogPostPage() {
       console.error("Failed to add comment", err);
     }
   };
+  const handleUpdatePost = async () => {
+    const formData = new FormData();
+    formData.append('title', editPostData.title);
+    formData.append('content', editPostData.content);
+    editPostData.media.forEach(file => formData.append('media_files', file));
+
+    try {
+      await updatePost({ id: post.id, data: formData }).unwrap();
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Failed to update post', err);
+    }
+  };
+
+
+  const handleDeletePost = async () => {
+    if (!post) return;
+
+    try {
+      await deletePost(post.id).unwrap();
+      router.push('/professional/blog');
+    } catch (err) {
+      console.error("Failed to delete post", err);
+    } finally {
+      setOpenDeleteDialog(false);
+    }
+  };
 
   if (error) {
     return (
@@ -96,7 +146,7 @@ export default function BlogPostPage() {
           <Button
             variant="outlined"
             sx={{ mt: 2 }}
-            onClick={() => router.push('/blog')}
+            onClick={() => router.push('/professional/blog')}
           >
             Back to Blog
           </Button>
@@ -179,160 +229,160 @@ export default function BlogPostPage() {
 
           {/* Featured Image */}
           {post.medias?.length > 0 && (
-  <Box
-    sx={{
-      mb: 5,
-      borderRadius: 3,
-      overflow: 'hidden',
-      position: 'relative',
-      height: '300px',
-      '&:hover .media-arrow': {
-        opacity: 1,
-      },
-    }}
-  >
-    {/* Media Slider */}
-    <Box
-      className="media-container"
-      sx={{
-        display: 'flex',
-        overflowX: 'scroll',
-        scrollSnapType: 'x mandatory',
-        scrollBehavior: 'smooth',
-        height: '100%',
-        // Hide scrollbar
-        scrollbarWidth: 'none', // Firefox
-        '&::-webkit-scrollbar': {
-          display: 'none', // Chrome/Safari
-        },
-      }}
-    >
-      {post.medias.map((media: any) => (
-        <Box
-          key={media.id}
-          sx={{
-            flex: '0 0 100%',
-            scrollSnapAlign: 'start',
-            position: 'relative',
-            minWidth: '100%',
-            height: '100%',
-          }}
-        >
-          <img
-            src={media.media_file_url}
-            alt={`${post.title} - Media`}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover', // Ensures proper fill without distortion
-              display: 'block',
-            }}
-          />
-        </Box>
-      ))}
-    </Box>
-
-    {/* Navigation Arrows */}
-    {post.medias.length > 1 && (
-      <>
-        <IconButton
-          className="media-arrow"
-          onClick={() => {
-            const container = document.querySelector('.media-container');
-            if (container) {
-              container.scrollBy({
-                left: -container.clientWidth,
-                behavior: 'smooth',
-              });
-            }
-          }}
-          sx={{
-            position: 'absolute',
-            left: 16,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            backgroundColor: alpha(theme.palette.common.black, 0.5),
-            color: theme.palette.common.white,
-            opacity: 0,
-            transition: 'opacity 0.3s ease',
-            '&:hover': {
-              backgroundColor: alpha(theme.palette.common.black, 0.7),
-            },
-          }}
-        >
-          <ChevronLeftIcon />
-        </IconButton>
-
-        <IconButton
-          className="media-arrow"
-          onClick={() => {
-            const container = document.querySelector('.media-container');
-            if (container) {
-              container.scrollBy({
-                left: container.clientWidth,
-                behavior: 'smooth',
-              });
-            }
-          }}
-          sx={{
-            position: 'absolute',
-            right: 16,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            backgroundColor: alpha(theme.palette.common.black, 0.5),
-            color: theme.palette.common.white,
-            opacity: 0,
-            transition: 'opacity 0.3s ease',
-            '&:hover': {
-              backgroundColor: alpha(theme.palette.common.black, 0.7),
-            },
-          }}
-        >
-          <ChevronRightIcon />
-        </IconButton>
-
-        {/* Dot Indicators */}
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 16,
-            left: 0,
-            right: 0,
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 1,
-          }}
-        >
-          {post.medias.map((_: any, index: number) => (
             <Box
-              key={index}
               sx={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                backgroundColor: theme.palette.common.white,
-                opacity: 0.7,
-                cursor: 'pointer',
-                '&:hover': {
+                mb: 5,
+                borderRadius: 3,
+                overflow: 'hidden',
+                position: 'relative',
+                height: '300px',
+                '&:hover .media-arrow': {
                   opacity: 1,
                 },
               }}
-              onClick={() => {
-                const container = document.querySelector('.media-container');
-                if (container) {
-                  container.scrollTo({
-                    left: container.clientWidth * index,
-                    behavior: 'smooth',
-                  });
-                }
-              }}
-            />
-          ))}
-        </Box>
-      </>
-    )}
-  </Box>
-)}
+            >
+              {/* Media Slider */}
+              <Box
+                className="media-container"
+                sx={{
+                  display: 'flex',
+                  overflowX: 'scroll',
+                  scrollSnapType: 'x mandatory',
+                  scrollBehavior: 'smooth',
+                  height: '100%',
+                  // Hide scrollbar
+                  scrollbarWidth: 'none', // Firefox
+                  '&::-webkit-scrollbar': {
+                    display: 'none', // Chrome/Safari
+                  },
+                }}
+              >
+                {post.medias.map((media: any) => (
+                  <Box
+                    key={media.id}
+                    sx={{
+                      flex: '0 0 100%',
+                      scrollSnapAlign: 'start',
+                      position: 'relative',
+                      minWidth: '100%',
+                      height: '100%',
+                    }}
+                  >
+                    <img
+                      src={media.media_file_url}
+                      alt={`${post.title} - Media`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover', // Ensures proper fill without distortion
+                        display: 'block',
+                      }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+
+              {/* Navigation Arrows */}
+              {post.medias.length > 1 && (
+                <>
+                  <IconButton
+                    className="media-arrow"
+                    onClick={() => {
+                      const container = document.querySelector('.media-container');
+                      if (container) {
+                        container.scrollBy({
+                          left: -container.clientWidth,
+                          behavior: 'smooth',
+                        });
+                      }
+                    }}
+                    sx={{
+                      position: 'absolute',
+                      left: 16,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      backgroundColor: alpha(theme.palette.common.black, 0.5),
+                      color: theme.palette.common.white,
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.common.black, 0.7),
+                      },
+                    }}
+                  >
+                    <ChevronLeftIcon />
+                  </IconButton>
+
+                  <IconButton
+                    className="media-arrow"
+                    onClick={() => {
+                      const container = document.querySelector('.media-container');
+                      if (container) {
+                        container.scrollBy({
+                          left: container.clientWidth,
+                          behavior: 'smooth',
+                        });
+                      }
+                    }}
+                    sx={{
+                      position: 'absolute',
+                      right: 16,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      backgroundColor: alpha(theme.palette.common.black, 0.5),
+                      color: theme.palette.common.white,
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.common.black, 0.7),
+                      },
+                    }}
+                  >
+                    <ChevronRightIcon />
+                  </IconButton>
+
+                  {/* Dot Indicators */}
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      bottom: 16,
+                      left: 0,
+                      right: 0,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    {post.medias.map((_: any, index: number) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          backgroundColor: theme.palette.common.white,
+                          opacity: 0.7,
+                          cursor: 'pointer',
+                          '&:hover': {
+                            opacity: 1,
+                          },
+                        }}
+                        onClick={() => {
+                          const container = document.querySelector('.media-container');
+                          if (container) {
+                            container.scrollTo({
+                              left: container.clientWidth * index,
+                              behavior: 'smooth',
+                            });
+                          }
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </>
+              )}
+            </Box>
+          )}
 
 
           {/* Content */}
@@ -411,6 +461,35 @@ export default function BlogPostPage() {
             </Stack>
           </Paper>
 
+          {post && userId === post.author.id && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mb: 2 }}>
+              <Button
+                variant="outlined"
+                startIcon={<EditIcon />}
+                onClick={() => {
+                  setEditPostData({
+                    title: post.title,
+                    content: post.content,
+                    media: [],
+                  });
+                  setIsEditing(true);
+                }}
+              >
+                Edit
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={() => setOpenDeleteDialog(true)}
+                sx={{ textTransform: 'none' }}
+              >
+                Delete
+              </Button>
+            </Box>
+          )}
+          <Divider sx={{ mb: 4 }} />
           {/* Comments Section */}
           <Typography variant="h5" sx={{ mb: 4, fontWeight: 700 }}>
             Comments ({post.comments_count})
@@ -482,6 +561,153 @@ export default function BlogPostPage() {
           Post not found
         </Typography>
       )}
+      <Dialog
+        open={isEditing}
+        onClose={() => setIsEditing(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
+          }
+        }}
+      >
+        <DialogTitle
+          sx={{
+            fontSize: '1.5rem',
+            fontWeight: 600,
+            color: 'primary.main',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            py: 2,
+            px: 3
+          }}
+        >
+          Edit Post
+        </DialogTitle>
+
+        <DialogContent dividers sx={{ py: 3, px: 3 }}>
+          <TextField
+            fullWidth
+            label="Title"
+            variant="outlined"
+            value={editPostData.title}
+            onChange={(e) => setEditPostData({ ...editPostData, title: e.target.value })}
+            sx={{
+              mb: 3,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 1
+              }
+            }}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+
+          <TextField
+            fullWidth
+            multiline
+            rows={6}
+            label="Content"
+            variant="outlined"
+            value={editPostData.content}
+            onChange={(e) => setEditPostData({ ...editPostData, content: e.target.value })}
+            sx={{
+              mb: 3,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 1
+              }
+            }}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+
+          <Button
+            variant="outlined"
+            component="label"
+            startIcon={<CloudUpload />}
+            sx={{
+              mb: 2,
+              px: 3,
+              py: 1,
+              borderRadius: 1,
+              textTransform: 'none',
+              borderWidth: 2,
+              '&:hover': {
+                borderWidth: 2
+              }
+            }}
+          >
+            Upload Media
+            <input
+              hidden
+              type="file"
+              multiple
+              onChange={(e) =>
+                setEditPostData({ ...editPostData, media: Array.from(e.target.files ?? []) })
+              }
+            />
+          </Button>
+
+          {editPostData.media?.length > 0 && (
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              {editPostData.media.length} file(s) selected
+            </Typography>
+          )}
+        </DialogContent>
+
+        <DialogActions sx={{ py: 2, px: 3 }}>
+
+          <Button
+            onClick={handleUpdatePost}
+            variant="contained"
+            color="primary"
+            sx={{
+              px: 3,
+              py: 1,
+              borderRadius: 1,
+              textTransform: 'none',
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: 'primary.dark'
+              }
+            }}
+          >
+            Save 
+          </Button>
+          <Button
+            onClick={() => setIsEditing(false)}
+            sx={{
+              px: 3,
+              py: 1,
+              borderRadius: 1,
+              textTransform: 'none',
+              color: 'text.secondary',
+              '&:hover': {
+                backgroundColor: 'action.hover'
+              }
+            }}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+        <DialogTitle>Delete Post</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to delete this post? This action cannot be undone.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
+          <Button onClick={handleDeletePost} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
