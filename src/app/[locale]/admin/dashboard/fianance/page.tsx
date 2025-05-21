@@ -1,4 +1,7 @@
 "use client";
+
+import Link from "next/link";
+
 /* eslint-disable @next/next/no-img-element */
 
 export default function Finance() {
@@ -87,12 +90,12 @@ export default function Finance() {
                 <p className="text-sm text-gray-500 mb-2">
                   Expiry Date: <span>{customer.expiryDate}</span>
                 </p>
-                <a
+                <Link
                   href={`/profile/${customer.name.toLowerCase().replace(/ /g, "-")}`}
                   className="text-blue-600 hover:underline self-start"
                 >
                   View Profile
-                </a>
+                </Link>
               </div>
             </div>
           ))}
