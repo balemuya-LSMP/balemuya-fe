@@ -9,7 +9,7 @@ import Header from "../_components/header";
 import { FaLocationDot } from "react-icons/fa6";
 import { GrStatusGood } from "react-icons/gr";
 import { IoIosTime } from "react-icons/io";
-import { useGetServicesQuery, useGetRequestedServicesQuery } from "@/store/api/services.api";
+import { useGetServicesQuery, useGetRequestedServicesQuery, useProfessionalAcceptRequestMutation, useProfessionalRejectRequestMutation } from "@/store/api/services.api";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
@@ -50,6 +50,8 @@ export default function JobsPage() {
   const [filter, setFilter] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["accepted", "canceled", "rejected"];
+  const [acceptRequest] = useProfessionalAcceptRequestMutation();
+  const [rejectRequest] = useProfessionalRejectRequestMutation();
 
   const { data: serviceRequests } = useGetRequestedServicesQuery(activeTab);
 
@@ -58,8 +60,6 @@ export default function JobsPage() {
   }, []);
 
 
-  console.log(serviceRequests);
-
   const userLat = position?.lat ?? 11.60000000;
   const userLng = position?.lng ?? 37.38333330;
 
@@ -67,8 +67,27 @@ export default function JobsPage() {
     setActiveTab(newValue);
   };
 
-  const handleAccept = async (id: number) => {
-    
+  const handleAccept = async (id: any) => {
+    try {
+      await acceptRequest(id).unwrap();
+      toast.success("Request accepted successfully");
+    } catch (error) {
+      console.error("Error accepting request:", error);
+      toast.error("Failed to accept request");
+    }
+
+  }
+
+  const handleReject = async (id: any) => {
+    try {
+      await rejectRequest(id).unwrap();
+      toast.success("Request rejected successfully");
+    } catch (error) {
+      console.error("Error rejecting request:", error);
+      toast.error("Failed to reject request");
+
+    }
+
   }
   return (
     <>
@@ -151,17 +170,27 @@ export default function JobsPage() {
                           </Typography>
                         </Box>
                       </Box>
-                       <CardActions sx={{ justifyContent: 'flex-end' }}>
-                    {request.status === "pending" && (
-                      <Button
-                        variant="contained"
-                        size="small"
-                      onClick={() => handleAccept(request.id)}
-                      >
-                        Accept
-                      </Button>
-                    )}
-                  </CardActions>
+                      <CardActions sx={{ justifyContent: 'flex-end' }}>
+                        {request.status === "pending" && (
+                          <>
+                            <Button
+                              variant="contained"
+                              size="small"
+                              onClick={() => handleAccept(request.id)}
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              size="small"
+                              onClick={() => handleReject(request.id)}
+                            >
+                              Reject
+                            </Button>
+                          </>
+                        )}
+                      </CardActions>
                     </Box>
 
                     {/* Poster info */}
@@ -181,14 +210,13 @@ export default function JobsPage() {
                     </Box>
                   </CardContent>
 
-                 
+
 
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Container>
-        <ToastContainer position="top-center" />
       </Box>
       <Footer />
     </>
