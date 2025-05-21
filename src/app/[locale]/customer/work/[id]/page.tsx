@@ -14,6 +14,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Container,
   Dialog,
   DialogActions,
@@ -24,6 +25,7 @@ import {
   IconButton,
   MenuItem,
   Paper,
+  Rating,
   TextField,
   Typography,
   useMediaQuery,
@@ -60,7 +62,7 @@ export default function WorkDetails() {
   const { data: applicationsData } = useGetApplicationforServicePostQuery(id as string);
   const { data: work, isLoading, error } = useGetServicePostByIdQuery(id as string);
   const { data: categories } = useGetCategoriesQuery();
-  const [acceptApplication] = useAcceptApplicationMutation();
+  const [acceptApplication, { isLoading: isLoadingaccept }] = useAcceptApplicationMutation();
   const [updateService] = useUpdateServicePostMutation();
   const [deleteService] = useDeleteServicePostMutation();
 
@@ -90,6 +92,7 @@ export default function WorkDetails() {
     setShowEditModal(true);
   };
 
+  console.log("applications", applications);
   const handleAcceptApplication = async (id: string) => {
     await acceptApplication(id);
     toast.success('Application accepted successfully');
@@ -118,76 +121,81 @@ export default function WorkDetails() {
       <Box
         sx={{
           display: 'flex',
-          backgroundColor: 'background.default',
+          backgroundColor: '#f9fafb',
           flexDirection: 'column',
           minHeight: '78vh',
+          py: 4
         }}
       >
-        <Container maxWidth="lg" sx={{ dispaly: "flex", py: 6, alignItems: 'center' }}>
-          <Grid container spacing={3}>
+        <Container maxWidth="lg" sx={{ py: 6 }}>
+          <Grid container spacing={4}>
             {/* Work Details Card */}
             <Grid item xs={12} md={8}>
-              <Card elevation={3} sx={{ borderRadius: 2 }}>
+              <Card
+                elevation={4}
+                sx={{
+                  borderRadius: 3,
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                  background: 'linear-gradient(145deg, #ffffff, #f8fafc)'
+                }}
+              >
                 <CardHeader
                   avatar={
                     <Box
                       component="img"
-                      src={work.customer_profile_image}
+                      src={work.customer.user.profile_image_url}
                       alt="Customer Profile"
                       sx={{
-                        width: 56,
-                        height: 56,
+                        width: 64,
+                        height: 64,
                         borderRadius: '50%',
-                        border: '2px solid',
-                        borderColor: 'primary.main'
+                        border: '3px solid',
+                        borderColor: 'primary.main',
+                        objectFit: 'cover'
                       }}
                     />
                   }
                   title={
-                    <Typography variant="h5" component="div">
+                    <Typography variant="h4" component="div" fontWeight="bold" color="text.primary">
                       {work.title}
                     </Typography>
                   }
-                  subheader={
-                    <Typography variant="body2" color="text.secondary">
-                      Customer ID: {work.customer_id}
-                    </Typography>
-                  }
+                  sx={{ pb: 2, pt: 3, px: 3, backgroundColor: 'primary.light', color: 'white' }}
                 />
-
-                <CardContent>
-                  <Grid container spacing={2} sx={{ mb: 3 }}>
+                <CardContent sx={{ p: 4 }}>
+                  <Grid container spacing={3} sx={{ mb: 4 }}>
                     <Grid item xs={6} sm={3}>
-                      <Box display="flex" alignItems="center">
-                        <CheckIcon color="success" sx={{ mr: 1 }} />
-                        <Typography variant="body2">{work.urgency}</Typography>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <CheckIcon color="success" />
+                        <Typography variant="body2" fontWeight="medium">{work.urgency}</Typography>
                       </Box>
                     </Grid>
                     <Grid item xs={6} sm={3}>
-                      <Box display="flex" alignItems="center">
-                        <ScheduleIcon color="primary" sx={{ mr: 1 }} />
-                        <Typography variant="body2">
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <ScheduleIcon color="primary" />
+                        <Typography variant="body2" fontWeight="medium">
                           Due: {format(new Date(work.work_due_date), 'MMM dd, yyyy')}
                         </Typography>
                       </Box>
                     </Grid>
                     <Grid item xs={6} sm={3}>
-                      <Box display="flex" alignItems="center">
-                        <LocationIcon color="info" sx={{ mr: 1 }} />
-                        <Typography variant="body2">
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <LocationIcon color="info" />
+                        <Typography variant="body2" fontWeight="medium">
                           {work.location.city}, {work.location.region}
                         </Typography>
                       </Box>
                     </Grid>
                     <Grid item xs={6} sm={3}>
-                      <Box display="flex" alignItems="center">
-                        <StarIcon color="warning" sx={{ mr: 1 }} />
-                        <Typography variant="body2">Rating: {work.customer_rating}</Typography>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <StarIcon color="warning" />
+                        <Typography variant="body2" fontWeight="medium">Rating: {work.customer.rating}</Typography>
                       </Box>
                     </Grid>
                   </Grid>
 
-                  <Typography variant="body1" paragraph>
+                  <Typography variant="body1" paragraph sx={{ lineHeight: 1.8, color: 'text.primary' }}>
                     {work.description}
                   </Typography>
 
@@ -196,6 +204,12 @@ export default function WorkDetails() {
                       variant="contained"
                       startIcon={<EditIcon />}
                       onClick={handleEditClick}
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: 'none',
+                        fontWeight: 'medium',
+                        px: 3
+                      }}
                     >
                       Edit
                     </Button>
@@ -204,6 +218,12 @@ export default function WorkDetails() {
                       color="error"
                       startIcon={<DeleteIcon />}
                       onClick={handleDelete}
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: 'none',
+                        fontWeight: 'medium',
+                        px: 3
+                      }}
                     >
                       Delete
                     </Button>
@@ -214,38 +234,78 @@ export default function WorkDetails() {
 
             {/* Applications List */}
             <Grid item xs={12} md={4}>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" fontWeight="bold" gutterBottom color="text.primary">
                 Applications ({applications?.length || 0})
               </Typography>
 
               {applications?.length > 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box
+                  sx={{
+                    maxHeight: '600px',
+                    overflowY: 'auto',
+                    pr: 1,
+                    '&::-webkit-scrollbar': {
+                      width: '8px'
+                    },
+                    '&::-webkit-scrollbar-track': {
+                      background: '#f1f5f9'
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: '#cbd5e1',
+                      borderRadius: '4px'
+                    }
+                  }}
+                >
                   {applications.map((application: any) => (
-                    <Paper key={application.id} elevation={2} sx={{ p: 2 }}>
+                    <Paper
+                      key={application.id}
+                      elevation={3}
+                      sx={{
+                        p: 3,
+                        mb: 2,
+                        borderRadius: 2,
+                        background: 'white',
+                        transition: 'transform 0.2s',
+                        '&:hover': {
+                          transform: 'translateY(-4px)',
+                          boxShadow: '0 6px 20px rgba(0,0,0,0.12)'
+                        }
+                      }}
+                    >
                       <Box display="flex" alignItems="center" gap={2} mb={2}>
                         <Box
                           component="img"
-                          src={application.professional_profile_image}
+                          src={application.professional.professional_profile_image}
                           alt="Applicant Profile"
                           sx={{
-                            width: 48,
-                            height: 48,
+                            width: 56,
+                            height: 56,
                             borderRadius: '50%',
                             border: '2px solid',
-                            borderColor: 'primary.main'
+                            borderColor: 'primary.main',
+                            objectFit: 'cover'
                           }}
                         />
                         <Box>
-                          <Typography variant="subtitle1">
-                            {application.professional_name}
+                          <Typography variant="subtitle1" fontWeight="bold">
+                            {application.professional.professional_name}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Rating: ⭐ {application.rating}
-                          </Typography>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Typography variant="body2" color="text.secondary">
+                              Rating:
+                            </Typography>
+                            <Rating
+                              name="read-only"
+                              value={application.professional.rating}
+                              readOnly
+                              precision={0.5}
+                              size="small"
+                              sx={{ ml: 1 }}
+                            />
+                          </Box>
                         </Box>
                       </Box>
-
-                      <Typography variant="body2" paragraph>
+                      <Typography variant="body2" paragraph sx={{ lineHeight: 1.6 }}>
                         {application.message}
                       </Typography>
 
@@ -260,21 +320,37 @@ export default function WorkDetails() {
                         </Box>
                         <Button
                           variant="contained"
+                          disabled={isLoadingaccept}
                           color="success"
                           size="small"
                           onClick={() => handleAcceptApplication(application.id)}
                           startIcon={<CheckIcon />}
+                          sx={{
+                            borderRadius: 2,
+                            textTransform: 'none',
+                            fontWeight: 'medium'
+                          }}
                         >
-                          Accept
+                          {isLoadingaccept ? <CircularProgress size={24} color="inherit" /> : 'Accept'}
                         </Button>
                       </Box>
                     </Paper>
                   ))}
                 </Box>
               ) : (
-                <Typography variant="body1" color="text.secondary" textAlign="center" py={4}>
-                  No applications yet
-                </Typography>
+                <Paper
+                  elevation={2}
+                  sx={{
+                    p: 4,
+                    borderRadius: 2,
+                    textAlign: 'center',
+                    background: 'white'
+                  }}
+                >
+                  <Typography variant="body1" color="text.secondary">
+                    No applications yet
+                  </Typography>
+                </Paper>
               )}
             </Grid>
           </Grid>
@@ -282,17 +358,25 @@ export default function WorkDetails() {
       </Box>
 
       {/* Edit Dialog */}
-      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} fullWidth maxWidth="sm">
-        <DialogTitle>
+      <Dialog
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: { borderRadius: 3, p: 1 }
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
           Edit Job
           <IconButton
             aria-label="close"
             onClick={() => setShowEditModal(false)}
             sx={{
               position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
+              right: 12,
+              top: 12,
+              color: 'grey.500'
             }}
           >
             <CloseIcon />
@@ -300,8 +384,8 @@ export default function WorkDetails() {
         </DialogTitle>
 
         <form onSubmit={handleUpdatePost}>
-          <DialogContent dividers>
-            <Grid container spacing={2}>
+          <DialogContent dividers sx={{ pt: 3, pb: 4 }}>
+            <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
                   label="Title"
@@ -311,6 +395,10 @@ export default function WorkDetails() {
                   fullWidth
                   required
                   margin="normal"
+                  variant="outlined"
+                  InputProps={{
+                    sx: { borderRadius: 2 }
+                  }}
                 />
               </Grid>
 
@@ -325,6 +413,10 @@ export default function WorkDetails() {
                   multiline
                   rows={4}
                   margin="normal"
+                  variant="outlined"
+                  InputProps={{
+                    sx: { borderRadius: 2 }
+                  }}
                 />
               </Grid>
 
@@ -338,6 +430,10 @@ export default function WorkDetails() {
                   fullWidth
                   required
                   margin="normal"
+                  variant="outlined"
+                  InputProps={{
+                    sx: { borderRadius: 2 }
+                  }}
                 >
                   {categories?.map((category: { name: string }, index: number) => (
                     <MenuItem key={index} value={category.name}>
@@ -357,6 +453,10 @@ export default function WorkDetails() {
                   fullWidth
                   required
                   margin="normal"
+                  variant="outlined"
+                  InputProps={{
+                    sx: { borderRadius: 2 }
+                  }}
                 >
                   <MenuItem value="normal">Normal</MenuItem>
                   <MenuItem value="urgent">Urgent</MenuItem>
@@ -373,19 +473,42 @@ export default function WorkDetails() {
                   fullWidth
                   required
                   margin="normal"
+                  variant="outlined"
                   InputLabelProps={{
                     shrink: true,
+                  }}
+                  InputProps={{
+                    sx: { borderRadius: 2 }
                   }}
                 />
               </Grid>
             </Grid>
           </DialogContent>
 
-          <DialogActions>
-          <Button type="submit" variant="contained" color="primary">
+          <DialogActions sx={{ p: 3 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 'medium',
+                px: 3
+              }}
+            >
               Update
-          </Button>
-            <Button onClick={() => setShowEditModal(false)}>
+            </Button>
+            <Button
+              onClick={() => setShowEditModal(false)}
+              variant="outlined"
+              sx={{
+                borderRadius: 2,
+                textTransform: 'none',
+                fontWeight: 'medium',
+                px: 3
+              }}
+            >
               Cancel
             </Button>
           </DialogActions>
