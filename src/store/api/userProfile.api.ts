@@ -283,6 +283,16 @@ export const userProfileApi = createApi({
       }),
       invalidatesTags: ["Account"],
     }),
+    addFavorites: builder.mutation<any, { professional:string}>({
+      query: (data) => ({
+        url: `/favorites/`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    fetchFavorites: builder.query<any, void>({
+      query: () => `/favorites/`,
+    })
   }),
 });
 
@@ -318,4 +328,6 @@ export const {
   useFetchProfessionalBankAccountQuery,
   useAddProfessionalBankAccountMutation,
   useUpdateProfessionalBankAccountMutation,
+  useAddFavoritesMutation,
+  useFetchFavoritesQuery,
 } = userProfileApi;
