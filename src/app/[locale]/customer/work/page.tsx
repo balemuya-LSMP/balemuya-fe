@@ -145,6 +145,7 @@ export default function WorkPage() {
         };
 
         await createServicePost(newPost);
+        toast.success("Work post created successfully");
         setShowPostModal(false);
     };
 
@@ -696,7 +697,6 @@ export default function WorkPage() {
                     </div>
                 </div>
             )}
-            <ToastContainer position="top-center" />
         </>
     );
 }
