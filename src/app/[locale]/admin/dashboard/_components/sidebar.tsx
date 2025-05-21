@@ -104,7 +104,7 @@ export default function Sidebar({
         </Typography>
 
         <List component="nav" sx={{ flexGrow: 1 }}>
-          <Link href="/admin/dashboard" passHref legacyBehavior>
+          <Link href="/admin/dashboard">
             <ListItem disablePadding>
               <StyledListItemButton>
                 <ListItemIcon>
@@ -127,7 +127,7 @@ export default function Sidebar({
           </ListItem>
           <Collapse in={isManageUsersOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <Link href="/admin/dashboard/users/customers" passHref legacyBehavior>
+              <Link href="/admin/dashboard/users/customers">
                 <ListItem disablePadding>
                   <StyledListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
@@ -137,7 +137,7 @@ export default function Sidebar({
                   </StyledListItemButton>
                 </ListItem>
               </Link>
-              <Link href="/admin/dashboard/users/professionals" passHref legacyBehavior>
+              <Link href="/admin/dashboard/users/professionals">
                 <ListItem disablePadding>
                   <StyledListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
@@ -150,7 +150,7 @@ export default function Sidebar({
             </List>
           </Collapse>
 
-          <Link href="/admin/dashboard/fianance" passHref legacyBehavior>
+          <Link href="/admin/dashboard/fianance">
             <ListItem disablePadding>
               <StyledListItemButton>
                 <ListItemIcon>
@@ -161,7 +161,7 @@ export default function Sidebar({
             </ListItem>
           </Link>
 
-          <Link href="/admin/dashboard/works" passHref legacyBehavior>
+          <Link href="/admin/dashboard/works">
             <ListItem disablePadding>
               <StyledListItemButton>
                 <ListItemIcon>
@@ -172,7 +172,7 @@ export default function Sidebar({
             </ListItem>
           </Link>
 
-          <Link href="/admin/dashboard/feedback" passHref legacyBehavior>
+          <Link href="/admin/dashboard/feedback">
             <ListItem disablePadding>
               <StyledListItemButton>
                 <ListItemIcon>
@@ -183,7 +183,7 @@ export default function Sidebar({
             </ListItem>
           </Link>
 
-          <Link href="/admin/dashboard/settings" passHref legacyBehavior>
+          <Link href="/admin/dashboard/settings">
             <ListItem disablePadding>
               <StyledListItemButton>
                 <ListItemIcon>
