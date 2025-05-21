@@ -141,21 +141,36 @@ export const serviceApi = createApi({
       query: (id) => ({
         url: `notifications/${id}/read/`,
         method: "PUT",
-        invalidatesTags: ["Notifications"],
       }),
+      invalidatesTags: ["Notifications"],
     }),
     readNotifications: builder.mutation<any, void>({
       query: () => ({
         url: `notifications/all/read/`,
         method: "PUT",
-        invalidatesTags: ["Notifications"],
       }),
+      invalidatesTags: ["Notifications"],
     }),
     acceptApplication: builder.mutation<any, string>({
       query: (id) => ({
         url: `services/service-posts/applications/${id}/accept/`,
         method: "POST",
       }),
+      invalidatesTags: ["Applications"],
+    }),
+    professionalAcceptRequest: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/users/professional/service-requests/${id}/accept/`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["ServicePosts"],
+    }),
+    professionalRejectRequest: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/users/professional/service-requests/${id}/reject/`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["ServicePosts"],
     }),
     getServices: builder.query<any, string | undefined>({
       query: (query) =>
@@ -226,6 +241,14 @@ export const serviceApi = createApi({
     searchProfessionals: builder.query<any, string>({
       query: (query) => `users/customer/search-professional/?q=${query}`,
     }),
+    reportService: builder.mutation<any, {id:string, reason: string }>({
+      query: ({ id, reason }) => ({
+        url: `services/service-posts/${id}/report/`,
+        method: "POST",
+        body: {reason},
+      }),
+      invalidatesTags: ["ServicePosts"],
+    })
   }),
 });
 
@@ -261,5 +284,8 @@ export const {
   useGetRequestedServicesQuery,
   useSearchServicesQuery,
   useServiceFilterMutation,
-  useSearchProfessionalsQuery
+  useSearchProfessionalsQuery,
+  useProfessionalAcceptRequestMutation,
+  useProfessionalRejectRequestMutation,
+  useReportServiceMutation,
 } = serviceApi;
