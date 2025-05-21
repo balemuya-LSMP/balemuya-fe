@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 "use client";
@@ -39,9 +40,8 @@ export default function Login() {
       } else {
         router.push("/");
       }
-    } catch (err) {
-      console.error("Login failed:", err);
-      toast.error("Login failed");
+    } catch (error: any) {
+      toast.error(error?.data?.error);
     }
   };
 
