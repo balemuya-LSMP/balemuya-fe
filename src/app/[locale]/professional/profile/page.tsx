@@ -602,71 +602,75 @@ export default function Profile() {
               )}
             </div>
             <hr className="my-6 border-t border-gray-300" />
-            {/* Education */}
-            <div className="mt-6">
-              <div className="flex justify-between">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">Education</h2>
-                <button
-                  onClick={() => {
-                    setSelectedEducation(null);
-                    setEducationModalOpen(true)
-                  }}
-                  className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
-                >
-                  <MdAdd />
-                </button>
-              </div>
-              {educations && educations.length > 0 ? (
-                <ul className="space-y-4">
-                  {educations.map((education: any, index: any) => (
-                    <li
-                      key={index}
-                      className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200"
-                    >
-                      <div className="flex items-start gap-3">
-                        <FiCheckCircle className="text-purple-700 text-2xl flex-shrink-0" />
-                        <div>
-                          <h4 className="text-lg font-semibold text-gray-800">
-                            {education.degree} in {education.field_of_study}
-                          </h4>
-                          <p className="text-sm text-gray-600">{education.school}</p>
-                          {education.graduation_year && (
-                            <p className="text-sm text-gray-500">
-                              Graduated: {education.graduation_year}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleEditEducation(education)}
-                          className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 hover:text-blue-700 transition duration-200"
-                        >
-                          <MdEdit />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteEducation(education.id)}
-                          className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200"
-                        >
-                          <FiTrash />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No education details provided.</p>
-              )}
 
-              {isEducationModalOpen && (
-                <EducationModal
-                  isOpen={isEducationModalOpen}
-                  onClose={() => setEducationModalOpen(false)}
-                  mode={selectdEducation ? "edit" : "add"}
-                  data={selectdEducation}
-                />
-              )}
-            </div>
+            {
+              entity_type === "individual" && (
+                <div className="mt-6">
+                  <div className="flex justify-between">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Education</h2>
+                    <button
+                      onClick={() => {
+                        setSelectedEducation(null);
+                        setEducationModalOpen(true)
+                      }}
+                      className="flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-purple-700 transition duration-200"
+                    >
+                      <MdAdd />
+                    </button>
+                  </div>
+                  {educations && educations.length > 0 ? (
+                    <ul className="space-y-4">
+                      {educations.map((education: any, index: any) => (
+                        <li
+                          key={index}
+                          className="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200"
+                        >
+                          <div className="flex items-start gap-3">
+                            <FiCheckCircle className="text-purple-700 text-2xl flex-shrink-0" />
+                            <div>
+                              <h4 className="text-lg font-semibold text-gray-800">
+                                {education.degree} in {education.field_of_study}
+                              </h4>
+                              <p className="text-sm text-gray-600">{education.school}</p>
+                              {education.graduation_year && (
+                                <p className="text-sm text-gray-500">
+                                  Graduated: {education.graduation_year}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditEducation(education)}
+                              className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 hover:text-blue-700 transition duration-200"
+                            >
+                              <MdEdit />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteEducation(education.id)}
+                              className="p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-red-300 hover:text-red-700 transition duration-200"
+                            >
+                              <FiTrash />
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No education details provided.</p>
+                  )}
+
+                  {isEducationModalOpen && (
+                    <EducationModal
+                      isOpen={isEducationModalOpen}
+                      onClose={() => setEducationModalOpen(false)}
+                      mode={selectdEducation ? "edit" : "add"}
+                      data={selectdEducation}
+                    />
+                  )}
+                </div>
+              )
+            }
 
             <hr className="my-6 border-t border-gray-300" />
             <div className="flex justify-between">
