@@ -27,6 +27,21 @@ export const blogApi = createApi({
       }),
       invalidatesTags: ["Post"],
     }),
+    updatePost: builder.mutation<any, { id: string; data: any }>({
+      query: ({ id, data }) => ({
+        url: `/blog/posts/${id}/`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Post"],
+    }),
+    deletePost: builder.mutation<any, string>({
+      query: (postId) => ({
+        url: `/blog/posts/${postId}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Post"],
+    }),
     getPostById: builder.query<any, string>({
       query: (post_id) => `/blog/posts/${post_id}/`,
       providesTags: ["Post"],
@@ -85,4 +100,6 @@ export const {
   useDeleteCommentMutation,
   useLikePostMutation,
   useGetLikesQuery,
+  useUpdatePostMutation,
+  useDeletePostMutation,
 } = blogApi;
