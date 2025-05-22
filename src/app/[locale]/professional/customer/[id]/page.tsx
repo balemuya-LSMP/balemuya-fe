@@ -280,8 +280,6 @@ export default function ProfessionalDetailsPage() {
           </Button>
         </Box>
       </Modal>
-
-      <ToastContainer position="top-center" />
     </Container>
   );
 }
