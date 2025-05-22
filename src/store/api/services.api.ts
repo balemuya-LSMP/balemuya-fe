@@ -248,7 +248,14 @@ export const serviceApi = createApi({
         body: {reason},
       }),
       invalidatesTags: ["ServicePosts"],
-    })
+    }),
+     getMyRequestServices: builder.query<any, string | undefined>({
+      query: (query) =>
+        query && query !== ""
+          ? `/users/customer/service-request/?status=${query}`
+          : `users/customer/service-request/`,
+      providesTags: ["ServicePosts"],
+    }),
   }),
 });
 
@@ -288,4 +295,5 @@ export const {
   useProfessionalAcceptRequestMutation,
   useProfessionalRejectRequestMutation,
   useReportServiceMutation,
+  useGetMyRequestServicesQuery,
 } = serviceApi;
