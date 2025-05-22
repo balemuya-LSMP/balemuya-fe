@@ -8,7 +8,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { useParams } from "next/navigation";
 import { useGetProfessionalByIdQuery } from "@/store/api/user.api";
 import { useRequestProfessionalServiceMutation } from "@/store/api/services.api";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { FaTimes } from "react-icons/fa";
 import Loader from "@/app/[locale]/(features)/_components/loader";
 import MapComponent from "@/app/[locale]/(features)/_components/map";
@@ -273,7 +273,6 @@ export default function ProfessionalDetailsPage() {
       <div className="w-1/2 bg-white rounded-lg shadow-md p-6 relative z-10">
         <MapComponent userLocations={userLocations} />
       </div>
-      <ToastContainer position="top-center" />
     </div>
   );
 }
