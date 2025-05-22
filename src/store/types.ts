@@ -124,5 +124,6 @@ export interface paymentInitiate {
   professional: string;
   amount: number;
   booking: string;
+  payment_type: string;
   return_url: string;
 }
