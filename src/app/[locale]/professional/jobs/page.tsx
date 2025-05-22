@@ -12,7 +12,6 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { CheckCircle, MessageSquare, Flag, XCircle } from "lucide-react";
 import { IoIosTime } from "react-icons/io";
 import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMutation, useGiveComplaintMutation, useCancelBookingMutation, useCompleteBookingMutation, useServiceFilterMutation, useSearchServicesQuery, useReportServiceMutation } from "@/store/api/services.api";
-import { useAddFavoritesMutation, useFetchFavoritesQuery } from "@/store/api/userProfile.api";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast } from "react-toastify";
@@ -29,12 +28,7 @@ export default function JobsPage() {
   const [completeBooking] = useCompleteBookingMutation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
-  const [addToFavorites] = useAddFavoritesMutation();
-  const { data: favoritesData } = useFetchFavoritesQuery();
   const [reportService] = useReportServiceMutation();
-
-
-  console.log("Favorites Data:", favoritesData);
 
 
   const [activeTab, setActiveTab] = useState("");
