@@ -73,7 +73,6 @@ export default function WorkPage() {
 
     const customerServices = customerServicesData?.data;
 
-    console.log("customerServices", customerServices);
 
     useEffect(() => {
         if (showPostModal && !position && !showLocationDialog && !locationDenied) {
@@ -108,6 +107,7 @@ export default function WorkPage() {
                 professional: currentProfessionalId,
                 amount: Number(paymentAmount),
                 booking: currentBookingId,
+                payment_type:"job_post",
                 return_url: `${window.location.origin}/${locale}/customer/check`
             }).unwrap();
 
