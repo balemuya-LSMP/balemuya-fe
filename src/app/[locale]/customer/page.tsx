@@ -22,11 +22,15 @@ import {
   FaUserPlus,
   FaChevronLeft,
   FaChevronRight,
+  FaHeart,
+  FaRegHeart,
 } from 'react-icons/fa';
 import { MdPayment } from 'react-icons/md';
 import { FiArrowRight, FiClipboard } from 'react-icons/fi';
 import { HiOutlineBriefcase } from 'react-icons/hi';
 import { useGetNearByProfessionalsQuery } from '@/store/api/user.api';
+import { useAddFavoritesMutation, useFetchFavoritesQuery } from "@/store/api/userProfile.api";
+
 import Footer from '../(features)/_components/footer';
 import Header from './_components/header';
 import StarRating from '../(features)/_components/StarRating';
@@ -37,11 +41,11 @@ const heroImages = [
     alt: "Skilled professional at work"
   },
   {
-    url: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", 
+    url: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     alt: "Customer receiving professional service"
   },
   {
-    url: "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", 
+    url: "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     alt: "Team of skilled professionals"
   },
   {
@@ -49,6 +53,8 @@ const heroImages = [
     alt: "Professional using high-quality tools"
   }
 ];
+
+
 
 export default function Home() {
   const router = useRouter();
@@ -61,6 +67,23 @@ export default function Home() {
 
   const professionals = professionalsData?.nearby_professionals;
   const resultToDisplay = searchQuery ? searchResults : professionals;
+
+  const [addToFavorites] = useAddFavoritesMutation();
+  const { data: favoritesData, refetch, isLoading: isFavoritesLoading } = useFetchFavoritesQuery()
+
+
+  const isFavorited = (professionalId: string) => {
+    return favoritesData?.some((fav: { professional: { id: string } }) => fav.professional.id === professionalId);
+  };
+
+  const toggleFavorite = async (professionalId: string) => {
+    try {
+      await addToFavorites({ professional: professionalId }).unwrap();
+      await refetch();
+    } catch (error) {
+      console.error('Failed to update favorite:', error);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -123,7 +146,7 @@ export default function Home() {
             }}
           />
         ))}
-        
+
         {/* Navigation Arrows */}
         <Box
           sx={{
@@ -161,15 +184,15 @@ export default function Home() {
         >
           <FaChevronRight />
         </Box>
-        
+
         {/* Content */}
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
           <Box sx={{ maxWidth: 800, mx: 'auto', px: { xs: 2, sm: 0 } }}>
-            <Typography 
-              variant={isMobile ? 'h4' : 'h2'} 
+            <Typography
+              variant={isMobile ? 'h4' : 'h2'}
               fontWeight={700}
               gutterBottom
-              sx={{ 
+              sx={{
                 textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
                 lineHeight: 1.2,
                 animation: 'fadeIn 1s ease-in',
@@ -178,9 +201,9 @@ export default function Home() {
             >
               Find Trusted Professionals in Your Area
             </Typography>
-            <Typography 
-              variant={isMobile ? 'subtitle1' : 'h5'} 
-              sx={{ 
+            <Typography
+              variant={isMobile ? 'subtitle1' : 'h5'}
+              sx={{
                 mb: 4,
                 textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
                 fontWeight: 300,
@@ -190,17 +213,17 @@ export default function Home() {
             >
               Connecting skilled professionals with customers across Ethiopia
             </Typography>
-            <Stack 
-              direction={{ xs: 'column', sm: 'row' }} 
-              spacing={2} 
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
               justifyContent="center"
               sx={{ animation: 'fadeInUp 1s ease-in' }}
             >
-              <Button 
-                variant="contained" 
+              <Button
+                variant="contained"
                 color="primary"
                 size="large"
-                sx={{ 
+                sx={{
                   px: 4,
                   py: 1.5,
                   fontWeight: 600,
@@ -216,11 +239,11 @@ export default function Home() {
               >
                 Browse Professionals
               </Button>
-              <Button 
-                variant="outlined" 
+              <Button
+                variant="outlined"
                 color="inherit"
                 size="large"
-                sx={{ 
+                sx={{
                   px: 4,
                   py: 1.5,
                   fontWeight: 600,
@@ -244,18 +267,18 @@ export default function Home() {
 
       {/* Features Section */}
       <Container maxWidth="lg" sx={{ py: 10 }}>
-        <Typography 
-          variant="h3" 
-          textAlign="center" 
-          fontWeight={700} 
+        <Typography
+          variant="h3"
+          textAlign="center"
+          fontWeight={700}
           mb={2}
           color="text.primary"
         >
           Our Services
         </Typography>
-        <Typography 
-          variant="subtitle1" 
-          textAlign="center" 
+        <Typography
+          variant="subtitle1"
+          textAlign="center"
           color="text.secondary"
           mb={6}
           sx={{ maxWidth: 700, mx: 'auto' }}
@@ -264,32 +287,32 @@ export default function Home() {
         </Typography>
         <Grid container spacing={4}>
           {[
-            { 
-              icon: <FaMapMarkerAlt size={32} />, 
+            {
+              icon: <FaMapMarkerAlt size={32} />,
               text: 'Location-Based Search',
               description: 'Find professionals near you with our advanced geolocation technology'
             },
-            { 
-              icon: <FiClipboard size={32} />, 
+            {
+              icon: <FiClipboard size={32} />,
               text: 'Service Registration',
               description: 'Easily register your services and expand your customer base'
             },
-            { 
-              icon: <MdPayment size={32} />, 
+            {
+              icon: <MdPayment size={32} />,
               text: 'Secure Payments',
               description: 'Safe and reliable payment options for all transactions'
             },
-            { 
-              icon: <HiOutlineBriefcase size={32} />, 
+            {
+              icon: <HiOutlineBriefcase size={32} />,
               text: 'Apply for Work',
               description: 'Professionals can apply for available jobs in their field'
             },
           ].map(({ icon, text, description }, idx) => (
             <Grid item xs={12} sm={6} md={3} key={idx}>
-              <Paper 
-                elevation={0} 
-                sx={{ 
-                  p: 4, 
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 4,
                   textAlign: 'center',
                   height: '100%',
                   borderRadius: 3,
@@ -301,8 +324,8 @@ export default function Home() {
                   }
                 }}
               >
-                <Box 
-                  sx={{ 
+                <Box
+                  sx={{
                     width: 80,
                     height: 80,
                     mx: 'auto',
@@ -335,10 +358,10 @@ export default function Home() {
           <Typography variant="h3" textAlign="center" fontWeight={700} mb={2}>
             Featured Professionals
           </Typography>
-          <Typography 
-            variant="subtitle1" 
-            textAlign="center" 
-            color="text.secondary" 
+          <Typography
+            variant="subtitle1"
+            textAlign="center"
+            color="text.secondary"
             mb={6}
             sx={{ maxWidth: 700, mx: 'auto' }}
           >
@@ -348,9 +371,9 @@ export default function Home() {
           <Grid container spacing={4}>
             {Array.isArray(resultToDisplay) && resultToDisplay?.slice(0, 4).map((professional: any) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={professional.id}>
-                <Paper 
-                  sx={{ 
-                    p: 3, 
+                <Paper
+                  sx={{
+                    p: 3,
                     borderRadius: 3,
                     height: '100%',
                     display: 'flex',
@@ -364,14 +387,14 @@ export default function Home() {
                 >
                   <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row" spacing={2} alignItems="center">
-                      <Avatar 
-                        src={professional.profile_image} 
-                        sx={{ 
-                          width: 60, 
+                      <Avatar
+                        src={professional.profile_image}
+                        sx={{
+                          width: 60,
                           height: 60,
                           border: '2px solid',
                           borderColor: 'primary.main'
-                        }} 
+                        }}
                       />
                       <Box>
                         <Typography fontWeight={600}>{professional.name}</Typography>
@@ -380,17 +403,31 @@ export default function Home() {
                         </Typography>
                       </Box>
                     </Stack>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(professional.id);
+                      }}
+                      className={`text-xl transition-colors duration-300 ${isFavorited(professional.id)
+                        ? "text-red-500"
+                        : "text-gray-400 hover:text-red-500"
+                        }`}
+                      aria-label={isFavorited(professional.id) ? "Remove from favorites" : "Add to favorites"}
+                      disabled={isFavoritesLoading}
+                    >
+                      {isFavorited(professional.id) ? <FaHeart /> : <FaRegHeart />}
+                    </button>                  </Stack>
+                  <Box sx={{ marginTop: 2 }}>
                     <StarRating rating={professional?.rating} />
-                  </Stack>
-
+                  </Box>
                   <Stack direction="row" spacing={1} alignItems="center" mt={2}>
                     <FaMapMarkerAlt color={theme.palette.primary.main} />
                     <Typography variant="body2">{professional?.distance} Km away</Typography>
                   </Stack>
 
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary" 
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
                     mt={2}
                     sx={{
                       display: '-webkit-box',
@@ -423,27 +460,27 @@ export default function Home() {
               </Grid>
             ))}
           </Grid>
-          
+
           <Box textAlign="center" mt={6}>
             <Button
-              variant="outlined" 
-                color="inherit"
-                size="large"
-                sx={{ 
-                  px: 4,
-                  py: 1.5,
-                  fontWeight: 600,
-                  borderRadius: 2,
+              variant="outlined"
+              color="inherit"
+              size="large"
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontWeight: 600,
+                borderRadius: 2,
+                borderWidth: 2,
+                '&:hover': {
                   borderWidth: 2,
-                  '&:hover': {
-                    borderWidth: 2,
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                    transform: 'translateY(-2px)',
-                  },
-                  transition: 'all 0.3s ease'
-                }}
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  transform: 'translateY(-2px)',
+                },
+                transition: 'all 0.3s ease'
+              }}
               onClick={() => router.push('/customer/professionals')}
-         
+
             >
               View All Professionals
             </Button>
@@ -457,43 +494,43 @@ export default function Home() {
           <Typography variant="h3" textAlign="center" fontWeight={700} mb={2}>
             How It Works
           </Typography>
-          <Typography 
-            variant="subtitle1" 
-            textAlign="center" 
-            color="text.secondary" 
+          <Typography
+            variant="subtitle1"
+            textAlign="center"
+            color="text.secondary"
             mb={6}
             sx={{ maxWidth: 700, mx: 'auto' }}
           >
             Simple steps to get the service you need
           </Typography>
-          
-          <Grid 
-            container 
-            alignItems="center" 
-            justifyContent="center" 
+
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="center"
             spacing={isMobile ? 4 : 2}
             sx={{ mt: 4 }}
           >
             {[
-              { 
-                icon: <FaUserPlus size={24} />, 
-                text: 'Register', 
-                description: 'Create your account as a customer or professional' 
+              {
+                icon: <FaUserPlus size={24} />,
+                text: 'Register',
+                description: 'Create your account as a customer or professional'
               },
-              { 
-                icon: <FaClipboardList size={24} />, 
-                text: 'Post Work', 
-                description: 'Describe the service you need' 
+              {
+                icon: <FaClipboardList size={24} />,
+                text: 'Post Work',
+                description: 'Describe the service you need'
               },
-              { 
-                icon: <FaSearch size={24} />, 
-                text: 'Review', 
-                description: 'Evaluate professionals and their offers' 
+              {
+                icon: <FaSearch size={24} />,
+                text: 'Review',
+                description: 'Evaluate professionals and their offers'
               },
-              { 
-                icon: <FaHandshake size={24} />, 
-                text: 'Connect', 
-                description: 'Hire the right professional for the job' 
+              {
+                icon: <FaHandshake size={24} />,
+                text: 'Connect',
+                description: 'Hire the right professional for the job'
               },
             ].map(({ icon, text, description }, idx, arr) => (
               <React.Fragment key={idx}>
