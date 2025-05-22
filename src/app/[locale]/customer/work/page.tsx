@@ -24,7 +24,7 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import { useRouter } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
 import { format, set } from "date-fns";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Footer from "../../(features)/_components/footer";
 import Loader from "../../(features)/_components/loader";
 import { Box, Tab, Tabs, Button, Card, CardActions, Divider, IconButton, Paper, Typography, Tooltip } from "@mui/material";
