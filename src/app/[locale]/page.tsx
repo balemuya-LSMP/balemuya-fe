@@ -46,9 +46,10 @@ export default function Landing() {
   ];
 
   const heroImages = [
-    "https://img.freepik.com/free-photo/group-diverse-people-having-business-meeting_53876-103798.jpg",
-    "https://img.freepik.com/free-photo/business-people-working-laptop-meeting_23-2148907179.jpg",
     "https://img.freepik.com/free-photo/person-front-computer-working-html-concept_23-2150040132.jpg",
+    "/images/balem.png",
+    "https://img.freepik.com/free-photo/close-up-people-having-business-meeting_23-2147861950.jpg",
+    
   ];
 
   return (
