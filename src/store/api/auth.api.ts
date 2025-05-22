@@ -25,10 +25,11 @@ export const apiSlice = createApi({
         };
       },
     }),
-    googleLogin: builder.mutation<loginResponse, { code: string; state: string }>({
-      query: ({ code, state }) => ({
-        url: `/auth/google-signin/?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`, 
-        method: 'GET', 
+    googleLogin: builder.mutation<loginResponse, { code: string;}>({
+      query: ({ code }) => ({
+        url: `/auth/continue-with-google/`, 
+        method: 'POST',
+        body: { code },
       }),
     }),
     logoutUser: builder.mutation<null,  string >({
