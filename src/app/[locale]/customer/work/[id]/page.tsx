@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from "@/i18n/navigation";
 import { format } from 'date-fns';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import {
   Box,
   Button,
@@ -102,6 +102,7 @@ export default function WorkDetails() {
     e.preventDefault();
     if (typeof id === 'string') {
       await updateService({ id, data: formData });
+      toast.success('Job updated successfully');
     }
     setShowEditModal(false);
   };
