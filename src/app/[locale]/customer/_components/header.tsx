@@ -462,7 +462,6 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
 
       {/* Notification Panel */}
       <NotificationsPanel isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      <ToastContainer position="top-center" />
     </>
   );
 }
