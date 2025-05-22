@@ -16,12 +16,10 @@ const GoogleCallback = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    const state = params.get("state");
      
-    if (code && state) {
-      const decodedState = JSON.parse(decodeURIComponent(state as string));
+    if (code) {
   
-      googleLogin({ code: code as string, state: decodedState })
+      googleLogin({ code: code})
         .then((response) => {
           if (response.data) {
             console.log("Google login successful:", response.data);
