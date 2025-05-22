@@ -56,6 +56,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
     { name: 'Home', href: '/customer' },
     { name: 'Professionals', href: '/customer/professionals' },
     { name: 'Work Post', href: '/customer/work' },
+    { name: 'My Request', href: '/customer/my-request' },
     { name: 'Blog', href: '/customer/blog' },
   ];
 
