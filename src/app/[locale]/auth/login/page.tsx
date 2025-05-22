@@ -22,7 +22,6 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const { login } = useAuth();
   const [loginUser, { isLoading }] = useLoginUserMutation();
-  const [userType, setUserType] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,15 +45,8 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
-    if (userType === "customer" || userType === "professional") {
-      const state = encodeURIComponent(JSON.stringify({ user_type: userType }));
-
-      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${window.location.origin}/auth/google-callback/&response_type=code&scope=email%20profile&state=${state}&access_type=offline&prompt=consent`;
-
-      window.location.href = url;
-    } else {
-      toast.error("Please select a user type (Customer or Professional) before signing in with Google.");
-    }
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${window.location.origin}/auth/google-callback&response_type=code&scope=email%20profile%20openid&access_type=offline&prompt=consent`
+    window.location.href = url;
   };
 
   return (
@@ -70,12 +62,12 @@ export default function Login() {
               transform: "translateX(-50%)",
               width: 60,
               height: 60,
-              backgroundColor: "white", 
+              backgroundColor: "white",
               borderRadius: "50%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: 3, 
+              boxShadow: 3,
             }}
           >
             <img
@@ -133,12 +125,6 @@ export default function Login() {
               >
                 {isLoading ? <ClipLoader color="#ffffff" loading={isLoading} size={25} /> : "Login"}
               </Button>
-              <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
-                <RadioGroup row value={userType} onChange={(e) => setUserType(e.target.value)}>
-                  <FormControlLabel value="customer" control={<Radio />} label="Customer" />
-                  <FormControlLabel value="professional" control={<Radio />} label="Professional" />
-                </RadioGroup>
-              </Box>
             </form>
             <Button
               onClick={handleGoogleSignIn}
