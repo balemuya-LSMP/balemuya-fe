@@ -3,12 +3,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
-import { FaLocationDot } from "react-icons/fa6";
-import { useRouter } from "@/i18n/navigation";
+import { FaHeart, FaLocationDot, FaRegHeart } from "react-icons/fa6";
+import { Link, useRouter } from "@/i18n/navigation";
 import Header from "../_components/header";
 import { useFilterProfessionalsQuery } from "@/store/api/user.api";
 import { useGetCategoriesQuery } from "@/store/api/services.api";
 import StarRating from "../../(features)/_components/StarRating";
+
+import { useAddFavoritesMutation, useFetchFavoritesQuery } from "@/store/api/userProfile.api";
+import { Loader2 } from "lucide-react";
 
 export default function Professionals() {
   const router = useRouter();
@@ -20,13 +23,27 @@ export default function Professionals() {
   const [rating, setRating] = useState<number>();
   const [distance, setDistance] = useState<number>();
 
-  // Fetch professionals based on filters
+  const [addToFavorites] = useAddFavoritesMutation();
+  const { data: favoritesData, refetch, isLoading: isFavoritesLoading } = useFetchFavoritesQuery();
+
   const { data: professionalsData, error, isLoading } = useFilterProfessionalsQuery({
     category: category || undefined,
     rating: rating || undefined,
     distance: distance || undefined,
   });
 
+  const isFavorited = (professionalId: string) => {
+    return favoritesData?.some((fav: { professional: { id: string } }) => fav.professional.id === professionalId);
+  };
+
+  const toggleFavorite = async (professionalId: string) => {
+    try {
+      await addToFavorites({ professional: professionalId }).unwrap();
+      await refetch();
+    } catch (error) {
+      console.error('Failed to update favorite:', error);
+    }
+  };
   const professionalsInfo = professionalsData?.professionals || [];
 
   // Filter professionals based on search input
@@ -99,12 +116,19 @@ export default function Professionals() {
             value={rating}
             onChange={(e) => setRating(Number(e.target.value))}
           />
+          <Link
+            href="/customer/favorites"
+            className="block w-full p-2 bg-gray-400 text-white rounded-md text-center hover:bg-gray-500 transition duration-300"
+          >
+            View Favorites
+          </Link>
         </aside>
-
         {/* Professionals Grid */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:w-3/4 w-full">
           {isLoading ? (
-            <p className="text-gray-600 text-lg col-span-full text-center">Loading professionals...</p>
+            <div className="flex justify-center items-center h-80">
+              <Loader2 className="w-16 h-16 text-purple-600 animate-spin" />
+            </div>
           ) : error ? (
             <p className="text-red-500 text-lg col-span-full text-center">Failed to load professionals.</p>
           ) : filteredProfessionals.length > 0 ? (
@@ -120,10 +144,28 @@ export default function Professionals() {
                       alt={professional?.name}
                       className="w-20 h-20 object-cover rounded-full border-2 border-purple-500"
                     />
-                    <p className="text-lg font-semibold">{professional.name}</p>
+                    <div className="flex flex-col gap-4">
+                      <p className="text-lg font-semibold">{professional.name}</p>
+                      <StarRating rating={professional?.rating} />
+                    </div>
                   </div>
                   {/* Displaying rating stars */}
-                  <StarRating rating={professional?.rating} />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(professional.id);
+                      }}
+                      className={`text-xl transition-colors duration-300 ${isFavorited(professional.id)
+                        ? "text-red-500"
+                        : "text-gray-400 hover:text-red-500"
+                        }`}
+                      aria-label={isFavorited(professional.id) ? "Remove from favorites" : "Add to favorites"}
+                      disabled={isFavoritesLoading}
+                    >
+                      {isFavorited(professional.id) ? <FaHeart /> : <FaRegHeart />}
+                    </button>
+                  </div>
                 </div>
                 <div className="flex items-center ml-8 mt-2 gap-2 text-gray-600">
                   <FaLocationDot className="text-purple-700" />
