@@ -127,7 +127,7 @@ export default function Professionals() {
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:w-3/4 w-full">
           {isLoading ? (
             <div className="flex justify-center items-center h-80">
-              <Loader2 className="w-16 h-16 text-purple-600 animate-spin" />
+              <Loader2 className="w-16 h-16 text-gray-400 animate-spin" />
             </div>
           ) : error ? (
             <p className="text-red-500 text-lg col-span-full text-center">Failed to load professionals.</p>
