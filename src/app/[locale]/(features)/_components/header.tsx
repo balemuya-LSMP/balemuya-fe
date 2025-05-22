@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from "react";
-import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, Box } from "@mui/material";
+import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, Box, Select, MenuItem } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import TranslateIcon from "@mui/icons-material/Translate";
 import { LightMode, DarkMode } from "@mui/icons-material";
 import { Link, usePathname, getPathname } from "@/i18n/navigation";
 import Image from "next/image";
@@ -142,6 +142,32 @@ export default function Header() {
             alignItems: "center",
           }}
         >
+          {/* langage selection */}
+          <Select
+            value={locale}
+            onChange={(e: any) => changeLanguage(e.target.value)}
+            MenuProps={{ disablePortal: true }}
+            variant="standard" // Optional: remove border variant
+            disableUnderline // Removes the underline if using standard variant
+            sx={{
+              height: 36,
+              minHeight: 36,
+              '& .MuiSelect-select': {
+                padding: '6px 12px',
+                display: 'flex',
+                alignItems: 'center',
+              },
+              '& fieldset': {
+                border: 'none',
+              },
+              backgroundColor: 'transparent',
+              color: currentTheme === "light" ? "#6a1b9a" : "#e1bee7",
+              textTransform: "none",
+            }}
+          >
+            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="am">Amharic</MenuItem>
+          </Select>
           {/* Login Button */}
           <Button
             component={Link}
@@ -203,20 +229,6 @@ export default function Header() {
           >
             {currentTheme === "light" ? <DarkMode /> : <LightMode />}
           </IconButton>
-
-          {/* Language Toggle */}
-          <IconButton
-            onClick={() => changeLanguage(locale === "en" ? "am" : "en")}
-            sx={{
-              color: currentTheme === "light" ? "#6a1b9a" : "#e1bee7",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                bgcolor: "rgba(106, 27, 154, 0.2)",
-              },
-            }}
-          >
-            <TranslateIcon />
-          </IconButton>
         </Box>
 
         {/* Mobile Menu Toggle */}
@@ -263,7 +275,7 @@ export default function Header() {
               fontWeight: 600,
             }}
           >
-          <MenuIcon/>
+            <MenuIcon />
           </Typography>
           <IconButton onClick={toggleMenu}>
             <CloseIcon sx={{ color: currentTheme === "light" ? "#333" : "#e0e0e0" }} />
@@ -302,19 +314,31 @@ export default function Header() {
             </ListItem>
           ))}
           <ListItem sx={{ mt: 2 }}>
-            <Button
-              fullWidth
-              onClick={() => changeLanguage(locale === "en" ? "am" : "en")}
-              startIcon={<TranslateIcon />}
-              sx={{
-                justifyContent: "flex-start",
-                color: currentTheme === "light" ? "#6a1b9a" : "#e1bee7",
-                textTransform: "none",
-                fontSize: "1.1rem",
-              }}
-            >
-              {locale === "en" ? "Amharic" : "English"}
-            </Button>
+             <Select
+            value={locale}
+            onChange={(e: any) => changeLanguage(e.target.value)}
+            MenuProps={{ disablePortal: true }}
+            variant="standard" // Optional: remove border variant
+            disableUnderline // Removes the underline if using standard variant
+            sx={{
+              height: 36,
+              minHeight: 36,
+              '& .MuiSelect-select': {
+                padding: '6px 12px',
+                display: 'flex',
+                alignItems: 'center',
+              },
+              '& fieldset': {
+                border: 'none',
+              },
+              backgroundColor: 'transparent',
+              color: currentTheme === "light" ? "#6a1b9a" : "#e1bee7",
+              textTransform: "none",
+            }}
+          >
+            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="am">Amharic</MenuItem>
+          </Select>
           </ListItem>
           <ListItem>
             <Button
