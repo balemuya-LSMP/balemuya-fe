@@ -45,7 +45,7 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${window.location.origin}/auth/google-callback&response_type=code&scope=email%20profile%20openid&access_type=offline&prompt=consent`
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${window.location.origin}/en/auth/google-callback&response_type=code&scope=email%20profile%20openid&access_type=offline&prompt=consent`
     window.location.href = url;
   };
 
