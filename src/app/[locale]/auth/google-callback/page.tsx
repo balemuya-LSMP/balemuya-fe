@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import { useRouter } from "@/i18n/navigation";
 import { useGoogleLoginMutation } from "@/store/api/auth.api";
 import { toast } from "react-toastify";
 import { useAuth } from "@/contexts/authContext";
@@ -11,35 +13,50 @@ const GoogleCallback = () => {
   const router = useRouter();
   const { login } = useAuth();
   const [googleLogin] = useGoogleLoginMutation();
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-     
-    if (code) {
-  
-      googleLogin({ code: code})
-        .then((response) => {
-          if (response.data) {
-            console.log("Google login successful:", response.data);
-            login(response.data);
-          }
-          toast.success("Google login successful!");
+    const encodedCode = code ? code.replaceAll("/", "%2F") : null;
 
-          if (response?.data?.user?.user_type === "admin") {
-            router.push("/admin/dashboard");
-          } else if (response?.data?.user?.user_type === "customer") {
-            router.push("/customer");
-          } else if (response?.data?.user?.user_type === "professional") {
-            router.push("/professional");
+    if (encodedCode) {
+      googleLogin({ code: encodedCode })
+        .then((response: any) => {
+          console.log("Google login response:", response);
+          if (response?.data) {
+            const loginData = {
+              message: "Google login successful",
+              user: {
+                id: response.data.id,
+                email: response.data.email,
+                user_type: response.data.user_type,
+                entity_type: response.data.entity_type,
+                access: response.data.access,
+                refresh: response.data.refresh,
+                username: response.data.username, 
+              }
+            };
+
+            console.log("Google login successful:", loginData);
+            login(loginData);
+            toast.success("Google login successful!");
+
+            const { user_type } = loginData.user;
+            if (user_type === "admin") {
+              router.push("/admin/dashboard");
+            } else if (user_type === "customer") {
+              router.push("/customer");
+            } else if (user_type === "professional") {
+              router.push("/professional");
+            } else {
+              router.push("/");
+            }
           } else {
-            router.push("/");
+            throw new Error("Invalid response from server.");
           }
         })
         .catch((err) => {
           console.error("Google login failed:", err);
-          setError("Google login failed. Please try again.");
           toast.error("Google login failed.");
         });
     }
@@ -55,10 +72,8 @@ const GoogleCallback = () => {
           Processing Your Google Login
         </h2>
         <p className="text-gray-600 mb-4">
-          We&apos;re securely verifying your account...
+          We're securely verifying your account...
         </p>
-
-        {error && <p className="text-red-500 mt-4 text-sm">{error}</p>}
       </div>
     </div>
   );
