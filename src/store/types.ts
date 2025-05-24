@@ -30,6 +30,7 @@ export interface UserData {
   entity_type: string;
   access: string;
   refresh: string;
+  username: string;
 }
 
 export interface loginResponse {
