@@ -41,7 +41,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
 import Header from "../_components/header";
 import { usePaymentServiceMutation } from "@/store/api/userProfile.api";
-
+import { useCompleteServiceCustomerMutation } from "@/store/api/services.api";
 const StyledTab = styled(Tab)(({ theme }) => ({
     textTransform: 'none',
     fontWeight: theme.typography.fontWeightMedium,
@@ -62,7 +62,7 @@ export default function JobsPage() {
 
     const { data: serviceRequests } = useGetMyRequestServicesQuery(activeTab);
     const [paymentService] = usePaymentServiceMutation();
-
+    const [completeServiceCustomer] = useCompleteServiceCustomerMutation();
 
     const [paymentModalOpen, setPaymentModalOpen] = useState(false);
     const [paymentAmount, setPaymentAmount] = useState('');
@@ -122,6 +122,18 @@ export default function JobsPage() {
         }
     };
 
+
+    const handleComplete = async (id: string) => {
+        try {
+            await completeServiceCustomer({ id }).unwrap();
+            toast.success("Service completed successfully");
+        } catch (error) {
+            console.error("Error completing service:", error);
+            toast.error("Failed to complete service");
+        }
+    };
+
+    
     return (
         <>
             <Header searchQuery={""} setSearchQuery={function (query: string): void {
@@ -205,9 +217,23 @@ export default function JobsPage() {
                                                     </Typography>
                                                 </Box>
                                             </Box>
-                                            <CardActions sx={{ justifyContent: 'flex-end' }}>
+                                             <CardActions sx={{ justifyContent: 'flex-end' }}>
                                                 {
                                                     request.status === "accepted" && (
+                                                        <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                            onClick={() => handleComplete(request.id)}
+                                                        >
+                                                           Complete
+                                                        </Button>
+                                                    )
+
+                                                }
+                                            </CardActions>
+                                            <CardActions sx={{ justifyContent: 'flex-end' }}>
+                                                {
+                                                    request.status === "completed" && (
                                                         <Button
                                                             variant="contained"
                                                             color="primary"
