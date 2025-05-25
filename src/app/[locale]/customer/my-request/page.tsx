@@ -13,6 +13,7 @@ import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
 import Footer from "../../(features)/_components/footer";
+import { useParams } from "next/navigation";
 
 // MUI Imports
 import {
@@ -28,10 +29,18 @@ import {
     Typography,
     Tabs,
     Tab,
-    Avatar
+    Avatar,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+    IconButton
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
 import Header from "../_components/header";
+import { usePaymentServiceMutation } from "@/store/api/userProfile.api";
 
 const StyledTab = styled(Tab)(({ theme }) => ({
     textTransform: 'none',
@@ -45,11 +54,25 @@ const StyledTab = styled(Tab)(({ theme }) => ({
 }));
 
 export default function JobsPage() {
+    const params = useParams();
+    const locale = params.locale
     const { position, getPosition } = useGeolocation();
     const [activeTab, setActiveTab] = useState("");
-    const validStatuses = ["accepted", "canceled","completed", "rejected"];
+    const validStatuses = ["accepted", "canceled", "completed", "rejected"];
 
     const { data: serviceRequests } = useGetMyRequestServicesQuery(activeTab);
+    const [paymentService] = usePaymentServiceMutation();
+
+
+    const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+    const [paymentAmount, setPaymentAmount] = useState('');
+    const [currentBookingId, setCurrentBookingId] = useState('');
+    const [currentProfessionalId, setCurrentProfessionalId] = useState('');
+
+
+    console.log("Service Requests:", serviceRequests);
+
+
 
     useEffect(() => {
         getPosition();
@@ -64,7 +87,41 @@ export default function JobsPage() {
     };
 
 
-   
+
+    const handlePaymentClick = (bookingId: string, professionalId: string) => {
+        setCurrentBookingId(bookingId);
+        setCurrentProfessionalId(professionalId);
+        setPaymentModalOpen(true);
+    };
+    const handlePayment = async () => {
+        try {
+            if (!paymentAmount || isNaN(Number(paymentAmount))) {
+                toast.error("Please enter a valid amount");
+                return;
+            }
+
+            const response = await paymentService({
+                professional: currentProfessionalId,
+                amount: Number(paymentAmount),
+                service_request: currentBookingId,
+                payment_type: "direct_request",
+                return_url: `${window.location.origin}/${locale}/customer/check`
+            }).unwrap();
+
+            if (response?.data?.payment_url) {
+                window.location.href = response.data.payment_url;
+            } else {
+                throw new Error("Payment URL not found in response");
+            }
+        } catch (error) {
+            console.error("Payment failed:", error);
+            toast.error("Payment failed. Please try again.");
+        } finally {
+            setPaymentModalOpen(false);
+            setPaymentAmount('');
+        }
+    };
+
     return (
         <>
             <Header searchQuery={""} setSearchQuery={function (query: string): void {
@@ -149,7 +206,18 @@ export default function JobsPage() {
                                                 </Box>
                                             </Box>
                                             <CardActions sx={{ justifyContent: 'flex-end' }}>
-                                               
+                                                {
+                                                    request.status === "accepted" && (
+                                                        <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                            onClick={() => handlePaymentClick(request.id, request.professional.professional_id)}
+                                                        >
+                                                            Pay Now
+                                                        </Button>
+                                                    )
+
+                                                }
                                             </CardActions>
                                         </Box>
 
@@ -173,6 +241,68 @@ export default function JobsPage() {
                             </Grid>
                         ))}
                     </Grid>
+                    <Dialog
+                        open={paymentModalOpen}
+                        onClose={() => {
+                            setPaymentModalOpen(false);
+                            setPaymentAmount('');
+                        }}
+                        maxWidth="xs"
+                        fullWidth
+                    >
+                        <DialogTitle sx={{ m: 0, p: 2 }}>
+                            Enter Amount
+                            <IconButton
+                                aria-label="close"
+                                onClick={() => {
+                                    setPaymentModalOpen(false);
+                                    setPaymentAmount('');
+                                }}
+                                sx={{
+                                    position: 'absolute',
+                                    right: 8,
+                                    top: 8,
+                                    color: (theme) => theme.palette.grey[500],
+                                }}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </DialogTitle>
+
+                        <DialogContent dividers>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label="Amount (Birr)"
+                                type="number"
+                                fullWidth
+                                variant="outlined"
+                                value={paymentAmount}
+                                onChange={(e) => setPaymentAmount(e.target.value)}
+                                inputProps={{ min: 1, step: 0.01 }}
+                            />
+                        </DialogContent>
+
+                        <DialogActions>
+                            <Button
+                                onClick={handlePayment}
+                                color="primary"
+                                variant="contained"
+                            >
+                                Pay Now
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    setPaymentModalOpen(false);
+                                    setPaymentAmount('');
+                                }}
+                                color="secondary"
+                                variant="outlined"
+                            >
+                                Cancel
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Container>
             </Box>
             <Footer />
