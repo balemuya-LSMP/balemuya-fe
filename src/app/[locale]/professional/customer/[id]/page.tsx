@@ -36,30 +36,11 @@ import { getDistanceFromLatLon } from "@/shared/utils";
 import Loader from "@/app/[locale]/(features)/_components/loader";
 import MapComponent from "@/app/[locale]/(features)/_components/map";
 
-const job = {
-  id: 1,
-  reviews: [
-    { client: "Jane", rating: 5, comment: "Great work!" },
-    { client: "Bob", rating: 4, comment: "Quick and professional." },
-    { client: "Bob", rating: 4, comment: "Quick and professional." },
-    { client: "Bob", rating: 4, comment: "Quick and professional." },
-    { client: "Bob", rating: 4, comment: "Quick and professional." },
-  ],
-  previous_work: [
-    "/images/main.jpg",
-    "/images/main.jpg",
-    "/images/main.jpg",
-    "/images/main.jpg",
-  ],
-};
-
 export default function ProfessionalDetailsPage() {
   const theme = useTheme();
   const { id } = useParams();
   const { data: customerData, isLoading } = useGetCustomerByIdQuery(id);
   const { position, getPosition } = useGeolocation();
-  const [requestService] = useRequestProfessionalServiceMutation();
-  const [requestModal, setRequestModal] = useState(false);
   const [message, setMessage] = useState("");
 
   const customerInfo = customerData?.data;
@@ -79,16 +60,6 @@ export default function ProfessionalDetailsPage() {
     },
   ];
 
-  const handleRequest = () => {
-    const newData = {
-      professional_id: customerInfo?.customer?.user?.id,
-      detail: message,
-    };
-    requestService({ data: newData }).unwrap();
-    toast.success("Request sent successfully");
-    setMessage("");
-    setRequestModal(false);
-  };
 
   if (isLoading) return <Loader />;
 
@@ -108,7 +79,7 @@ export default function ProfessionalDetailsPage() {
             }
             title={
               <Typography variant="h6" component="div">
-                {customerInfo?.customer?.user?.first_name}
+                {customerInfo?.customer?.user?.full_name}
               </Typography>
             }
             subheader={
@@ -120,16 +91,16 @@ export default function ProfessionalDetailsPage() {
               <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Rating
-                    value={customerInfo?.customer?.rating}
+                    value={customerInfo?.customer?.rating || 0}
                     precision={0.5}
                     readOnly
                   />
                   <Typography variant="body1" sx={{ ml: 1 }}>
-                    {customerInfo?.customer?.rating}
+                    {customerInfo?.customer?.rating || "No ratings yet"}
                   </Typography>
                 </Box>
                 <Typography variant="body2">
-                  {customerInfo?.customer?.user?.address?.country}
+                  {customerInfo?.customer?.user?.address?.city || customerInfo?.customer?.user?.address?.region || customerInfo?.customer?.user?.address?.country}
                 </Typography>
               </Box>
             }
@@ -138,12 +109,14 @@ export default function ProfessionalDetailsPage() {
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <FaLocationDot color={theme.palette.primary.main} />
               <Typography variant="body2" sx={{ ml: 1 }}>
-                {getDistanceFromLatLon(
-                  position?.lat ?? 11.6,
-                  position?.lng ?? 37.3833333,
-                  lat,
-                  lng
-                )}
+                {lat && lng && position?.lat && position?.lng ? (
+                  `${getDistanceFromLatLon(
+                    position.lat,
+                    position.lng,
+                    parseFloat(lat),
+                    parseFloat(lng)
+                  )} km away`
+                ) : "Location not available"}
               </Typography>
             </Box>
 
@@ -151,88 +124,151 @@ export default function ProfessionalDetailsPage() {
               Bio
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              {customerInfo?.customer?.user?.bio}
+              {customerInfo?.customer?.user?.bio || "No bio provided"}
+            </Typography>
+
+            <Typography variant="subtitle1" sx={{ fontWeight: "medium", mt: 2 }}>
+              Contact
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              Phone: {customerInfo?.customer?.user?.phone_number}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              Email: {customerInfo?.customer?.user?.email}
             </Typography>
           </CardContent>
         </Card>
 
-        {/* Previous Work Section */}
-        <Card sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Previous Work
-            </Typography>
-            <Grid container spacing={2}>
-              {job.previous_work.map((photo, index) => (
-                <Grid item xs={6} sm={4} md={3} key={index}>
-                  <Paper elevation={2}>
-                    <Box
-                      component="img"
-                      src={photo}
-                      alt={`Previous work ${index + 1}`}
-                      sx={{
-                        width: "100%",
-                        height: 150,
-                        objectFit: "cover",
-                      }}
-                    />
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
-          </CardContent>
-        </Card>
+        {/* Active Service Posts Section */}
+        {customerInfo?.active_service_posts?.length > 0 && (
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Active Service Posts ({customerInfo.active_service_posts.length})
+              </Typography>
+              <List sx={{ maxHeight: 300, overflow: "auto" }}>
+                {customerInfo.active_service_posts.map((post: any, index: any) => (
+                  <div key={post.id}>
+                    <ListItem alignItems="flex-start">
+                      <ListItemText
+                        primary={
+                          <Typography component="span" fontWeight="medium">
+                            {post.title}
+                          </Typography>
+                        }
+                        secondary={
+                          <>
+                            <Typography component="span" variant="body2" color="text.secondary">
+                              {post.description}
+                            </Typography>
+                            <Typography component="span" variant="caption" display="block">
+                              Category: {post.category}
+                            </Typography>
+                            <Typography component="span" variant="caption" display="block">
+                              Due: {new Date(post.work_due_date).toLocaleDateString()}
+                            </Typography>
+                          </>
+                        }
+                      />
+                    </ListItem>
+                    {index < customerInfo.active_service_posts.length - 1 && (
+                      <Divider variant="inset" component="li" />
+                    )}
+                  </div>
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Completed Service Posts Section */}
+        {customerInfo?.completed_service_posts?.length > 0 && (
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Completed Service Posts ({customerInfo.completed_service_posts.length})
+              </Typography>
+              <List sx={{ maxHeight: 300, overflow: "auto" }}>
+                {customerInfo.completed_service_posts.map((post: any, index: any) => (
+                  <div key={post.id}>
+                    <ListItem alignItems="flex-start">
+                      <ListItemText
+                        primary={
+                          <Typography component="span" fontWeight="medium">
+                            {post.title}
+                          </Typography>
+                        }
+                        secondary={
+                          <>
+                            <Typography component="span" variant="body2" color="text.secondary">
+                              {post.description}
+                            </Typography>
+                            <Typography component="span" variant="caption" display="block">
+                              Category: {post.category}
+                            </Typography>
+                            <Typography component="span" variant="caption" display="block">
+                              Due: {new Date(post.work_due_date).toLocaleDateString()}
+                            </Typography>
+                          </>
+                        }
+                      />
+                    </ListItem>
+                    {index < customerInfo.completed_service_posts.length - 1 && (
+                      <Divider variant="inset" component="li" />
+                    )}
+                  </div>
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Reviews Section */}
-        <Card>
-          <CardContent>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Customer Reviews
-            </Typography>
-            <List sx={{ maxHeight: 300, overflow: "auto" }}>
-              {job.reviews.map((review, index) => (
-                <div key={index}>
-                  <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                      <Avatar>{review.client.charAt(0)}</Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <>
-                          <Typography component="span" fontWeight="medium">
-                            {review.client}
+        {customerInfo?.reviews?.length > 0 && (
+          <Card>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Customer Reviews ({customerInfo.reviews.length})
+              </Typography>
+              <List sx={{ maxHeight: 300, overflow: "auto" }}>
+                {customerInfo.reviews.map((review: any, index: any) => (
+                  <div key={review.id}>
+                    <ListItem alignItems="flex-start">
+                      <ListItemAvatar>
+                        <Avatar src={review.user.profile_image_url}>
+                          {review.user.full_name.charAt(0)}
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <>
+                            <Typography component="span" fontWeight="medium">
+                              {review.user.full_name}
+                            </Typography>
+                            <Rating
+                              value={review.rating}
+                              readOnly
+                              size="small"
+                              sx={{ ml: 1 }}
+                            />
+                          </>
+                        }
+                        secondary={
+                          <Typography component="span" variant="body2" color="text.secondary">
+                            {review.comment}
                           </Typography>
-                          <Rating
-                            value={review.rating}
-                            readOnly
-                            size="small"
-                            sx={{ ml: 1 }}
-                          />
-                        </>
-                      }
-                      secondary={
-                        <Typography variant="body2" color="text.secondary">
-                          {review.comment}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                  {index < job.reviews.length - 1 && <Divider variant="inset" component="li" />}
-                </div>
-              ))}
-            </List>
-          </CardContent>
-        </Card>
-
-        {/* Request Service Button */}
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{ mt: 3 }}
-          onClick={() => setRequestModal(true)}
-        >
-          Request Service
-        </Button>
+                        }
+                      />
+                    </ListItem>
+                    {index < customerInfo.reviews.length - 1 && (
+                      <Divider variant="inset" component="li" />
+                    )}
+                  </div>
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        )}
       </Box>
 
       {/* Right Side - Map */}
@@ -241,45 +277,6 @@ export default function ProfessionalDetailsPage() {
           <MapComponent userLocations={userLocations} />
         </Paper>
       </Box>
-
-      {/* Request Service Modal */}
-      <Modal open={requestModal} onClose={() => setRequestModal(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "33%",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 1,
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Request Service
-          </Typography>
-          <TextField
-            multiline
-            rows={4}
-            fullWidth
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Enter your request details..."
-            variant="outlined"
-            sx={{ mb: 2 }}
-          />
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={handleRequest}
-            disabled={!message}
-          >
-            Send Request
-          </Button>
-        </Box>
-      </Modal>
     </Container>
   );
 }
