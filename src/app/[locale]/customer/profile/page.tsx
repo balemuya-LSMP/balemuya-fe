@@ -68,6 +68,8 @@ const UserProfile = () => {
   const userData = data?.user?.user;
   const address = userData?.address;
 
+  console.log(address);
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
@@ -158,7 +160,13 @@ const UserProfile = () => {
             <StyledAvatar src={avatarSrc} alt="User Avatar" />
 
             <Typography variant="h4" component="h1" textAlign="center" fontWeight={600}>
-              {`${userData.first_name} ${userData.middle_name || ""} ${userData.last_name}`}
+              {userData.user_type === "organization"
+                ? userData.org_name
+                : `${userData.first_name} ${userData.last_name}`}
+            </Typography>
+            {/* bio */}
+            <Typography variant="body1" textAlign="center" color="text.secondary">
+              {userData.bio ?? ""}
             </Typography>
 
             <Stack spacing={2} width="100%">
@@ -189,7 +197,7 @@ const UserProfile = () => {
                 </Stack>
               </Stack>
 
-              {address && (
+              {address ? (
                 <Stack
                   spacing={2}
                   sx={{
@@ -216,6 +224,16 @@ const UserProfile = () => {
                     {`${address.city}, ${address.region}, ${address.country}`}
                   </Typography>
                 </Stack>
+              ) : (
+                <Button
+                  variant="outlined"
+                  startIcon={<LocationIcon />}
+                  onClick={() => setIsAddressModalOpen(true)}
+                  fullWidth
+                  sx={{ mt: 2 }}
+                >
+                  Add Address
+                </Button>
               )}
             </Stack>
           </Stack>
@@ -237,22 +255,32 @@ const UserProfile = () => {
 
             <form onSubmit={handleSubmit}>
               <Stack spacing={3}>
-                <TextField
-                  name="first_name"
-                  label="First Name"
-                  defaultValue={userData.first_name}
-                  fullWidth
-                  variant="outlined"
-                />
-
-                <TextField
-                  name="last_name"
-                  label="Last Name"
-                  defaultValue={userData.last_name}
-                  fullWidth
-                  variant="outlined"
-                />
-
+                {userData.user_type === "organization" ? (
+                  <TextField
+                    name="org_name"
+                    label="Organization Name"
+                    defaultValue={userData.org_name}
+                    fullWidth
+                    variant="outlined"
+                  />
+                ) : (
+                  <>
+                    <TextField
+                      name="first_name"
+                      label="First Name"
+                      defaultValue={userData.first_name}
+                      fullWidth
+                      variant="outlined"
+                    />
+                    <TextField
+                      name="last_name"
+                      label="Last Name"
+                      defaultValue={userData.last_name}
+                      fullWidth
+                      variant="outlined"
+                    />
+                  </>
+                )}
                 <Box>
                   <input
                     accept="image/*"
@@ -289,13 +317,22 @@ const UserProfile = () => {
                   fullWidth
                   variant="outlined"
                 />
+                <TextField
+                  name="bio"
+                  label="Bio"
+                  defaultValue={userData.bio ?? ""}
+                  fullWidth
+                  variant="outlined"
+                  multiline
+                  rows={2}
+                />
 
                 <Stack direction="row" spacing={2} justifyContent="flex-end" mt={2}>
                   <Button variant="outlined" onClick={handleModalClose}>
                     Cancel
                   </Button>
                   <Button type="submit" variant="contained" color="primary">
-                    Save Changes
+                    Save
                   </Button>
                 </Stack>
               </Stack>
@@ -348,7 +385,7 @@ const UserProfile = () => {
                     Cancel
                   </Button>
                   <Button type="submit" variant="contained" color="primary">
-                    Save Address
+                    Save 
                   </Button>
                 </Stack>
               </Stack>
