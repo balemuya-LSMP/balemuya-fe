@@ -241,20 +241,34 @@ export const serviceApi = createApi({
     searchProfessionals: builder.query<any, string>({
       query: (query) => `users/customer/search-professional/?q=${query}`,
     }),
-    reportService: builder.mutation<any, {id:string, reason: string }>({
+    reportService: builder.mutation<any, { id: string; reason: string }>({
       query: ({ id, reason }) => ({
         url: `services/service-posts/${id}/report/`,
         method: "POST",
-        body: {reason},
+        body: { reason },
       }),
       invalidatesTags: ["ServicePosts"],
     }),
-     getMyRequestServices: builder.query<any, string | undefined>({
+    getMyRequestServices: builder.query<any, string | undefined>({
       query: (query) =>
         query && query !== ""
           ? `/users/customer/service-request/?status=${query}`
           : `users/customer/service-request/`,
       providesTags: ["ServicePosts"],
+    }),
+    completeService: builder.mutation<any, { id: string }>({
+      query: ({ id }) => ({
+        url: `users/professional/service-requests/${id}/complete/`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["ServicePosts"],
+    }),
+    completeServiceCustomer: builder.mutation<any, { id: string }>({
+      query: ({ id }) => ({
+        url: `users/customer/service-request/${id}/complete/`,
+        method: "POST",
+      }),
+      invalidatesTags: ["ServicePosts"],
     }),
   }),
 });
@@ -296,4 +310,6 @@ export const {
   useProfessionalRejectRequestMutation,
   useReportServiceMutation,
   useGetMyRequestServicesQuery,
+  useCompleteServiceMutation,
+  useCompleteServiceCustomerMutation,
 } = serviceApi;
