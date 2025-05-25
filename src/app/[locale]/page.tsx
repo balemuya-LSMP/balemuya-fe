@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
@@ -13,49 +14,32 @@ import { Container, Box, Typography, Button, Card, CardContent, Avatar, Grid } f
 import { Search, People, Lock, PhoneIphone } from "@mui/icons-material";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import { useGetFeedbackQuery } from "@/store/api/auth.api";
 
 export default function Landing() {
   const router = useRouter();
+  const { data: feedbackData } = useGetFeedbackQuery();
   const t = useTranslations("Landing");
 
-  const testimonials = [
-    {
-      image:
-        "https://img.freepik.com/free-vector/young-prince-royal-attire_1308-176144.jpg?t=st=1734116405~exp=1734120005~hmac=9d83712b527a76bde4381cf825822c4256d5d6a1120aedcdc283d90792bb6556&w=740",
-      name: "Ephrem Habtamu",
-      feedback: "This platform helped me find great professionals quickly!",
-    },
-    {
-      image:
-        "https://img.freepik.com/free-vector/young-prince-royal-attire_1308-176144.jpg?t=st=1734116405~exp=1734120005~hmac=9d83712b527a76bde4381cf825822c4256d5d6a1120aedcdc283d90792bb6556&w=740",
-      name: "Esubalew Kunta",
-      feedback: "A fantastic experience! I found everything I needed!",
-    },
-    {
-      image:
-        "https://img.freepik.com/free-vector/young-prince-royal-attire_1308-176144.jpg?t=st=1734116405~exp=1734120005~hmac=9d83712b527a76bde4381cf825822c4256d5d6a1120aedcdc283d90792bb6556&w=740",
-      name: "Alice Johnson",
-      feedback: "The best platform for connecting with experts!",
-    },
-    {
-      image:
-        "https://img.freepik.com/free-vector/young-prince-royal-attire_1308-176144.jpg?t=st=1734116405~exp=1734120005~hmac=9d83712b527a76bde4381cf825822c4256d5d6a1120aedcdc283d90792bb6556&w=740",
-      name: "Yikeber Misganaw",
-      feedback: "I found the perfect professional for my project!",
-    },
-  ];
+
+
+  const testimonials = feedbackData?.results?.slice(0, 5).map((item: any) => ({
+    image: item.user.profile_image_url || "https://via.placeholder.com/150",
+    name: item.user.full_name ?? item.user.username,
+    feedback: item.message,
+  })) ?? [];
 
   const heroImages = [
     "https://img.freepik.com/free-photo/person-front-computer-working-html-concept_23-2150040132.jpg",
     "/images/balem.png",
     "https://img.freepik.com/free-photo/close-up-people-having-business-meeting_23-2147861950.jpg",
-    
+
   ];
 
   return (
     <Box bgcolor="background.default" minHeight="100vh">
       <Header />
-     <Box
+      <Box
         sx={{
           position: "relative",
           height: "80vh",
@@ -244,6 +228,13 @@ export default function Landing() {
           >
             {t("testimonialsTitle")}
           </Typography>
+          <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            sx={{ maxWidth: 600, mx: 'auto', mt: 2 }}
+          >
+            {t("testimonialSubtitle")}
+          </Typography>
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={20}
@@ -252,7 +243,7 @@ export default function Landing() {
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000 }}
           >
-            {testimonials.map((testimonial, index) => (
+            {testimonials.map((testimonial: any, index: any) => (
               <SwiperSlide key={index}>
                 <Card
                   sx={{ p: 3, maxWidth: 400, mx: "auto", textAlign: "center", borderRadius: 3, boxShadow: 2 }}
