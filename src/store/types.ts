@@ -124,7 +124,8 @@ export interface WorkPost {
 export interface paymentInitiate {
   professional: string;
   amount: number;
-  booking: string;
+  booking?: string;
+  service_request?:string,
   payment_type: string;
   return_url: string;
 }
