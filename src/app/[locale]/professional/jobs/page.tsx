@@ -237,7 +237,7 @@ export default function JobsPage() {
                     {job?.description ?? job?.service?.description}
                   </Typography>
 
-                  <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: "auto", }}>
                     {job?.status === "active" && (
                       <>
                         <Button
@@ -290,7 +290,7 @@ export default function JobsPage() {
                     )}
                   </Box>
                   {job.customer && (
-                    <Box sx={{ display: "flex", alignItems: "center", mt: 3, pt: 3, borderTop: 1, borderColor: "divider" }}>
+                    <Box sx={{ display: "flex", alignItems: "center", mt: "auto", pt: 3, borderTop: 1, borderColor: "divider" }}>
                       <Link href={`/professional/customer/${job.customer.user?.id ?? job.customer.id}`} style={{ textDecoration: "none", color: "inherit" }}>
                          <Avatar
                         src={job.customer.user?.profile_image_url ?? job.customer.customer_profile_image}
