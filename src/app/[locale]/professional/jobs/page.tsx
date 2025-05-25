@@ -30,7 +30,6 @@ export default function JobsPage() {
   const [filter, setFilter] = useState<string[]>([]);
   const [reportService] = useReportServiceMutation();
 
-
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["pending", "rejected", "booked", "canceled"];
 
@@ -292,11 +291,13 @@ export default function JobsPage() {
                   </Box>
                   {job.customer && (
                     <Box sx={{ display: "flex", alignItems: "center", mt: 3, pt: 3, borderTop: 1, borderColor: "divider" }}>
-                      <Avatar
+                      <Link href={`/professional/customer/${job.customer.user?.id ?? job.customer.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                         <Avatar
                         src={job.customer.user?.profile_image_url ?? job.customer.customer_profile_image}
                         alt={job.customer.customer_name}
                         sx={{ width: 48, height: 48 }}
                       />
+                      </Link>
                       <Typography variant="body1" sx={{ ml: 2, fontWeight: "medium" }}>
                         {job.customer?.user?.first_name ?? job.customer.customer_name}
                       </Typography>
