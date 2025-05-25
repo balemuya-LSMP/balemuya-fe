@@ -9,7 +9,7 @@ import Header from "../_components/header";
 import { FaLocationDot } from "react-icons/fa6";
 import { GrStatusGood } from "react-icons/gr";
 import { IoIosTime } from "react-icons/io";
-import { useGetServicesQuery, useGetRequestedServicesQuery, useProfessionalAcceptRequestMutation, useProfessionalRejectRequestMutation } from "@/store/api/services.api";
+import { useGetServicesQuery, useGetRequestedServicesQuery, useProfessionalAcceptRequestMutation, useProfessionalRejectRequestMutation, useCompleteServiceMutation } from "@/store/api/services.api";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast, ToastContainer } from "react-toastify";
@@ -29,9 +29,11 @@ import {
   Typography,
   Tabs,
   Tab,
-  Avatar
+  Avatar,
+  CircularProgress
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Loader } from "lucide-react";
 
 const StyledTab = styled(Tab)(({ theme }) => ({
   textTransform: 'none',
@@ -49,11 +51,11 @@ export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("");
-  const validStatuses = ["accepted", "canceled", "rejected"];
+  const validStatuses = ["accepted", "completed", "canceled", "rejected"];
   const [acceptRequest] = useProfessionalAcceptRequestMutation();
   const [rejectRequest] = useProfessionalRejectRequestMutation();
-
-  const { data: serviceRequests } = useGetRequestedServicesQuery(activeTab);
+  const [completeService] = useCompleteServiceMutation();
+  const { data: serviceRequests, isLoading } = useGetRequestedServicesQuery(activeTab);
 
   useEffect(() => {
     getPosition();
@@ -89,6 +91,16 @@ export default function JobsPage() {
     }
 
   }
+
+  const handleComplete = async (id: any) => {
+    try {
+      await completeService({ id }).unwrap();
+      toast.success("Service completed successfully");
+    } catch (error) {
+      console.error("Error completing service:", error);
+      toast.error("Failed to complete service");
+    }
+  }
   return (
     <>
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} filter={filter} setFilter={setFilter} />
@@ -113,109 +125,132 @@ export default function JobsPage() {
             </Tabs>
           </Box>
           <Divider />
+          {
+            isLoading ? (
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '384px'
+              }}>
+                <CircularProgress size={60} thickness={4} />
+              </Box>
+            ) : serviceRequests?.length === 0 ? (
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '384px'
+              }}>
+                <Typography variant="h6" color="text.secondary">
+                  No jobs found
+                </Typography>
+              </Box>
+            ) : (
 
-          {serviceRequests?.length === 0 && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '384px' }}>
-              <Typography variant="h6" color="text.secondary">
-                No jobs found
-              </Typography>
-            </Box>
-          )}
-
-          {/* Jobs Section */}
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            {serviceRequests?.map((request: any) => (
-              <Grid item xs={12} sm={6} lg={4} key={request.id}>
-                <Card sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  transition: 'box-shadow 0.3s',
-                  '&:hover': {
-                    boxShadow: 4
-                  }
-                }}>
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="p" gutterBottom>
-                      {request?.detail}
-                    </Typography>
-
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 2 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <GrStatusGood style={{ color: '#7b1fa2', marginRight: 8 }} />
-                        <Chip
-                          label={request?.status && request.status.charAt(0).toUpperCase() + request?.status.slice(1)}
-                          size="small"
-                          sx={{ backgroundColor: 'secondary.light', color: 'common.white' }}
-                        />
-                      </Box>
-
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <IoIosTime style={{ color: '#7b1fa2', marginRight: 8 }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {timeDifference(new Date(), new Date(request?.created_at))}
-                          </Typography>
-                        </Box>
-
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <FaLocationDot style={{ color: '#7b1fa2', marginRight: 8 }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {getDistanceFromLatLon(
-                              userLat,
-                              userLng,
-                              request.customer?.user?.address?.latitude,
-                              request.customer?.user?.address?.longitude
-                            )}
-                          </Typography>
-                        </Box>
-                      </Box>
-                      <CardActions sx={{ justifyContent: 'flex-end' }}>
-                        {request.status === "pending" && (
-                          <>
-                            <Button
-                              variant="contained"
-                              size="small"
-                              onClick={() => handleAccept(request.id)}
-                            >
-                              Accept
-                            </Button>
-                            <Button
-                              variant="outlined"
-                              color="error"
-                              size="small"
-                              onClick={() => handleReject(request.id)}
-                            >
-                              Reject
-                            </Button>
-                          </>
-                        )}
-                      </CardActions>
-                    </Box>
-
-                    {/* Poster info */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', pt: 2, mt: 2, borderTop: 1, borderColor: 'divider' }}>
-                      <Link href={`/professional/customer/${request.customer?.user?.id}`}>
-                        <Avatar
-                          src={request.customer.user?.profile_image_url}
-                          alt={request.customer.user?.first_name}
-                          sx={{ width: 48, height: 48 }}
-                        />
-                      </Link>
-                      <Box sx={{ ml: 1.5 }}>
-                        <Typography variant="subtitle2">
-                          {request.customer?.user?.first_name}
+              <Grid container spacing={3} sx={{ mt: 2 }}>
+                {serviceRequests?.map((request: any) => (
+                  <Grid item xs={12} sm={6} lg={4} key={request.id}>
+                    <Card sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      transition: 'box-shadow 0.3s',
+                      '&:hover': {
+                        boxShadow: 4
+                      }
+                    }}>
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <Typography variant="h6" component="p" gutterBottom>
+                          {request?.detail}
                         </Typography>
-                      </Box>
-                    </Box>
-                  </CardContent>
 
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <GrStatusGood style={{ color: '#7b1fa2', marginRight: 8 }} />
+                            <Chip
+                              label={request?.status && request.status.charAt(0).toUpperCase() + request?.status.slice(1)}
+                              size="small"
+                              sx={{ backgroundColor: 'secondary.light', color: 'common.white' }}
+                            />
+                          </Box>
 
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <IoIosTime style={{ color: '#7b1fa2', marginRight: 8 }} />
+                              <Typography variant="body2" color="text.secondary">
+                                {timeDifference(new Date(), new Date(request?.created_at))}
+                              </Typography>
+                            </Box>
 
-                </Card>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <FaLocationDot style={{ color: '#7b1fa2', marginRight: 8 }} />
+                              <Typography variant="body2" color="text.secondary">
+                                {getDistanceFromLatLon(
+                                  userLat,
+                                  userLng,
+                                  request.customer?.user?.address?.latitude,
+                                  request.customer?.user?.address?.longitude
+                                )}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <CardActions sx={{ justifyContent: 'flex-end' }}>
+                            {request.status === "pending" && (
+                              <>
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  onClick={() => handleAccept(request.id)}
+                                >
+                                  Accept
+                                </Button>
+                                <Button
+                                  variant="outlined"
+                                  color="error"
+                                  size="small"
+                                  onClick={() => handleReject(request.id)}
+                                >
+                                  Reject
+                                </Button>
+                              </>
+                            )}
+                          </CardActions>
+                          <CardActions sx={{ justifyContent: 'flex-end' }}>
+                            {request.status === "accepted" && (
+                              <Button
+                                variant="contained"
+                                size="small"
+                                onClick={() => handleComplete(request.id)}
+                              >
+                                complete
+                              </Button>
+                            )}
+                          </CardActions>
+                        </Box>
+
+                        {/* Poster info */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', pt: 2, mt: 2, borderTop: 1, borderColor: 'divider' }}>
+                          <Link href={`/professional/customer/${request.customer?.user?.id}`}>
+                            <Avatar
+                              src={request.customer.user?.profile_image_url}
+                              alt={request.customer.user?.first_name}
+                              sx={{ width: 48, height: 48 }}
+                            />
+                          </Link>
+                          <Box sx={{ ml: 1.5 }}>
+                            <Typography variant="subtitle2">
+                              {request.customer?.user?.first_name}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
+            )
+          }
         </Container>
       </Box>
       <Footer />
