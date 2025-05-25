@@ -222,67 +222,7 @@ export default function Header({
             ))}
           </Box>
 
-          {/* Mobile Menu */}
-          <Box sx={{ display: { xs: "flex", md: "none" }, ml: 1 }}>
-            <IconButton
-              size="large"
-              aria-label="open navigation"
-              onClick={handleOpenNavMenu}
-              color="primary"
-              sx={{
-                borderRadius: 2,
-                background: alpha(theme.palette.primary.main, 0.08),
-                "&:hover": {
-                  background: alpha(theme.palette.primary.main, 0.18),
-                },
-              }}
-            >
-              <FaBars />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-                mt: 1,
-                ...glassStyle,
-              }}
-              PaperProps={{
-                sx: { ...glassStyle, minWidth: 180 },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem
-                  key={page.name}
-                  onClick={() => {
-                    handleCloseNavMenu();
-                    router.push(page.path);
-                  }}
-                  sx={{
-                    fontWeight: 500,
-                    fontSize: "1rem",
-                    "&:hover": {
-                      color: "primary.main",
-                      background: alpha(theme.palette.primary.main, 0.08),
-                    },
-                  }}
-                >
-                  {page.name}
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+
 
           {/* Search, Filter, Notifications, Profile */}
           <Box
@@ -529,6 +469,67 @@ export default function Header({
                 </MenuItem>
               </Menu>
             </Box>
+          </Box>
+                    {/* Mobile Menu */}
+          <Box sx={{ display: { xs: "flex", md: "none" }, ml: 1 }}>
+            <IconButton
+              size="large"
+              aria-label="open navigation"
+              onClick={handleOpenNavMenu}
+              color="primary"
+              sx={{
+                borderRadius: 2,
+                background: alpha(theme.palette.primary.main, 0.08),
+                "&:hover": {
+                  background: alpha(theme.palette.primary.main, 0.18),
+                },
+              }}
+            >
+              <FaBars />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+                mt: 1,
+                ...glassStyle,
+              }}
+              PaperProps={{
+                sx: { ...glassStyle, minWidth: 180 },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem
+                  key={page.name}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    router.push(page.path);
+                  }}
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: "1rem",
+                    "&:hover": {
+                      color: "primary.main",
+                      background: alpha(theme.palette.primary.main, 0.08),
+                    },
+                  }}
+                >
+                  {page.name}
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
         </Toolbar>
       </Container>
