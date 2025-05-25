@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 "use client";
@@ -20,6 +21,9 @@ import Header from "../../(features)/_components/header";
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [userType, setUserType] = useState("");
+  const [entityType, setEntityType] = useState("");
+  const [showUserTypeSelection, setShowUserTypeSelection] = useState(false);
   const [registerUser, { isLoading }] = useRegisterUserMutation();
   const router = useRouter();
 
@@ -47,6 +51,21 @@ export default function Register() {
     }
   };
 
+
+  const handleGoogleSignUp = (e: any) => {
+    e.preventDefault();;
+
+    if (userType && entityType) {
+      localStorage.setItem("userType", userType);
+      localStorage.setItem("entityType", entityType)
+      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${window.location.origin}/en/auth/google-callback&response_type=code&scope=email%20profile%20openid&access_type=offline&prompt=consent`
+      window.location.href = url;
+    } else {
+      toast.error("Please select user type and entity type before signing up with Google.");
+    }
+
+  }
+
   return (
     <>
       <Header />
@@ -59,7 +78,7 @@ export default function Register() {
           justifyContent: "center",
         }}>
         <Container component="main" maxWidth="sm">
-          <Paper elevation={3} sx={{ p: 4, borderRadius:3, my: 6, position: "relative", overflow: "visible" }}>
+          <Paper elevation={3} sx={{ p: 4, borderRadius: 3, my: 6, position: "relative", overflow: "visible" }}>
             <Box
               sx={{
                 position: "absolute",
@@ -132,7 +151,7 @@ export default function Register() {
                   </IconButton>
                 ),
               }} />
-               <Button
+              <Button
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -149,6 +168,69 @@ export default function Register() {
               >
                 {isLoading ? <ClipLoader size={20} color="#fff" /> : "Register"}
               </Button>
+              {!showUserTypeSelection ? (
+                <Button
+                  onClick={() => setShowUserTypeSelection(true)}
+                  variant="outlined"
+                  fullWidth
+                  sx={{ marginBottom: 2, marginTop: 2 }}
+                >
+                  <img
+                    src="https://as1.ftcdn.net/v2/jpg/03/88/07/84/1000_F_388078454_mKtbdXYF9cyQovCCTsjqI0gbfu7gCcSp.jpg"
+                    alt="Google Logo"
+                    style={{ width: 20, marginRight: 10 }}
+                  />
+
+                  Sign Up with Google
+                </Button>
+              ) : (
+                <>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
+                    {/* User Type Line */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Typography variant="body1" sx={{ minWidth: 100 }}>
+                        Please Select User Type:
+                      </Typography>
+                      <RadioGroup
+                        row
+                        value={userType}
+                        onChange={(e) => setUserType(e.target.value)}
+                      >
+                        <FormControlLabel value="customer" control={<Radio />} label="Customer" />
+                        <FormControlLabel value="professional" control={<Radio />} label="Professional" />
+                      </RadioGroup>
+                    </Box>
+
+                    {/* Entity Type Line */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Typography variant="body1" sx={{ minWidth: 100 }}>
+                        Please Select Entity Type:
+                      </Typography>
+                      <RadioGroup
+                        row
+                        value={entityType}
+                        onChange={(e) => setEntityType(e.target.value)}
+                      >
+                        <FormControlLabel value="individual" control={<Radio />} label="Individual" />
+                        <FormControlLabel value="organization" control={<Radio />} label="Organization" />
+                      </RadioGroup>
+                    </Box>
+                  </Box>
+                  <Button
+                    onClick={handleGoogleSignUp}
+                    variant="outlined"
+                    fullWidth
+                    sx={{ marginBottom: 2, marginTop: 2 }}
+                  >
+                    <img
+                      src="https://as1.ftcdn.net/v2/jpg/03/88/07/84/1000_F_388078454_mKtbdXYF9cyQovCCTsjqI0gbfu7gCcSp.jpg"
+                      alt="Google Logo"
+                      style={{ width: 20, marginRight: 10 }}
+                    />
+                    Continue with Google
+                  </Button>
+                </>
+              )}
               <Typography variant="body2" align="center" mt={2}>
                 Already have an account? <Link href="/auth/login">Login</Link>
               </Typography>
