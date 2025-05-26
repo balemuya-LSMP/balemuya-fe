@@ -50,23 +50,24 @@ const heroImages = [
   }
 ];
 
-
-
 export default function Home() {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { data: professionalsData } = useGetNearByProfessionalsQuery({});
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: searchResults } = useGetNearByProfessionalsQuery(searchQuery);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
   const professionals = professionalsData?.nearby_professionals;
-  const resultToDisplay = searchQuery ? searchResults : professionals;
+  const filteredProfessionals = searchQuery
+    ? professionals?.filter((pro: any) =>
+      pro?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pro?.title?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    : professionals;
 
   const [addToFavorites] = useAddFavoritesMutation();
   const { data: favoritesData, refetch, isLoading: isFavoritesLoading } = useFetchFavoritesQuery()
-
 
   const isFavorited = (professionalId: string) => {
     return favoritesData?.some((fav: { professional: { id: string } }) => fav.professional.id === professionalId);
@@ -352,7 +353,7 @@ export default function Home() {
       <Box sx={{ backgroundColor: 'background.paper', py: 10 }}>
         <Container maxWidth="lg">
           <Typography variant="h3" textAlign="center" fontWeight={700} mb={2}>
-            Featured Professionals
+            {searchQuery ? 'Search Results' : 'Featured Professionals'}
           </Typography>
           <Typography
             variant="subtitle1"
@@ -361,100 +362,109 @@ export default function Home() {
             mb={6}
             sx={{ maxWidth: 700, mx: 'auto' }}
           >
-            Browse our top-rated professionals ready to serve you
+            {searchQuery ? 'Professionals matching your search' : 'Browse our top-rated professionals ready to serve you'}
           </Typography>
 
           <Grid container spacing={4}>
-            {Array.isArray(resultToDisplay) && resultToDisplay?.slice(0, 4).map((professional: any) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={professional.id}>
-                <Paper
-                  sx={{
-                    p: 3,
-                    borderRadius: 3,
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    transition: 'transform 0.3s',
-                    '&:hover': {
-                      transform: 'translateY(-5px)',
-                      boxShadow: theme.shadows[4],
-                    }
-                  }}
-                >
-                  <Stack direction="row" justifyContent="space-between">
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Avatar
-                        src={professional.profile_image}
-                        sx={{
-                          width: 60,
-                          height: 60,
-                          border: '2px solid',
-                          borderColor: 'primary.main'
-                        }}
-                      />
-                      <Box>
-                        <Typography fontWeight={600}>{professional.name}</Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {professional.title}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(professional.id);
-                      }}
-                      className={`text-xl transition-colors duration-300 ${isFavorited(professional.id)
-                        ? "text-red-500"
-                        : "text-gray-400 hover:text-red-500"
-                        }`}
-                      aria-label={isFavorited(professional.id) ? "Remove from favorites" : "Add to favorites"}
-                      disabled={isFavoritesLoading}
-                    >
-                      {isFavorited(professional.id) ? <FaHeart /> : <FaRegHeart />}
-                    </button>                  </Stack>
-                  <Box sx={{ marginTop: 2 }}>
-                    <StarRating rating={professional?.rating} />
-                  </Box>
-                  <Stack direction="row" spacing={1} alignItems="center" mt={2}>
-                    <FaMapMarkerAlt color={theme.palette.primary.main} />
-                    <Typography variant="body2">{professional?.distance} Km away</Typography>
-                  </Stack>
-
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    mt={2}
+            {Array.isArray(filteredProfessionals) && filteredProfessionals.length > 0 ? (
+              filteredProfessionals.slice(0, 4).map((professional: any) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={professional.id}>
+                  <Paper
                     sx={{
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      flexGrow: 1
+                      p: 3,
+                      borderRadius: 3,
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      transition: 'transform 0.3s',
+                      '&:hover': {
+                        transform: 'translateY(-5px)',
+                        boxShadow: theme.shadows[4],
+                      }
                     }}
                   >
-                    {professional?.bio}
-                  </Typography>
+                    <Stack direction="row" justifyContent="space-between">
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Avatar
+                          src={professional.profile_image}
+                          sx={{
+                            width: 60,
+                            height: 60,
+                            border: '2px solid',
+                            borderColor: 'primary.main'
+                          }}
+                        />
+                        <Box>
+                          <Typography fontWeight={600}>{professional.name}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {professional.title}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(professional.id);
+                        }}
+                        className={`text-xl transition-colors duration-300 ${isFavorited(professional.id)
+                          ? "text-red-500"
+                          : "text-gray-400 hover:text-red-500"
+                          }`}
+                        aria-label={isFavorited(professional.id) ? "Remove from favorites" : "Add to favorites"}
+                        disabled={isFavoritesLoading}
+                      >
+                        {isFavorited(professional.id) ? <FaHeart /> : <FaRegHeart />}
+                      </button>
+                    </Stack>
+                    <Box sx={{ marginTop: 2 }}>
+                      <StarRating rating={professional?.rating} />
+                    </Box>
+                    <Stack direction="row" spacing={1} alignItems="center" mt={2}>
+                      <FaMapMarkerAlt color={theme.palette.primary.main} />
+                      <Typography variant="body2">{professional?.distance} Km away</Typography>
+                    </Stack>
 
-                  <Box textAlign="right" mt={3}>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="primary"
-                      onClick={() => router.push(`/customer/professionals/${professional.id}`)}
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      mt={2}
                       sx={{
-                        fontWeight: 600,
-                        textTransform: 'none',
-                        borderRadius: 2,
-                        px: 3
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        flexGrow: 1
                       }}
                     >
-                      View Profile
-                    </Button>
-                  </Box>
-                </Paper>
+                      {professional?.bio}
+                    </Typography>
+
+                    <Box textAlign="right" mt={3}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="primary"
+                        onClick={() => router.push(`/customer/professionals/${professional.id}`)}
+                        sx={{
+                          fontWeight: 600,
+                          textTransform: 'none',
+                          borderRadius: 2,
+                          px: 3
+                        }}
+                      >
+                        View Profile
+                      </Button>
+                    </Box>
+                  </Paper>
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <Typography variant="body1" textAlign="center" color="text.secondary">
+                  {searchQuery ? 'No professionals found matching your search.' : 'No featured professionals available at the moment.'}
+                </Typography>
               </Grid>
-            ))}
+            )}
           </Grid>
 
           <Box textAlign="center" mt={6}>
@@ -476,7 +486,6 @@ export default function Home() {
                 transition: 'all 0.3s ease'
               }}
               onClick={() => router.push('/customer/professionals')}
-
             >
               View All Professionals
             </Button>
