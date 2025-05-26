@@ -46,7 +46,6 @@ export default function Professionals() {
   };
   const professionalsInfo = professionalsData?.professionals || [];
 
-  // Filter professionals based on search input
   const filteredProfessionals = professionalsInfo?.filter(
     (professional: any) =>
       professional?.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -56,9 +55,7 @@ export default function Professionals() {
 
   return (
     <>
-      <Header searchQuery={""} setSearchQuery={function (query: string): void {
-        throw new Error("Function not implemented.");
-      }} />
+      <Header searchQuery={search} setSearchQuery={setSearch} />
       <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
         {/* Sidebar - Filters */}
         <aside className="md:w-1/4 w-full bg-white shadow-lg p-4 rounded-lg h-fit">
