@@ -1,3 +1,4 @@
+
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -15,9 +16,10 @@ import { useGetServicesQuery, useCreateApplicationMutation, useReviewServiceMuta
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { toast } from "react-toastify";
-import { Box, Rating, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton, Tooltip, CircularProgress } from "@mui/material";
+import { Box, Rating, Button, Grid, Typography, TextField, Modal, Paper, Avatar, IconButton, Tooltip, CircularProgress, useMediaQuery, Theme } from "@mui/material";
 import Footer from "../../(features)/_components/footer";
 import { Face2 } from "@mui/icons-material";
+import { useDebounce } from "use-debounce";
 
 export default function JobsPage() {
   const { position, getPosition } = useGeolocation();
@@ -27,8 +29,11 @@ export default function JobsPage() {
   const [cancelBooking] = useCancelBookingMutation();
   const [completeBooking] = useCompleteBookingMutation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
   const [filter, setFilter] = useState<string[]>([]);
   const [reportService] = useReportServiceMutation();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+ const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["pending", "rejected", "booked", "canceled"];
@@ -47,16 +52,28 @@ export default function JobsPage() {
   const [complaint, setComplaint] = useState("");
 
   const { data: servicesData, isLoading } = useGetServicesQuery(activeTab);
-  const { data: searchResults } = useSearchServicesQuery(searchQuery);
+  const { data: searchResults } = useSearchServicesQuery(debouncedSearchQuery, {
+    skip: !debouncedSearchQuery,
+  });
   const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
 
-  const handleFilter = async (updatedFilter: string[]) => {
-    const newData = {
-      categories: updatedFilter,
-    };
-    await filterServices({ data: newData }).unwrap();
+const handleFilter = async (updatedFilter: string[]) => {
+  setFilter(updatedFilter);
+  const newData = {
+    categories: updatedFilter,
   };
-        
+  try {
+    const result = await filterServices({ data: newData }).unwrap();
+    console.log("result", result);
+    setFilteredData(result ?? []);
+  } catch (error) {
+    console.error("Filter failed", error);
+    setFilteredData([]);
+  }
+};
+
+
+
   useEffect(() => {
     getPosition();
   }, []);
@@ -64,10 +81,26 @@ export default function JobsPage() {
   const userLat = position?.lat ?? 11.6;
   const userLng = position?.lng ?? 37.3833333;
 
-  const services = servicesData?.data || [];
+  const displayData = () => {
+    if (debouncedSearchQuery) {
+      return searchResults ?? [];
+    }
+
+    if (filter.length > 0) {
+      return filteredData;
+    }
+
+    return servicesData?.data ?? [];
+  };
+
+
+
+
+  const services = displayData();
+
+
 
   const handleApply = async (id: string) => {
-
     try {
       await createApplication({ service_id: id, message }).unwrap();
       toast.success("Application submitted successfully");
@@ -78,9 +111,7 @@ export default function JobsPage() {
       setModalOpen(false);
       setMessage("");
     }
-
   };
-
 
   const handeReportService = async (id: string) => {
     try {
@@ -94,6 +125,7 @@ export default function JobsPage() {
       setReason("");
     }
   }
+
   const handleReview = async () => {
     const reviewData = {
       booking: bookId,
@@ -140,14 +172,24 @@ export default function JobsPage() {
       <Box sx={{ backgroundColor: "background.default", minHeight: "100vh" }}>
         {/* Tabs Section */}
         <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: 3 }}>
-          <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 3 }}>
+          <Box sx={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 2,
+            mb: 3,
+            flexWrap: isMobile ? "wrap" : "nowrap",
+            overflowX: isMobile ? "auto" : "visible",
+            paddingBottom: isMobile ? 1 : 0
+          }}>
             {["", ...validStatuses].map((tab) => (
               <Button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 sx={{
-                  px: 3,
+                  px: isMobile ? 1 : 3,
                   py: 1,
+                  minWidth: isMobile ? "fit-content" : "auto",
+                  fontSize: isMobile ? "0.8rem" : "1rem",
                   color: activeTab === tab ? "purple.700" : "gray.700",
                   borderBottom: activeTab === tab ? "2px solid" : "none",
                   borderColor: "purple.700",
@@ -179,7 +221,7 @@ export default function JobsPage() {
                   No services found
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Please refine your data try again later.
+                  Please refine your search or try again later.
                 </Typography>
               </Grid>
             )}
@@ -323,7 +365,7 @@ export default function JobsPage() {
               boxShadow: 24,
               p: 4,
               borderRadius: 2,
-              width: 400,
+              width: isMobile ? "90%" : 400,
             }}
           >
             <Typography variant="h6" sx={{ mb: 2 }}>
@@ -360,7 +402,7 @@ export default function JobsPage() {
               boxShadow: 24,
               p: 4,
               borderRadius: 2,
-              width: 400,
+              width: isMobile ? "90%" : 400,
             }}
           >
             <Typography variant="h6" sx={{ mb: 2 }}>
@@ -397,7 +439,7 @@ export default function JobsPage() {
               boxShadow: 24,
               p: 4,
               borderRadius: 2,
-              width: 400,
+              width: isMobile ? "90%" : 400,
             }}
           >
             <Typography variant="h6" sx={{ mb: 2 }}>
@@ -438,7 +480,7 @@ export default function JobsPage() {
               boxShadow: 24,
               p: 4,
               borderRadius: 2,
-              width: 400,
+              width: isMobile ? "90%" : 400,
             }}
           >
             <Typography variant="h6" sx={{ mb: 2 }}>
