@@ -253,8 +253,34 @@ export default function Landing() {
                     alt={testimonial.name}
                     sx={{ width: 72, height: 72, mb: 2, mx: "auto" }}
                   />
-                  <Typography variant="body1" fontStyle="italic" gutterBottom>
-                    "{testimonial.feedback}"
+                  <Typography
+                    variant="body1"
+                    fontStyle="italic"
+                    gutterBottom
+                    sx={{
+                      fontSize: '1.1rem',
+                      lineHeight: 1.7,
+                      color: 'text.secondary',
+                      mb: 3,
+                      position: 'relative',
+                      '&:before, &:after': {
+                        content: '"\\201C"',
+                        fontSize: '3rem',
+                        color: 'rgba(0,0,0,0.1)',
+                        position: 'absolute',
+                        top: -20,
+                        left: -15
+                      },
+                      '&:after': {
+                        content: '"\\201D"',
+                        left: 'auto',
+                        right: -15,
+                        top: 'auto',
+                        bottom: -40
+                      }
+                    }}
+                  >
+                    {testimonial.feedback}
                   </Typography>
                   <Typography variant="h6" fontWeight="bold">
                     {testimonial.name}
