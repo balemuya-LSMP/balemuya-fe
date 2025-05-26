@@ -50,15 +50,13 @@ export default function JobsPage() {
   const { data: searchResults } = useSearchServicesQuery(searchQuery);
   const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
 
-
-
   const handleFilter = async (updatedFilter: string[]) => {
     const newData = {
       categories: updatedFilter,
     };
     await filterServices({ data: newData }).unwrap();
   };
-
+        
   useEffect(() => {
     getPosition();
   }, []);
@@ -237,7 +235,7 @@ export default function JobsPage() {
                     {job?.description ?? job?.service?.description}
                   </Typography>
 
-                  <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: "auto", }}>
+                  <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mb: "auto", }}>
                     {job?.status === "active" && (
                       <>
                         <Button
@@ -250,16 +248,20 @@ export default function JobsPage() {
                         >
                           Apply
                         </Button>
-                        <Button
-                          variant="contained"
-                          sx={{ bgcolor: "gray", "&:hover": { bgcolor: "purple.800" } }}
-                          onClick={() => {
-                            setSelectedWorkId(job?.id);
-                            setReportServiceModal(true);
-                          }}
-                        >
-                          Report
-                        </Button>
+                        <Tooltip title="Report this job">
+                          <IconButton
+                            onClick={() => {
+                              setSelectedWorkId(job?.id);
+                              setReportServiceModal(true);
+                            }}
+                            sx={{
+                              bgcolor: "grey.200",
+                              "&:hover": { bgcolor: "grey.300" }
+                            }}
+                          >
+                            <Flag fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
                       </>
                     )}
                     {job?.service?.status === "booked" && (
@@ -291,12 +293,12 @@ export default function JobsPage() {
                   </Box>
                   {job.customer && (
                     <Box sx={{ display: "flex", alignItems: "center", mt: "auto", pt: 3, borderTop: 1, borderColor: "divider" }}>
-                      <Link href={`/professional/customer/${job.customer.user?.id ?? job.customer.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                         <Avatar
-                        src={job.customer.user?.profile_image_url ?? job.customer.customer_profile_image}
-                        alt={job.customer.customer_name}
-                        sx={{ width: 48, height: 48 }}
-                      />
+                      <Link href={`/professional/customer/${job.customer.user?.id ?? job.customer.customer_id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                        <Avatar
+                          src={job.customer.user?.profile_image_url ?? job.customer.customer_profile_image}
+                          alt={job.customer.customer_name}
+                          sx={{ width: 48, height: 48 }}
+                        />
                       </Link>
                       <Typography variant="body1" sx={{ ml: 2, fontWeight: "medium" }}>
                         {job.customer?.user?.first_name ?? job.customer.customer_name}
