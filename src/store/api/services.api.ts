@@ -214,7 +214,7 @@ export const serviceApi = createApi({
     }),
     requestProfessionalService: builder.mutation<any, { data: any }>({
       query: ({ data }) => ({
-        url: `users/customer/service-request/`,
+        url: `users/customer/service-requests/`,
         method: "POST",
         body: data,
       }),
