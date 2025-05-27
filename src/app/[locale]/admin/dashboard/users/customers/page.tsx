@@ -40,13 +40,12 @@ export default function Users() {
       return matchesSearch && matchesStatus;
     }) || [];
 
-  console.log("filteredUsers", filteredUsers);
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-7xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
         {/* Header Section */}
         <div className="px-6 py-4 border-b">
-          <h1 className="text-xl font-semibold text-gray-800">Professionals</h1>
+          <h1 className="text-xl font-semibold text-gray-800">Customers</h1>
         </div>
 
         {/* Search and Filter Section */}

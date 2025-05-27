@@ -80,7 +80,7 @@ export default function CustomerDetails() {
   const handleDeleteUser = async () => {
     try {
       await deleteUser(id).unwrap();
-      router.push("/admin/dashboard/users/professionals");
+      router.push("/admin/dashboard/users/customers");
     } catch (error) {
       console.error("Error deleting user:", error);
     }
