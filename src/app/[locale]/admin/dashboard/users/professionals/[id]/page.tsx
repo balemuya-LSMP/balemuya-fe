@@ -68,6 +68,7 @@ export default function UserDetails() {
     }
   }
 
+  console.log("userData", userData);  
 
   const handleverifyUser = async () => {
     const adminReviews = {
@@ -101,7 +102,7 @@ export default function UserDetails() {
         <div className="p-6 flex flex-col md:flex-row items-start gap-6 bg-white rounded-lg border border-gray-200">
           {/* Profile Image */}
           <img
-            src={userData?.data?.profile_image_url ?? "/images/user.jpg"}
+            src={userData?.data?.user?.profile_image_url}
             alt="profile image"
             width={100}
             height={100}
