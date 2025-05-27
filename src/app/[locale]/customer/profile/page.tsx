@@ -33,6 +33,8 @@ import {
   Close as CloseIcon,
 } from "@mui/icons-material";
 import Loader from "../../(features)/_components/loader";
+import Header from "../_components/header";
+import Footer from "../../(features)/_components/footer";
 
 const StyledModal = styled(Modal)(({ theme }) => ({
   display: "flex",
@@ -124,6 +126,10 @@ const UserProfile = () => {
   const avatarSrc = userData.profile_image_url || "/images/user.jpg";
 
   return (
+    <>
+      <Header searchQuery={""} setSearchQuery={function (query: string): void {
+        throw new Error("Function not implemented.");
+      } }/>
     <Box
       sx={{
         minHeight: "100vh",
@@ -393,7 +399,9 @@ const UserProfile = () => {
           </Box>
         </StyledModal>
       </Card>
-    </Box>
+      </Box>
+      <Footer/>
+      </>
   );
 };
 
