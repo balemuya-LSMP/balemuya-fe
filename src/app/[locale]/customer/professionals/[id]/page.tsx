@@ -265,7 +265,7 @@ export default function ProfessionalDetailsPage() {
               onClick={() => setRequestModal(true)}
               disabled={isRequestLoading}
             >
-              {isRequestLoading ? <CircularProgress size={20} color="inherit" /> : 'Request Service'}
+              Request Service
             </button>
           </div>
         </div>
