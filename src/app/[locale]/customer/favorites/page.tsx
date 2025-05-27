@@ -9,6 +9,7 @@ import Header from "../_components/header";
 import { Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { useFilterProfessionalsQuery } from "@/store/api/user.api";
+import Footer from "../../(features)/_components/footer";
 
 export default function FavoritesPage() {
   const { data: favorites, isLoading, refetch, error } = useFetchFavoritesQuery();
@@ -140,6 +141,7 @@ export default function FavoritesPage() {
           </div>
         )}
       </div>
+      <Footer/>
     </>
   );
 }
