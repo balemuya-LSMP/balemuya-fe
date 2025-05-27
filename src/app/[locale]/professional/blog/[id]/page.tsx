@@ -52,6 +52,8 @@ import {
 } from '@mui/icons-material';
 import { formatDate } from '@/shared/formatDate';
 import { DeleteIcon, EditIcon } from 'lucide-react';
+import Header from '../../_components/header';
+import Footer from '@/app/[locale]/(features)/_components/footer';
 
 export default function BlogPostPage() {
   const { id } = useParams();
@@ -156,6 +158,12 @@ export default function BlogPostPage() {
   }
 
   return (
+    <>
+    <Header searchQuery={''} setSearchQuery={function (query: string): void {
+        throw new Error('Function not implemented.');
+      } } filter={[]} setFilter={function (filter: string[]): void {
+        throw new Error('Function not implemented.');
+      } }/>
     <Container maxWidth="md" sx={{ py: 6 }}>
       {/* Back button */}
       <IconButton
@@ -708,6 +716,8 @@ export default function BlogPostPage() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+      </Container>
+      <Footer/>
+      </>
   );
 }
