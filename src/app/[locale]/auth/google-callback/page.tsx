@@ -25,7 +25,8 @@ const GoogleCallback = () => {
     const entityType = localStorage.getItem("entityType");
     const userType = localStorage.getItem("userType");
     const redirect_uri = localStorage.getItem("redirect_uri");
-
+     
+    console.log("redrict_uri", redirect_uri)
     if (entityType && userType && encodedCode && redirect_uri) {
       googleSignup({ code: encodedCode, redirect_uri: redirect_uri, entity_type: entityType, user_type: userType })
         .then((response: any) => {
