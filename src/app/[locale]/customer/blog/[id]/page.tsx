@@ -151,23 +151,23 @@ export default function BlogPostPage() {
           {/* Author and Metadata */}
           <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 4 }}>
             <Avatar
-              src={post.author.profile_image_url}
-              alt={post.author.email}
+              src={post?.author?.profile_image_url}
+              alt={post?.author?.email}
               sx={{ width: 56, height: 56 }}
             >
-              {post.author.email.charAt(0).toUpperCase()}
+              {post?.author?.email.charAt(0).toUpperCase()}
             </Avatar>
             <Box>
               <Typography variant="subtitle1" fontWeight="600">
-                {post.author.email.split('@')[0]}
+                {post?.author?.email.split('@')[0]}
               </Typography>
               <Stack direction="row" spacing={1} alignItems="center">
                 <CalendarIcon fontSize="small" color="action" />
                 <Typography variant="body2" color="text.secondary">
-                  {formatDate(post.created_at)}
+                  {formatDate(post?.created_at)}
                 </Typography>
                 <Chip
-                  label={post.author.user_type}
+                  label={post?.author?.user_type}
                   size="small"
                   color="secondary"
                   sx={{ ml: 1, fontWeight: 500 }}
@@ -218,8 +218,8 @@ export default function BlogPostPage() {
                     }}
                   >
                     <img
-                      src={media.media_file_url}
-                      alt={`${post.title} - Media`}
+                      src={media?.media_file_url}
+                      alt={`${post?.title} - Media`}
                       style={{
                         width: '100%',
                         height: '100%',
@@ -389,20 +389,20 @@ export default function BlogPostPage() {
           }}>
             <Stack direction="row" spacing={3} alignItems="center">
               <Avatar
-                src={post.author.profile_image_url}
+                src={post?.author?.profile_image_url}
                 sx={{ width: 80, height: 80, cursor: 'pointer' }}
                 onClick={() => router.push(`/customer/professionals/${post?.author?.id}`)}
               />
               <Box>
                 <Typography variant="h6" gutterBottom>
-                  About {post.author.email.split('@')[0]}
+                  About {post?.author?.email.split('@')[0]}
                 </Typography>
                 <Typography variant="body1" color="text.secondary" paragraph>
-                  {post.author.bio || 'No biography available.'}
+                  {post?.author?.bio || 'No biography available.'}
                 </Typography>
                 {post.author.address && (
                   <Typography variant="caption" color="text.secondary">
-                    {[post.author.address.city, post.author.address.region, post.author.address.country]
+                    {[post?.author?.address?.city, post?.author?.address?.region, post?.author?.address?.country]
                       .filter(Boolean).join(', ')}
                   </Typography>
                 )}
