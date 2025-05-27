@@ -12,6 +12,7 @@ import StarRating from "../../(features)/_components/StarRating";
 
 import { useAddFavoritesMutation, useFetchFavoritesQuery } from "@/store/api/userProfile.api";
 import { Loader2 } from "lucide-react";
+import Footer from "../../(features)/_components/footer";
 
 export default function Professionals() {
   const router = useRouter();
@@ -56,6 +57,7 @@ export default function Professionals() {
   return (
     <>
       <Header searchQuery={search} setSearchQuery={setSearch} />
+      <div className="h-screen">
       <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
         {/* Sidebar - Filters */}
         <aside className="md:w-1/4 w-full bg-white shadow-lg p-4 rounded-lg h-fit">
@@ -132,7 +134,7 @@ export default function Professionals() {
             filteredProfessionals.map((professional: any) => (
               <div
                 key={professional.id}
-                className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl flex flex-col h-full"
+                className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl flex flex-col"
               >
                 <div className="flex justify-between items-center mx-4 mt-4">
                   <div className="flex items-center gap-4">
@@ -184,7 +186,9 @@ export default function Professionals() {
             <p className="text-gray-600 text-lg col-span-full text-center">No professionals found.</p>
           )}
         </section>
+        </div>
       </div>
+      <Footer/>
     </>
   );
 }
