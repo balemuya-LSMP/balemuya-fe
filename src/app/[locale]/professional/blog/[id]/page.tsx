@@ -218,7 +218,7 @@ export default function BlogPostPage() {
                   {formatDate(post?.created_at)}
                 </Typography>
                 <Chip
-                  label={post?.author.user_type}
+                  label={post?.author?.user_type}
                   size="small"
                   color="secondary"
                   sx={{ ml: 1, fontWeight: 500 }}
@@ -441,19 +441,19 @@ export default function BlogPostPage() {
           }}>
             <Stack direction="row" spacing={3} alignItems="center">
               <Avatar
-                src={post.author.profile_image_url}
+                src={post?.author?.profile_image_url}
                 sx={{ width: 80, height: 80 }}
               />
               <Box>
                 <Typography variant="h6" gutterBottom>
-                  About {post.author.email.split('@')[0]}
+                  About {post?.author?.email.split('@')[0]}
                 </Typography>
                 <Typography variant="body1" color="text.secondary" paragraph>
-                  {post.author.bio || 'No biography available.'}
+                  {post?.author?.bio || 'No biography available.'}
                 </Typography>
-                {post.author.address && (
+                {post?.author?.address && (
                   <Typography variant="caption" color="text.secondary">
-                    {[post.author.address.city, post.author.address.region, post.author.address.country]
+                    {[post.author.address.city, post?.author?.address?.region, post?.author?.address?.country]
                       .filter(Boolean).join(', ')}
                   </Typography>
                 )}
@@ -461,7 +461,7 @@ export default function BlogPostPage() {
             </Stack>
           </Paper>
 
-          {post && userId === post.author.id && (
+          {post && userId === post?.author?.id && (
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mb: 2 }}>
               <Button
                 variant="outlined"
