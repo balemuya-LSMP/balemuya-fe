@@ -58,7 +58,7 @@ export default function Professionals() {
     <>
       <Header searchQuery={search} setSearchQuery={setSearch} />
       <div className="h-screen">
-      <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+      <div className="container mx-auto px-2 py-6 flex flex-col md:flex-row gap-6">
         {/* Sidebar - Filters */}
         <aside className="md:w-1/4 w-full bg-white shadow-lg p-4 rounded-lg h-fit">
           <h2 className="text-xl font-semibold mb-4">Filters</h2>
