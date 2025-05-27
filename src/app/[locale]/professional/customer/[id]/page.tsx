@@ -36,8 +36,11 @@ import { useRequestProfessionalServiceMutation } from "@/store/api/services.api"
 import { getDistanceFromLatLon } from "@/shared/utils";
 import Loader from "@/app/[locale]/(features)/_components/loader";
 import MapComponent from "@/app/[locale]/(features)/_components/map";
+import Header from "../../_components/header";
+import Footer from "@/app/[locale]/(features)/_components/footer";
 
-export default function ProfessionalDetailsPage() {
+
+export default function CustomerDetailsPage() {
   const theme = useTheme();
   const { id } = useParams();
   const { data: customerData, isLoading } = useGetCustomerByIdQuery(id);
@@ -66,6 +69,12 @@ export default function ProfessionalDetailsPage() {
   if (isLoading) return <Loader />;
 
   return (
+    <>
+    <Header searchQuery={""} setSearchQuery={function (query: string): void {
+        throw new Error("Function not implemented.");
+      } } filter={[]} setFilter={function (filter: string[]): void {
+        throw new Error("Function not implemented.");
+      } }/>
     <Container
       maxWidth={false}
       sx={{
@@ -532,6 +541,8 @@ export default function ProfessionalDetailsPage() {
           </Paper>
         </Grid>
       </Grid>
-    </Container>
+      </Container>
+      <Footer/>
+      </>
   );
 }
