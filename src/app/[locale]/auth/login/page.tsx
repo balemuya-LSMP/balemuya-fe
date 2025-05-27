@@ -25,7 +25,7 @@ export default function Login() {
   const [loginUser, { isLoading }] = useLoginUserMutation();
   const router = useRouter();
   const params = useParams();
-  const locale = params.locale ?? "en"; 
+  const locale = params.locale ?? "en";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +48,10 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${window.location.origin}/${locale}/auth/google-callback&response_type=code&scope=email%20profile%20openid&access_type=offline&prompt=consent`
+    const redirectUri = `${window.location.origin}/${locale}/auth/google-callback`;
+
+    localStorage.setItem('redirect_uri', redirectUri);
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${redirectUri}&response_type=code&scope=email%20profile%20openid&access_type=offline&prompt=consent`
     window.location.href = url;
   };
 
