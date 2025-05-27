@@ -97,8 +97,6 @@ export default function Home() {
 
   const images = [
     "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-    'https://images.unsplash.com/photo-14973662105479-4275897d4737',
     'https://images.unsplash.com/photo-1516321318423-f06f85e504b3',
     'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40'
   ]
