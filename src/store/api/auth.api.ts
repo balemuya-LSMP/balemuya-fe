@@ -30,7 +30,7 @@ export const apiSlice = createApi({
     }),
     googleLogin: builder.mutation<loginResponse, { code: string, redirect_uri:string }>({
       query: ({ code,redirect_uri }) => ({
-        url: `/auth/continue-with-google/`,
+        url: `/auth/signin-with-google/`,
         method: "POST",
         body: { code, redirect_uri },
       }),
@@ -40,7 +40,7 @@ export const apiSlice = createApi({
       { code: string; redirect_uri: string; entity_type: string; user_type: string }
     >({
       query: ({ code,redirect_uri, entity_type, user_type }) => ({
-        url: `/auth/continue-with-google/`,
+        url: `/auth/signup-with-google/`,
         method: "POST",
         body: {
           code,
