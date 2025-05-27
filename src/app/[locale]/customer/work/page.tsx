@@ -107,7 +107,7 @@ export default function WorkPage() {
                 professional: currentProfessionalId,
                 amount: Number(paymentAmount),
                 booking: currentBookingId,
-                payment_type:"job_post",
+                payment_type: "job_post",
                 return_url: `${window.location.origin}/${locale}/customer/check`
             }).unwrap();
 
@@ -293,8 +293,12 @@ export default function WorkPage() {
                                     >
                                         {work?.title ?? work?.service?.title}
                                     </Typography>
-
-                                    <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
+                                    <Box style={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        gap: '1rem',
+                                    }}>
+                                        <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
                                         <GrStatusGood color="purple" />
                                         <Typography variant="body1" fontWeight="medium">
                                             {work?.status ?? work?.service?.status}
@@ -317,6 +321,8 @@ export default function WorkPage() {
                                                 "N/A"
                                             )}
                                         </Typography>
+                                    </Box>
+
                                     </Box>
 
                                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3, display: "-webkit-box", WebkitBoxOrient: "vertical", overflow: "hidden", WebkitLineClamp: 2 }}>
