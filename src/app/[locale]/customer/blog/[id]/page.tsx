@@ -400,7 +400,7 @@ export default function BlogPostPage() {
                 <Typography variant="body1" color="text.secondary" paragraph>
                   {post?.author?.bio || 'No biography available.'}
                 </Typography>
-                {post.author.address && (
+                {post?.author?.address && (
                   <Typography variant="caption" color="text.secondary">
                     {[post?.author?.address?.city, post?.author?.address?.region, post?.author?.address?.country]
                       .filter(Boolean).join(', ')}
