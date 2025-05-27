@@ -18,13 +18,14 @@ const GoogleCallback = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
+    const redirect_uri = params.get("redirect_uri");
     const encodedCode = code ? code.replaceAll("/", "%2F") : null;
 
     const entityType = localStorage.getItem("entityType");
     const userType = localStorage.getItem("userType");
 
-    if (entityType && userType && encodedCode) { 
-      googleSignup({ code: encodedCode, entity_type: entityType, user_type: userType })
+    if (entityType && userType && encodedCode && redirect_uri) { 
+      googleSignup({ code: encodedCode, redirect_uri:redirect_uri, entity_type: entityType, user_type: userType })
         .then((response: any) => {
           console.log("Google signup response:", response);
           if (response?.data) {
@@ -66,8 +67,8 @@ const GoogleCallback = () => {
       return;
     }
 
-    if (encodedCode) {
-      googleLogin({ code: encodedCode })
+    if (encodedCode && redirect_uri) {
+      googleLogin({ code: encodedCode, redirect_uri: redirect_uri })
         .then((response: any) => {
           console.log("Google login response:", response);
           if (response?.data) {
@@ -107,7 +108,7 @@ const GoogleCallback = () => {
           toast.error("Google login failed.");
         });
     }
-  }, [googleLogin, router, login]);
+  }, [googleLogin, router, login, googleSignup]);
 
   return (
 <div className="min-h-screen flex items-center justify-center bg-gray-50">

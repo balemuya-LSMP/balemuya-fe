@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { TextField, Button, RadioGroup, FormControlLabel, Radio, IconButton, Typography, Container, Paper, Box } from "@mui/material";
 import Header from "../../(features)/_components/header";
+import { useParams } from "next/navigation";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +24,8 @@ export default function Login() {
   const { login } = useAuth();
   const [loginUser, { isLoading }] = useLoginUserMutation();
   const router = useRouter();
+  const params = useParams();
+  const locale = params.locale ?? "en"; 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +48,7 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${window.location.origin}/en/auth/google-callback&response_type=code&scope=email%20profile%20openid&access_type=offline&prompt=consent`
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=552354262058-om4aifoqn3godt2jgdlfpgr7boihdi86.apps.googleusercontent.com&redirect_uri=${window.location.origin}/${locale}/auth/google-callback&response_type=code&scope=email%20profile%20openid&access_type=offline&prompt=consent`
     window.location.href = url;
   };
 

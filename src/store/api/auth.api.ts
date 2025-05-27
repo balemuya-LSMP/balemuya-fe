@@ -28,22 +28,23 @@ export const apiSlice = createApi({
         };
       },
     }),
-    googleLogin: builder.mutation<loginResponse, { code: string }>({
-      query: ({ code }) => ({
+    googleLogin: builder.mutation<loginResponse, { code: string, redirect_uri:string }>({
+      query: ({ code,redirect_uri }) => ({
         url: `/auth/continue-with-google/`,
         method: "POST",
-        body: { code },
+        body: { code, redirect_uri },
       }),
     }),
     googleSignup: builder.mutation<
       loginResponse,
-      { code: string; entity_type: string; user_type: string }
+      { code: string; redirect_uri: string; entity_type: string; user_type: string }
     >({
-      query: ({ code, entity_type, user_type }) => ({
+      query: ({ code,redirect_uri, entity_type, user_type }) => ({
         url: `/auth/continue-with-google/`,
         method: "POST",
         body: {
           code,
+          redirect_uri,
           entity_type,
           user_type,
         },
