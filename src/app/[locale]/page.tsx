@@ -293,6 +293,7 @@ export default function Landing() {
       </Box>
 
       {/* App Download Section */}
+      {/* App Download Section */}
       <Box textAlign="center" py={8} sx={{ bgcolor: "background.paper" }}>
         <Container maxWidth="md" sx={{ bgcolor: "background.paper", p: 4, borderRadius: 3, boxShadow: 3 }}>
           <Typography variant="h5" gutterBottom sx={{ fontSize: { xs: "1.5rem", md: "2rem" } }}>
@@ -306,7 +307,7 @@ export default function Landing() {
           >
             {t("appDesc")}
           </Typography>
-          <Box display="flex" justifyContent="center" gap={2} mb={4}>
+          <Box display="flex" justifyContent="center" gap={2} mb={4} flexWrap="wrap">
             <Button
               variant="contained"
               color="primary"
@@ -316,6 +317,15 @@ export default function Landing() {
               sx={{ borderRadius: "25px", px: 4, py: 1.5, fontWeight: "bold" }}
             >
               {t("downloadBtn")}
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              onClick={() => window.open("https://t.me/balemuyaBot", "_blank")}
+              sx={{ borderRadius: "25px", px: 4, py: 1.5, fontWeight: "bold" }}
+            >
+              {t("contactTelegram")}
             </Button>
           </Box>
         </Container>
