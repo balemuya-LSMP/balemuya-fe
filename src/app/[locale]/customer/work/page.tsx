@@ -156,16 +156,24 @@ export default function WorkPage() {
         );
 
     const handleReview = async () => {
-        const reviewData = {
-            booking: bookId,
-            rating: rating,
-            comment: review,
-        };
-        await reviewService({ data: reviewData }).unwrap();
-        toast.success("Review submitted successfully");
-        setReview("");
-        setRating(0);
-        setReviewModalOpen(false);
+        try {
+            const reviewData = {
+                booking: bookId,
+                rating: rating,
+                comment: review,
+            };
+            await reviewService({ data: reviewData }).unwrap();
+            toast.success("Review submitted successfully");
+            setReview("");
+            setRating(0);
+            setReviewModalOpen(false);
+        } catch (error:any) {
+            toast.error(error?.data?.error || "Failed to submit review");
+            setReview("");
+            setRating(0);
+            setReviewModalOpen(false);
+
+        }
     };
 
     const handleComplaint = async () => {
@@ -299,29 +307,29 @@ export default function WorkPage() {
                                         gap: '1rem',
                                     }}>
                                         <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
-                                        <GrStatusGood color="purple" />
-                                        <Typography variant="body1" fontWeight="medium">
-                                            {work?.status ?? work?.service?.status}
-                                        </Typography>
-                                    </Box>
+                                            <GrStatusGood color="purple" />
+                                            <Typography variant="body1" fontWeight="medium">
+                                                {work?.status ?? work?.service?.status}
+                                            </Typography>
+                                        </Box>
 
-                                    <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
-                                        <GrStatusGood color="purple" />
-                                        <Typography variant="body1" fontWeight="medium">
-                                            {work?.urgency ?? work?.service?.urgency}
-                                        </Typography>
-                                    </Box>
+                                        <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
+                                            <GrStatusGood color="purple" />
+                                            <Typography variant="body1" fontWeight="medium">
+                                                {work?.urgency ?? work?.service?.urgency}
+                                            </Typography>
+                                        </Box>
 
-                                    <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
-                                        <FaBusinessTime color="purple" />
-                                        <Typography variant="body1">
-                                            {(work?.work_due_date || work?.service?.work_due_date) ? (
-                                                format(new Date(work?.work_due_date ?? work?.service?.work_due_date), "MM dd, yyyy")
-                                            ) : (
-                                                "N/A"
-                                            )}
-                                        </Typography>
-                                    </Box>
+                                        <Box display="flex" alignItems="center" gap={2} color="text.secondary" sx={{ mb: 1 }}>
+                                            <FaBusinessTime color="purple" />
+                                            <Typography variant="body1">
+                                                {(work?.work_due_date || work?.service?.work_due_date) ? (
+                                                    format(new Date(work?.work_due_date ?? work?.service?.work_due_date), "MM dd, yyyy")
+                                                ) : (
+                                                    "N/A"
+                                                )}
+                                            </Typography>
+                                        </Box>
 
                                     </Box>
 
