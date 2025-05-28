@@ -252,8 +252,8 @@ export const serviceApi = createApi({
     getMyRequestServices: builder.query<any, string | undefined>({
       query: (query) =>
         query && query !== ""
-          ? `/users/customer/service-request/?status=${query}`
-          : `users/customer/service-request/`,
+          ? `/users/customer/service-requests/?status=${query}`
+          : `users/customer/service-requests/`,
       providesTags: ["ServicePosts"],
     }),
     completeService: builder.mutation<any, { id: string }>({
