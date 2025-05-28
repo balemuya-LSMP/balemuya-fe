@@ -35,31 +35,36 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
   const [updateProfile] = useUpdateProfileMutation();
 
   const [firstName, setFirstName] = useState("");
-  const [orgName, setOrgName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [orgName, setOrgName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
-  if (isLoading) {
-    return <Loader />
-  }
-
-  if (error) {
-    return <div>Error: {JSON.stringify(error)}</div>;
-  }
-
-
   const user = userData?.user?.user;
+
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.first_name || "");
+      setLastName(user.last_name || "");
+      setOrgName(user.org_name || "");
+      setPhoneNumber(user.phone_number || "");
+      setBio(user.bio || "");
+    }
+  }, [user]);
+
+  if (isLoading) return <Loader />;
+  if (error) return <div>Error: {JSON.stringify(error)}</div>;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const updatedData = {
-      first_name: firstName ?? user?.first_name ?? '',
-      last_name: lastName ?? user?.last_name ?? '',
-      org_name: orgName ?? user?.org_name ?? '',
-      phone_number: phoneNumber ?? user?.phone_number ?? null,
-      bio: bio ?? user?.bio ?? '',
+      first_name: firstName || user?.first_name || "",
+      last_name: lastName || user?.last_name || "",
+      org_name: orgName || user?.org_name || "",
+      phone_number: phoneNumber || user?.phone_number || "",
+      bio: bio || user?.bio || "",
       profile_image: profilePicture ?? null,
     };
 
@@ -69,8 +74,6 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
     formData.append("org_name", updatedData.org_name);
     formData.append("phone_number", updatedData.phone_number);
     formData.append("bio", updatedData.bio);
-
-
     if (updatedData.profile_image) {
       formData.append("profile_image", updatedData.profile_image);
     }
@@ -80,7 +83,6 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
       onClose();
     } catch (err) {
       console.error("Error updating profile:", err);
-      console.log(err);
     }
   };
 
@@ -98,7 +100,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
                 type="text"
                 value={orgName}
                 onChange={(e) => setOrgName(e.target.value)}
-                placeholder={user?.org_name || "Enter organization name"}
+                placeholder="Enter organization name"
                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
               />
             </label>
@@ -110,7 +112,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  placeholder={user?.first_name || "Enter first name"}
+                  placeholder="Enter first name"
                   className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                 />
               </label>
@@ -120,18 +122,19 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  placeholder={user?.last_name || "Enter last name"}
+                  placeholder="Enter last name"
                   className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                 />
               </label>
-            </>)}
+            </>
+          )}
           <label className="block mb-2">
             Phone Number:
             <input
               type="text"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder={user?.phone_number || "Enter phone number"}
+              placeholder="Enter phone number"
               className="w-full mt-1 p-2 border border-gray-300 rounded-md"
             />
           </label>
@@ -140,7 +143,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder={user?.bio || "Enter Bio"}
+              placeholder="Enter Bio"
               className="w-full mt-1 p-2 border border-gray-300 rounded-md"
             ></textarea>
           </label>
@@ -149,9 +152,7 @@ export function UserModal({ isOpen, onClose }: ModalProps) {
             <div className="mt-1 flex items-center justify-center p-2 border border-gray-300 rounded-md bg-gray-50 cursor-pointer hover:bg-gray-100">
               <FaUpload className="text-gray-600 mr-2" />
               <span className="text-gray-700">
-                {profilePicture
-                  ? profilePicture.name
-                  : "Upload Profile Picture"}
+                {profilePicture ? profilePicture.name : "Upload Profile Picture"}
               </span>
               <input
                 type="file"
