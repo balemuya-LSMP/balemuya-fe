@@ -68,7 +68,6 @@ export default function UserDetails() {
     }
   }
 
-  console.log("userData", userData);  
 
   const handleverifyUser = async () => {
     const adminReviews = {
