@@ -432,9 +432,10 @@ export default function WorkPage() {
                                                     src="/images/chapa.png"
                                                     alt="Chapa Logo"
                                                     style={{
-                                                        width: 28,
-                                                        height: 28,
+                                                        height: '1.75rem',
+                                                        width: 'auto',
                                                         objectFit: 'contain',
+                                                        display: 'block',
                                                     }}
                                                 />
                                                 Pay Now

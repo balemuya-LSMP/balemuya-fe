@@ -161,12 +161,15 @@ export default function ProfessionalCard() {
                       src="/images/chapa.png"
                       alt="Chapa Logo"
                       style={{
-                        width: 36,
-                        height: 42,
+                        width: '64px',
+                        height: '64px',
+                        maxWidth: 'none',
+                        maxHeight: 'none',
                         objectFit: 'contain',
+                        marginRight: 12,
                       }}
                     />
-                    Subscribe with Chapa
+                    Subscribe Now
                   </>
                 )}
               </Button>
