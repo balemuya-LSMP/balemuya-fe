@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
@@ -62,9 +63,7 @@ export default function ProfessionalCard() {
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", backgroundColor: "background.default", padding: 4 }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: "100%", maxWidth: "lg" }}>
 
-          {/* Subscription Plan Section - Now at the top */}
           <Box sx={{ width: "100%", display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 4 }}>
-            {/* Subscription Card - Main Focus */}
             <Card sx={{ flex: 1, boxShadow: 3, borderRadius: 2, padding: 4 }}>
               <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 600, color: "primary.main" }}>
                 Professional Subscription Plans
@@ -123,25 +122,54 @@ export default function ProfessionalCard() {
                   Billed {selectedDuration === 1 ? 'monthly' : `every ${selectedDuration} months`}
                 </Typography>
               </Box>
-
               <Button
                 onClick={handleSubscribe}
-                disabled={isLoading}
+                variant="outlined"
                 fullWidth
-                variant="contained"
-                color="primary"
-                size="large"
+                disabled={isLoading}
                 sx={{
-                  marginTop: 1,
+                  mb: 2,
                   py: 1.5,
+                  backgroundColor: '#ffffff',
+                  borderColor: 'primary',
+                  color: 'primary',
+                  fontWeight: 600,
                   fontSize: '1rem',
                   borderRadius: 2,
-                  fontWeight: 600
+                  textTransform: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 1.5,
+                  height: 56,
+                  '&:hover': {
+                    backgroundColor: '#f9f9f9',
+                    borderColor: '#003C71',
+                  },
+                  '&.Mui-disabled': {
+                    backgroundColor: '#ffffff',
+                    color: '#888888',
+                    borderColor: '#cccccc',
+                  },
                 }}
               >
-                {isLoading ? <CircularProgress size={24} color="inherit" /> : "Subscribe Now"}
+                {isLoading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  <>
+                    <img
+                      src="/images/chapa.png"
+                      alt="Chapa Logo"
+                      style={{
+                        width: 36,
+                        height: 42,
+                        objectFit: 'contain',
+                      }}
+                    />
+                    Subscribe with Chapa
+                  </>
+                )}
               </Button>
-
               <Box sx={{
                 display: 'flex',
                 alignItems: 'center',

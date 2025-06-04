@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -167,7 +168,7 @@ export default function WorkPage() {
             setReview("");
             setRating(0);
             setReviewModalOpen(false);
-        } catch (error:any) {
+        } catch (error: any) {
             toast.error(error?.data?.error || "Failed to submit review");
             setReview("");
             setRating(0);
@@ -403,13 +404,42 @@ export default function WorkPage() {
                                         )}
                                         {work?.status === "completed" && (
                                             <Button
-                                                variant="contained"
-                                                color="primary"
                                                 onClick={() => handlePaymentClick(work.id, work.professional.professional_id)}
-                                                sx={{ flex: 1, bgcolor: 'green.600', '&:hover': { bgcolor: 'green.700' } }}
+                                                sx={{
+                                                    flex: 1,
+                                                    backgroundColor: '#ffffff',
+                                                    color: 'primary.main',
+                                                    border: '1px solid #003C71',
+                                                    fontWeight: 600,
+                                                    fontSize: '1rem',
+                                                    textTransform: 'none',
+                                                    borderRadius: 2,
+                                                    py: 1.25,
+                                                    px: 2,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    gap: 1.5,
+                                                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                                                    transition: 'all 0.3s ease',
+                                                    '&:hover': {
+                                                        backgroundColor: '#f9f9f9',
+                                                        boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+                                                    },
+                                                }}
                                             >
+                                                <img
+                                                    src="/images/chapa.png"
+                                                    alt="Chapa Logo"
+                                                    style={{
+                                                        width: 28,
+                                                        height: 28,
+                                                        objectFit: 'contain',
+                                                    }}
+                                                />
                                                 Pay Now
                                             </Button>
+
                                         )}
                                     </CardActions>
                                 </Card>

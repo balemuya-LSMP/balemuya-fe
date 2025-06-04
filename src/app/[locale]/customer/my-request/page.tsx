@@ -133,7 +133,7 @@ export default function JobsPage() {
         }
     };
 
-    
+
     return (
         <>
             <Header searchQuery={""} setSearchQuery={function (query: string): void {
@@ -217,7 +217,7 @@ export default function JobsPage() {
                                                     </Typography>
                                                 </Box>
                                             </Box>
-                                             <CardActions sx={{ justifyContent: 'flex-end' }}>
+                                            <CardActions sx={{ justifyContent: 'flex-end' }}>
                                                 {
                                                     request.status === "accepted" && (
                                                         <Button
@@ -225,22 +225,50 @@ export default function JobsPage() {
                                                             color="primary"
                                                             onClick={() => handleComplete(request.id)}
                                                         >
-                                                           Complete
+                                                            Complete
                                                         </Button>
                                                     )
 
                                                 }
                                             </CardActions>
-                                            <CardActions sx={{ justifyContent: 'flex-end' }}>
+                                            <CardActions sx={{ justifyContent: 'center' }}>
                                                 {
                                                     request.status === "completed" && (
                                                         <Button
                                                             variant="contained"
-                                                            color="primary"
                                                             onClick={() => handlePaymentClick(request.id, request.professional.professional_id)}
+                                                            sx={{
+                                                                backgroundColor: '#ffffff',
+                                                                color: 'primary.main',
+                                                                border: '1px solid primary',
+                                                                fontWeight: 600,
+                                                                fontSize: '1rem',
+                                                                textTransform: 'none',
+                                                                borderRadius: 2,
+                                                                paddingY: 1,
+                                                                paddingX: 2,
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: 1.5,
+                                                                boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                                                                '&:hover': {
+                                                                    backgroundColor: '#f7f7f7',
+                                                                    boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+                                                                },
+                                                            }}
                                                         >
+                                                            <img
+                                                                src="/images/chapa.png"
+                                                                alt="Chapa Logo"
+                                                                style={{
+                                                                    width: 28,
+                                                                    height: 28,
+                                                                    objectFit: 'contain',
+                                                                }}
+                                                            />
                                                             Pay Now
                                                         </Button>
+
                                                     )
 
                                                 }
