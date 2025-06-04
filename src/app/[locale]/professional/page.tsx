@@ -16,7 +16,7 @@ import Header from "./_components/header";
 import { useGetServicePostsQuery, useCreateApplicationMutation, useSearchServicesQuery, useServiceFilterMutation } from "@/store/api/services.api";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import Loader from "../(features)/_components/loader";
-import { useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { getDistanceFromLatLon, timeDifference } from "@/shared/utils";
@@ -58,7 +58,7 @@ export default function Home() {
   const [selectedWorkId, setSelectedWorkId] = useState("")
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<string[]>([]);
-     
+
   const { data: searchResults } = useSearchServicesQuery(searchQuery);
   const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
 
@@ -452,17 +452,22 @@ export default function Home() {
                       borderTop={1}
                       borderColor="divider"
                     >
-                      <Avatar
-                        src={work.customer_profile_image}
-                        sx={{
-                          width: 48,
-                          height: 48,
-                          border: `2px solid ${purple[500]}`
-                        }}
-                      />
+                      <Link href={`/professional/customer/${work.customer.user?.id ?? work.customer.customer_id}`} style={{ textDecoration: "none", color: "inherit" }}>
+
+                        <Avatar
+                          src={work.customer.user?.profile_image_url}
+                          sx={{
+                            width: 48,
+                            height: 48,
+                            border: `2px solid ${purple[500]}`
+                          }}
+                        />
+                      </Link>
                       <Box ml={2}>
                         <Typography variant="body2" fontWeight={500}>
-                          <span style={{ color: purple[500] }}>Posted by:</span> {work.customer?.user?.first_name}
+                          <span style={{ color: purple[500] }}>Posted by:</span>
+                          <Link href={`/professional/customer/${work.customer.user?.id ?? work.customer.customer_id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                            {work.customer?.user?.first_name}</Link>
                         </Typography>
                       </Box>
                     </Box>

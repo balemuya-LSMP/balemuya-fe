@@ -33,7 +33,7 @@ export default function JobsPage() {
   const [filter, setFilter] = useState<string[]>([]);
   const [reportService] = useReportServiceMutation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
- const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const [activeTab, setActiveTab] = useState("");
   const validStatuses = ["pending", "rejected", "booked", "completed", "canceled"];
@@ -57,20 +57,20 @@ export default function JobsPage() {
   });
   const [filterServices, { data: filteredResults }] = useServiceFilterMutation();
 
-const handleFilter = async (updatedFilter: string[]) => {
-  setFilter(updatedFilter);
-  const newData = {
-    categories: updatedFilter,
+  const handleFilter = async (updatedFilter: string[]) => {
+    setFilter(updatedFilter);
+    const newData = {
+      categories: updatedFilter,
+    };
+    try {
+      const result = await filterServices({ data: newData }).unwrap();
+      console.log("result", result);
+      setFilteredData(result ?? []);
+    } catch (error) {
+      console.error("Filter failed", error);
+      setFilteredData([]);
+    }
   };
-  try {
-    const result = await filterServices({ data: newData }).unwrap();
-    console.log("result", result);
-    setFilteredData(result ?? []);
-  } catch (error) {
-    console.error("Filter failed", error);
-    setFilteredData([]);
-  }
-};
 
 
 
@@ -342,170 +342,174 @@ const handleFilter = async (updatedFilter: string[]) => {
                           sx={{ width: 48, height: 48 }}
                         />
                       </Link>
-                      <Typography variant="body1" sx={{ ml: 2, fontWeight: "medium" }}>
-                        {job.customer?.user?.first_name ?? job.customer.customer_name}
-                      </Typography>
+                      <Link href={`/professional/customer/${job.customer.user?.id ?? job.customer.customer_id}`} style={{ textDecoration: "none", color: "inherit" }}>
+
+                        <Typography variant="body1" sx={{ ml: 2, fontWeight: "medium" }}>
+                          {job.customer?.user?.first_name ?? job.customer.customer_name}
+                        </Typography>
+                         </Link>
                     </Box>
+                   
                   )}
-                </Paper>
+              </Paper>
               </Grid>
             ))}
-          </Grid>
-        </Box>
-
-        {/* Apply Modal */}
-        <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              borderRadius: 2,
-              width: isMobile ? "90%" : 400,
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Apply for Job
-            </Typography>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              placeholder="Write a message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              sx={{ mb: 3 }}
-            />
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button variant="contained" onClick={() => handleApply(selectedWorkId)}>
-                Submit
-              </Button>
-              <Button variant="outlined" onClick={() => setModalOpen(false)}>
-                Cancel
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
-
-        <Modal open={reportServiceModal} onClose={() => setReportServiceModal(false)}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              borderRadius: 2,
-              width: isMobile ? "90%" : 400,
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Report for the Job
-            </Typography>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              placeholder="Write a report here..."
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              sx={{ mb: 3 }}
-            />
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button variant="contained" onClick={() => handeReportService(selectedWorkId)}>
-                Submit
-              </Button>
-              <Button variant="outlined" onClick={() => setReportServiceModal(false)}>
-                Cancel
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
-        {/* Review Modal */}
-        <Modal open={reviewModalOpen} onClose={() => setReviewModalOpen(false)}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              borderRadius: 2,
-              width: isMobile ? "90%" : 400,
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Review Service
-            </Typography>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              placeholder="Write a review..."
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
-              sx={{ mb: 3 }}
-            />
-            <Box sx={{ display: "flex", gap: 1, mb: 3 }}>
-              <Rating value={rating} onChange={(_, newValue) => setRating(newValue)} />
-            </Box>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button variant="contained" onClick={handleReview}>
-                Submit
-              </Button>
-              <Button variant="outlined" onClick={() => setReviewModalOpen(false)}>
-                Cancel
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
-
-        {/* Report Modal */}
-        <Modal open={reportModalOpen} onClose={() => setReportModalOpen(false)}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              bgcolor: "background.paper",
-              boxShadow: 24,
-              p: 4,
-              borderRadius: 2,
-              width: isMobile ? "90%" : 400,
-            }}
-          >
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              Report Complaint
-            </Typography>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              placeholder="Write a report..."
-              value={complaint}
-              onChange={(e) => setComplaint(e.target.value)}
-              sx={{ mb: 3 }}
-            />
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button variant="contained" onClick={handleComplaint}>
-                Submit
-              </Button>
-              <Button variant="outlined" onClick={() => setReportModalOpen(false)}>
-                Cancel
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
+        </Grid>
       </Box>
+
+      {/* Apply Modal */}
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            width: isMobile ? "90%" : 400,
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Apply for Job
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            placeholder="Write a message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            sx={{ mb: 3 }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Button variant="contained" onClick={() => handleApply(selectedWorkId)}>
+              Submit
+            </Button>
+            <Button variant="outlined" onClick={() => setModalOpen(false)}>
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal open={reportServiceModal} onClose={() => setReportServiceModal(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            width: isMobile ? "90%" : 400,
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Report for the Job
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            placeholder="Write a report here..."
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            sx={{ mb: 3 }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Button variant="contained" onClick={() => handeReportService(selectedWorkId)}>
+              Submit
+            </Button>
+            <Button variant="outlined" onClick={() => setReportServiceModal(false)}>
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      {/* Review Modal */}
+      <Modal open={reviewModalOpen} onClose={() => setReviewModalOpen(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            width: isMobile ? "90%" : 400,
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Review Service
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            placeholder="Write a review..."
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
+            sx={{ mb: 3 }}
+          />
+          <Box sx={{ display: "flex", gap: 1, mb: 3 }}>
+            <Rating value={rating} onChange={(_, newValue) => setRating(newValue)} />
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Button variant="contained" onClick={handleReview}>
+              Submit
+            </Button>
+            <Button variant="outlined" onClick={() => setReviewModalOpen(false)}>
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* Report Modal */}
+      <Modal open={reportModalOpen} onClose={() => setReportModalOpen(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            width: isMobile ? "90%" : 400,
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Report Complaint
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            placeholder="Write a report..."
+            value={complaint}
+            onChange={(e) => setComplaint(e.target.value)}
+            sx={{ mb: 3 }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Button variant="contained" onClick={handleComplaint}>
+              Submit
+            </Button>
+            <Button variant="outlined" onClick={() => setReportModalOpen(false)}>
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+    </Box >
       <Footer />
     </>
   );
