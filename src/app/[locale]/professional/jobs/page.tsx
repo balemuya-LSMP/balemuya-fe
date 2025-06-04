@@ -36,7 +36,7 @@ export default function JobsPage() {
  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   const [activeTab, setActiveTab] = useState("");
-  const validStatuses = ["pending", "rejected", "booked", "canceled"];
+  const validStatuses = ["pending", "rejected", "booked", "completed", "canceled"];
 
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -306,7 +306,7 @@ const handleFilter = async (updatedFilter: string[]) => {
                         </Tooltip>
                       </>
                     )}
-                    {job?.service?.status === "booked" && (
+                    {["booked"].includes(job?.status ?? job?.service?.status) && (
                       <Box sx={{ display: "flex", gap: 2, borderTop: 1, borderColor: "divider", pt: 2, mt: 3 }}>
                         <Tooltip title="Review">
                           <IconButton
