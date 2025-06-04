@@ -80,6 +80,8 @@ export default function UserDetails() {
       setVerificationModalOpen(false);
     } catch (error) {
       console.error("Error verifying user:", error);
+      toast.error("Error verifying user:")
+      setVerificationModalOpen(false);
     }
   }
 
