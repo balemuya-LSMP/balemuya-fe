@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { FaBell, FaFilter, FaSearch, FaBars } from "react-icons/fa";
-import { FiUser, FiLogOut } from "react-icons/fi";
+import { FiUser, FiLogOut, FiSettings } from "react-icons/fi";
 import { useUserProfileQuery } from "@/store/api/userProfile.api";
 import {
   useGetNotificationsQuery,
@@ -35,8 +35,6 @@ import {
   useTheme,
   alpha,
 } from "@mui/material";
-import { useThemeToggle } from "@/hooks/useTheme";
-import { DarkMode, LightMode } from "@mui/icons-material";
 
 interface HeaderProps {
   searchQuery: string;
@@ -62,7 +60,6 @@ export default function Header({
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { logout } = useAuth();
-  const { toggleTheme, currentTheme } = useThemeToggle();
   const theme = useTheme();
 
   const unreadCount =
@@ -436,23 +433,19 @@ export default function Header({
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <FiUser size={16} />
+                    <FiUser style={{ marginRight: 12, fontSize: '1.1rem' }} />
                     <Typography>Profile</Typography>
                   </Box>
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
                     handleCloseUserMenu();
-                    toggleTheme();
+                    router.push("/professional/settings");
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    {currentTheme === "light" ? (
-                      <DarkMode fontSize="small" />
-                    ) : (
-                      <LightMode fontSize="small" />
-                    )}
-                    <Typography>Theme</Typography>
+                    <FiSettings style={{ marginRight: 12, fontSize: '1.1rem' }} />
+                    <Typography>Settings</Typography>
                   </Box>
                 </MenuItem>
                 <Divider />
@@ -470,7 +463,7 @@ export default function Header({
               </Menu>
             </Box>
           </Box>
-                    {/* Mobile Menu */}
+          {/* Mobile Menu */}
           <Box sx={{ display: { xs: "flex", md: "none" }, ml: 1 }}>
             <IconButton
               size="large"
