@@ -44,7 +44,6 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
   const { logout } = useAuth();
   const { data: userProfile } = useUserProfileQuery({});
   const { data: notificationData } = useGetNotificationsQuery();
-  const { toggleTheme, currentTheme } = useThemeToggle();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -336,27 +335,6 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                 </Badge>
               </IconButton>
 
-              {/* Theme Toggle */}
-              <IconButton
-                onClick={toggleTheme}
-                sx={{
-                  color: 'text.primary',
-                  p: 1.2,
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    color: 'primary.main',
-                    backgroundColor: '#f1f5f9',
-                    transform: 'scale(1.1)',
-                  },
-                }}
-              >
-                {currentTheme === "light" ? (
-                  <DarkMode fontSize="small" />
-                ) : (
-                  <LightMode fontSize="small" />
-                )}
-              </IconButton>
-
               {/* Profile Avatar */}
               <IconButton
                 onClick={handleOpenUserMenu}
@@ -396,7 +374,7 @@ export default function Header({ searchQuery, setSearchQuery }: HeaderProps) {
                     mt: 2,
                     py: 1,
                     borderRadius: 2,
-                    background: 'white',
+                    background: 'background.paper',
                     '& .MuiMenuItem-root': {
                       fontSize: '0.9rem',
                       py: 1.5,
