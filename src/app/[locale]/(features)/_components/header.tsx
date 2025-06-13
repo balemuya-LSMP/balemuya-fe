@@ -1,33 +1,25 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from "react";
-import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, Box, Select, MenuItem } from "@mui/material";
+import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, Box} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { LightMode, DarkMode } from "@mui/icons-material";
-import { Link, usePathname, getPathname } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import Image from "next/image";
 import { useThemeToggle } from "@/hooks/useTheme";
-import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import LanguageSelector from "./LanguageSelector";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { toggleTheme, currentTheme } = useThemeToggle();
-  const params = useParams();
-  const router = useRouter();
+
   const pathname = usePathname();
   const t = useTranslations("header");
 
-  const locale = params.locale;
-
-  const changeLanguage = (newLocale: string) => {
-    if (newLocale !== locale) {
-      const newPath = getPathname({ href: pathname, locale: newLocale });
-      router.replace(newPath);
-    }
-  };
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -142,32 +134,7 @@ export default function Header() {
             alignItems: "center",
           }}
         >
-          {/* langage selection */}
-          <Select
-            value={locale}
-            onChange={(e: any) => changeLanguage(e.target.value)}
-            MenuProps={{ disablePortal: true }}
-            variant="standard" // Optional: remove border variant
-            disableUnderline // Removes the underline if using standard variant
-            sx={{
-              height: 36,
-              minHeight: 36,
-              '& .MuiSelect-select': {
-                padding: '6px 12px',
-                display: 'flex',
-                alignItems: 'center',
-              },
-              '& fieldset': {
-                border: 'none',
-              },
-              backgroundColor: 'transparent',
-              color: currentTheme === "light" ? "#6a1b9a" : "#e1bee7",
-              textTransform: "none",
-            }}
-          >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="am">Amharic</MenuItem>
-          </Select>
+          <LanguageSelector/>
           {/* Login Button */}
           <Button
             component={Link}
@@ -314,31 +281,7 @@ export default function Header() {
             </ListItem>
           ))}
           <ListItem sx={{ mt: 2 }}>
-             <Select
-            value={locale}
-            onChange={(e: any) => changeLanguage(e.target.value)}
-            MenuProps={{ disablePortal: true }}
-            variant="standard" // Optional: remove border variant
-            disableUnderline // Removes the underline if using standard variant
-            sx={{
-              height: 36,
-              minHeight: 36,
-              '& .MuiSelect-select': {
-                padding: '6px 12px',
-                display: 'flex',
-                alignItems: 'center',
-              },
-              '& fieldset': {
-                border: 'none',
-              },
-              backgroundColor: 'transparent',
-              color: currentTheme === "light" ? "#6a1b9a" : "#e1bee7",
-              textTransform: "none",
-            }}
-          >
-            <MenuItem value="en">English</MenuItem>
-            <MenuItem value="am">Amharic</MenuItem>
-          </Select>
+             <LanguageSelector/>
           </ListItem>
           <ListItem>
             <Button
